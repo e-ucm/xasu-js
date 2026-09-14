@@ -1,7 +1,7 @@
 import xAPITrackerAsset from "../xAPITrackerAsset.js";
 import OAuth2Protocol from "./OAuth2Protocol.js";
 import { jwtDecode } from "jwt-decode";
-import { showDeviceFallbackUI } from "./OAuth2DeviceFallbackUI.js";
+import { showBlockingAuthUI } from "./OAuth2DeviceFallbackUI.js";
 
 /**
  * @typedef {import("jwt-decode").JwtPayload & { preferred_username?: string }} OAuth2DecodedToken
@@ -50,12 +50,6 @@ export default class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
     oauth2 = null;
 
     /**
-     * Callback for device authorization info (user_code, verification_uri, etc.)
-     * @type {Function|null}
-     */
-    onDeviceAuthorizationInfo = null;
-
-    /**
      * Callback for token updates
      * @type {Function|null}
      */
@@ -82,36 +76,38 @@ export default class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
     async #initAuth() {
         this.oauth2 = new OAuth2Protocol(this.oauth2Settings);
 
-        /** @type {{ dismiss: () => void } | null} */
-        let fallbackUI = null;
+        const blockingUI = showBlockingAuthUI();
 
-        if (this.onDeviceAuthorizationInfo) {
-            this.oauth2.onDeviceAuthorizationInfo = this.onDeviceAuthorizationInfo;
-        } else {
-            this.oauth2.onDeviceAuthorizationInfo = (info) => {
-                if (info.popupBlocked) {
-                    console.warn('[OAuth2Device] Browser blocked the auto-open popup. Showing fallback UI with code ' + info.user_code + '.');
-                }
-                fallbackUI = showDeviceFallbackUI(info);
-            };
-        }
+        this.oauth2.onDeviceAuthorizationInfo = (info) => {
+            if (info.popupBlocked) {
+                console.warn('[OAuth2Device] Browser blocked the auto-open popup. Showing blocking UI with code ' + info.user_code + '.');
+            }
+            blockingUI.update(info);
+        };
 
         if (this.onAuthorizationInfoUpdate) {
             this.oauth2.onAuthorizationInfoUpdate = this.onAuthorizationInfoUpdate;
         }
 
-        await this.oauth2.getToken();
-        const oAuth2Token = this.oauth2.token;
-
-        if (fallbackUI && typeof fallbackUI.dismiss === 'function') {
-            fallbackUI.dismiss();
+        try {
+            await this.oauth2.getToken();
+        } catch (error) {
+            blockingUI.showError(error && error.message ? error.message : 'Sign in failed.');
+            throw error;
         }
 
+        const oAuth2Token = this.oauth2.token;
+
         if (oAuth2Token !== null && oAuth2Token.access_token) {
+            blockingUI.dismiss();
             this.auth_token = "Bearer " + oAuth2Token.access_token;
             console.debug(this.auth_token);
             return super.login();
         }
+
+        const noTokenError = new Error('Sign in failed: no access token received.');
+        blockingUI.showError(noTokenError.message);
+        throw noTokenError;
     }
 
     getUsername() {

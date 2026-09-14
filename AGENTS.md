@@ -50,9 +50,9 @@ tracker.gameObject("healthPotion", tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM
 - OAuth2: Token-based authentication with grant types
 
 #### OAuth2 Device Mode (`urn:ietf:params:oauth:grant-type:device_code`)
-- `login()` requests a device code, then attempts to auto-open the `verification_uri_complete` in a new browser tab.
-- Because the flow runs asynchronously (after `await fetch`), browsers may block the popup. The `onDeviceAuthorizationInfo` callback on `xAPITrackerAssetOAuth2` receives a payload that includes `user_code`, `verification_uri`, `verification_uri_complete`, and a `popupBlocked` boolean.
-- Host games should render a manual fallback (e.g. a button that opens `verification_uri_complete` from a real click gesture) whenever `popupBlocked` is `true`.
+- `login()` immediately shows the built-in blocking overlay (loading state), then updates it in place with the QR code, `user_code`, and `verification_uri_complete` once the device code arrives. The overlay blocks all pointer/touch/keyboard input and scroll until the token is obtained.
+- There is no host-provided `onDeviceAuthorizationInfo` callback; a legacy value is ignored with a warning. Host games must not render their own device UI.
+- On failure the overlay stays blocked and shows the error message; it is dismissed only after an access token is received.
 - `getUsername()` decodes `preferred_username` from the access token JWT.
 
 ## Build and Test Commands

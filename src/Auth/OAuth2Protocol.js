@@ -119,6 +119,7 @@ interval = null;
     token = null;
     tokenRefreshInProgress = false;
     onAuthorizationInfoUpdate = null;
+    /** Internal hook wired to the built-in blocking UI. Not for host use. */
     onDeviceAuthorizationInfo = null;
 
     #config = null;

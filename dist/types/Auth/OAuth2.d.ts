@@ -41,11 +41,6 @@ export default class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
      */
     oauth2: OAuth2Protocol | null;
     /**
-     * Callback for device authorization info (user_code, verification_uri, etc.)
-     * @type {Function|null}
-     */
-    onDeviceAuthorizationInfo: Function | null;
-    /**
      * Callback for token updates
      * @type {Function|null}
      */
