@@ -20,6 +20,7 @@ export default class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
      * @property {string} [device_authorization_endpoint]
      * @property {number} [poll_interval]
      * @property {number} [max_poll_attempts]
+     * @property {string} [language] - UI language for the device sign-in screen (en, es, fr). Falls back to ?lang URL parameter, stored choice, browser language, English.
      */
     oauth2Settings: {
         token_endpoint: string;
@@ -34,6 +35,7 @@ export default class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
         device_authorization_endpoint: string;
         poll_interval: any;
         max_poll_attempts: any;
+        language: string;
     };
     /**
      * Instance of OAuth2Protocol handling authentication

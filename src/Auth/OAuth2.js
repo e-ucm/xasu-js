@@ -27,6 +27,7 @@ export default class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
      * @property {string} [device_authorization_endpoint]
      * @property {number} [poll_interval]
      * @property {number} [max_poll_attempts]
+     * @property {string} [language] - UI language for the device sign-in screen (en, es, fr). Falls back to ?lang URL parameter, stored choice, browser language, English.
      */
     oauth2Settings = {
         token_endpoint:                 "https://.../token",
@@ -41,6 +42,7 @@ export default class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
         device_authorization_endpoint:  "",
         poll_interval:                  null,
         max_poll_attempts:              null,
+        language:                       "",
     };
 
     /**
@@ -76,7 +78,7 @@ export default class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
     async #initAuth() {
         this.oauth2 = new OAuth2Protocol(this.oauth2Settings);
 
-        const blockingUI = showBlockingAuthUI();
+        const blockingUI = showBlockingAuthUI({ language: this.oauth2Settings.language });
 
         this.oauth2.onDeviceAuthorizationInfo = (info) => {
             if (info.popupBlocked) {

@@ -7573,6 +7573,294 @@ interval = null;
     }
 }
 
+var title$2 = "Sign in to play";
+var subtitlePick$2 = "Pick <strong>A</strong>, <strong>B</strong> or <strong>C</strong> — the game waits for you.";
+var loadingSubtitle$2 = "Hold on, getting your sign-in ready…";
+var loadingStatus$2 = "The game is paused. You don't need to click anything yet.";
+var optionA$2 = "Option A · Phone or tablet";
+var stepA1$2 = "<strong>1.</strong> Point your camera at the square above.";
+var stepA2$2 = "<strong>2.</strong> Say yes on that screen, then come back here.";
+var optionB$2 = "Option B · One click, no typing";
+var stepB1$2 = "<strong>1.</strong> Press the blue button:";
+var openButton$2 = "Open sign-in page";
+var noTypingNote$2 = "Your code is filled in already — no typing needed.";
+var copyLinkHint$2 = "If the link does not open when you click the button, copy this link to another tab:";
+var optionC$2 = "Option C · Type the code";
+var stepC1$2 = "<strong>1.</strong> Press this button:";
+var stepC2$2 = "<strong>2.</strong> Copy this code and type it there:";
+var copyButton$2 = "Copy";
+var copyLinkButton$2 = "Copy link";
+var copiedFeedback$2 = "Copied!";
+var codeTitleAttr$2 = "Your sign-in code";
+var waiting$2 = "Waiting… finish on the other screen and the game starts by itself.";
+var codeValidFor$2 = "This code works for {time}. Hurry!";
+var codeExpired$2 = "This code ran out of time — getting a fresh one, keep this window open.";
+var qrFailedNote$2 = "The square did not load — no problem, use Option B or C below.";
+var errorFriendly$2 = "Hmm, that did not work — keep this window open and try again.";
+var errorFallback$2 = "Something went wrong.";
+var ariaDialogLabel$2 = "Sign in required";
+var languageLabel$2 = "Language";
+var en = {
+	title: title$2,
+	subtitlePick: subtitlePick$2,
+	loadingSubtitle: loadingSubtitle$2,
+	loadingStatus: loadingStatus$2,
+	optionA: optionA$2,
+	stepA1: stepA1$2,
+	stepA2: stepA2$2,
+	optionB: optionB$2,
+	stepB1: stepB1$2,
+	openButton: openButton$2,
+	noTypingNote: noTypingNote$2,
+	copyLinkHint: copyLinkHint$2,
+	optionC: optionC$2,
+	stepC1: stepC1$2,
+	stepC2: stepC2$2,
+	copyButton: copyButton$2,
+	copyLinkButton: copyLinkButton$2,
+	copiedFeedback: copiedFeedback$2,
+	codeTitleAttr: codeTitleAttr$2,
+	waiting: waiting$2,
+	codeValidFor: codeValidFor$2,
+	codeExpired: codeExpired$2,
+	qrFailedNote: qrFailedNote$2,
+	errorFriendly: errorFriendly$2,
+	errorFallback: errorFallback$2,
+	ariaDialogLabel: ariaDialogLabel$2,
+	languageLabel: languageLabel$2
+};
+
+var title$1 = "Inicia sesión para jugar";
+var subtitlePick$1 = "Elige <strong>A</strong>, <strong>B</strong> o <strong>C</strong> — el juego te espera.";
+var loadingSubtitle$1 = "Espera, estamos preparando tu inicio de sesión…";
+var loadingStatus$1 = "El juego está en pausa. No necesitas pulsar nada todavía.";
+var optionA$1 = "Opción A · Móvil o tableta";
+var stepA1$1 = "<strong>1.</strong> Apunta tu cámara al código QR de arriba.";
+var stepA2$1 = "<strong>2.</strong> Acepta en esa pantalla y vuelve aquí.";
+var optionB$1 = "Opción B · Un clic, sin escribir";
+var stepB1$1 = "<strong>1.</strong> Pulsa el botón azul:";
+var openButton$1 = "Abrir la página de acceso";
+var noTypingNote$1 = "Tu código ya está rellenado — no necesitas escribir nada.";
+var copyLinkHint$1 = "Si el enlace no se abre cuando haces clic en el botón, copia este enlace en otra pestaña:";
+var optionC$1 = "Opción C · Escribe el código";
+var stepC1$1 = "<strong>1.</strong> Pulsa este botón:";
+var stepC2$1 = "<strong>2.</strong> Copia este código y escríbelo allí:";
+var copyButton$1 = "Copiar";
+var copyLinkButton$1 = "Copiar enlace";
+var copiedFeedback$1 = "¡Copiado!";
+var codeTitleAttr$1 = "Tu código de acceso";
+var waiting$1 = "Esperando… termina en la otra pantalla y el juego empezará solo.";
+var codeValidFor$1 = "Este código vale durante {time}. ¡Date prisa!";
+var codeExpired$1 = "Este código se ha agotado — estamos pidiendo uno nuevo, mantén esta ventana abierta.";
+var qrFailedNote$1 = "El código QR no se ha cargado — no pasa nada, usa la opción B o C.";
+var errorFriendly$1 = "Vaya, no ha funcionado — mantén esta ventana abierta e inténtalo de nuevo.";
+var errorFallback$1 = "Algo ha salido mal.";
+var ariaDialogLabel$1 = "Inicio de sesión necesario";
+var languageLabel$1 = "Idioma";
+var es = {
+	title: title$1,
+	subtitlePick: subtitlePick$1,
+	loadingSubtitle: loadingSubtitle$1,
+	loadingStatus: loadingStatus$1,
+	optionA: optionA$1,
+	stepA1: stepA1$1,
+	stepA2: stepA2$1,
+	optionB: optionB$1,
+	stepB1: stepB1$1,
+	openButton: openButton$1,
+	noTypingNote: noTypingNote$1,
+	copyLinkHint: copyLinkHint$1,
+	optionC: optionC$1,
+	stepC1: stepC1$1,
+	stepC2: stepC2$1,
+	copyButton: copyButton$1,
+	copyLinkButton: copyLinkButton$1,
+	copiedFeedback: copiedFeedback$1,
+	codeTitleAttr: codeTitleAttr$1,
+	waiting: waiting$1,
+	codeValidFor: codeValidFor$1,
+	codeExpired: codeExpired$1,
+	qrFailedNote: qrFailedNote$1,
+	errorFriendly: errorFriendly$1,
+	errorFallback: errorFallback$1,
+	ariaDialogLabel: ariaDialogLabel$1,
+	languageLabel: languageLabel$1
+};
+
+var title = "Connecte-toi pour jouer";
+var subtitlePick = "Choisis <strong>A</strong>, <strong>B</strong> ou <strong>C</strong> — le jeu t'attend.";
+var loadingSubtitle = "Patiente, on prépare ta connexion…";
+var loadingStatus = "Le jeu est en pause. Tu n'as rien à cliquer pour l'instant.";
+var optionA = "Option A · Téléphone ou tablette";
+var stepA1 = "<strong>1.</strong> Pointe ton appareil photo vers le code QR.";
+var stepA2 = "<strong>2.</strong> Accepte sur cet écran, puis reviens ici.";
+var optionB = "Option B · En un clic, prérempli";
+var stepB1 = "<strong>1.</strong> Appuie sur le bouton bleu :";
+var openButton = "Ouvrir la page de connexion";
+var noTypingNote = "Ton code est déjà rempli.";
+var copyLinkHint = "Si le lien ne s'ouvre pas quand tu cliques sur le bouton, copie ce lien sur un autre onglet :";
+var optionC = "Option C · Tape le code";
+var stepC1 = "<strong>1.</strong> Appuie sur ce bouton :";
+var stepC2 = "<strong>2.</strong> Copie ce code et tape-le là-bas :";
+var copyButton = "Copier";
+var copyLinkButton = "Copier le lien";
+var copiedFeedback = "Copié !";
+var codeTitleAttr = "Ton code de connexion";
+var waiting = "On attend… finis sur l'autre écran et le jeu démarrera tout seul.";
+var codeValidFor = "Ce code est valable pendant {time}. Dépêche-toi !";
+var codeExpired = "Ce code a expiré — on en demande un nouveau, garde cette fenêtre ouverte.";
+var qrFailedNote = "Le code QR ne s'est pas affiché — pas de souci, utilise l'option B ou C.";
+var errorFriendly = "Oups, ça n'a pas marché — garde cette fenêtre ouverte et réessaie.";
+var errorFallback = "Quelque chose s'est mal passé.";
+var ariaDialogLabel = "Connexion requise";
+var languageLabel = "Langue";
+var fr = {
+	title: title,
+	subtitlePick: subtitlePick,
+	loadingSubtitle: loadingSubtitle,
+	loadingStatus: loadingStatus,
+	optionA: optionA,
+	stepA1: stepA1,
+	stepA2: stepA2,
+	optionB: optionB,
+	stepB1: stepB1,
+	openButton: openButton,
+	noTypingNote: noTypingNote,
+	copyLinkHint: copyLinkHint,
+	optionC: optionC,
+	stepC1: stepC1,
+	stepC2: stepC2,
+	copyButton: copyButton,
+	copyLinkButton: copyLinkButton,
+	copiedFeedback: copiedFeedback,
+	codeTitleAttr: codeTitleAttr,
+	waiting: waiting,
+	codeValidFor: codeValidFor,
+	codeExpired: codeExpired,
+	qrFailedNote: qrFailedNote,
+	errorFriendly: errorFriendly,
+	errorFallback: errorFallback,
+	ariaDialogLabel: ariaDialogLabel,
+	languageLabel: languageLabel
+};
+
+/**
+ * Minimal localization helper for the OAuth2 device blocking UI.
+ * Dictionaries live in ./locales/*.json and are bundled with the tracker.
+ */
+
+
+const DEFAULT_LANGUAGE = 'en';
+const SUPPORTED_LANGUAGES = ['en', 'es', 'fr'];
+const LANGUAGE_STORAGE_KEY = 'xapi-device-lang';
+
+const STRINGS = { en, es, fr };
+
+const NATIVE_NAMES = { en: 'English', es: 'Español', fr: 'Français' };
+
+/**
+ * Normalizes a language tag to a supported language code.
+ * @param {string} tag - e.g. "es-ES", "FR", "en"
+ * @returns {string|null} supported code or null
+ */
+function normalizeLanguage(tag) {
+    if (!tag || typeof tag !== 'string') return null;
+    const base = tag.trim().toLowerCase().split(/[-_]/)[0];
+    return SUPPORTED_LANGUAGES.includes(base) ? base : null;
+}
+
+/**
+ * Reads the language from the page URL (?lang=, ?locale= or ?lng=).
+ * @returns {string|null} supported code or null
+ */
+function getUrlLanguage() {
+    try {
+        if (typeof window === 'undefined' || !window.location || !window.location.search) return null;
+        const params = new URLSearchParams(window.location.search);
+        const raw = params.get('lang') || params.get('locale') || params.get('lng');
+        return normalizeLanguage(raw);
+    } catch (e) {
+        return null;
+    }
+}
+
+/**
+ * @returns {string|null} language stored from a previous visit
+ */
+function getStoredLanguage() {
+    try {
+        if (typeof localStorage === 'undefined') return null;
+        return normalizeLanguage(localStorage.getItem(LANGUAGE_STORAGE_KEY));
+    } catch (e) {
+        return null;
+    }
+}
+
+/**
+ * @param {string} lang - supported language code
+ */
+function setStoredLanguage(lang) {
+    try {
+        if (typeof localStorage === 'undefined') return;
+        localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+    } catch (e) {
+        // storage unavailable (private mode) — ignore
+    }
+}
+
+/**
+ * @returns {string|null} browser language if supported
+ */
+function getBrowserLanguage() {
+    try {
+        if (typeof navigator === 'undefined' || !navigator.language) return null;
+        return normalizeLanguage(navigator.language);
+    } catch (e) {
+        return null;
+    }
+}
+
+/**
+ * Resolves the UI language. Priority: explicit > URL > stored > browser > English.
+ * @param {string} [explicit] - forced language (e.g. tracker settings)
+ * @returns {string} supported language code
+ */
+function resolveLanguage(explicit) {
+    return normalizeLanguage(explicit)
+        || getUrlLanguage()
+        || getStoredLanguage()
+        || getBrowserLanguage()
+        || DEFAULT_LANGUAGE;
+}
+
+/**
+ * Translates a key, falling back to English and then the key itself.
+ * Supports {placeholders} via vars.
+ * @param {string} lang - language code
+ * @param {string} key - string key
+ * @param {Object} [vars] - placeholder values
+ * @returns {string}
+ */
+function t(lang, key, vars) {
+    const dict = STRINGS[lang] || {};
+    let value = dict[key] !== undefined ? dict[key] : STRINGS[DEFAULT_LANGUAGE][key];
+    if (value === undefined) return key;
+    if (vars) {
+        for (const name of Object.keys(vars)) {
+            value = value.split('{' + name + '}').join(String(vars[name]));
+        }
+    }
+    return value;
+}
+
+/**
+ * @param {string} code - supported language code
+ * @returns {string} native display name
+ */
+function languageName(code) {
+    return NATIVE_NAMES[code] || code;
+}
+
 /**
  * Built-in blocking UI for OAuth2 Authorization.
  * Shows a full-screen modal overlay that blocks all game input until the
@@ -7581,6 +7869,9 @@ interval = null;
  *
  * States: loading (shown immediately on login) -> device info (QR + code) ->
  * error (message shown, overlay stays blocked) -> dismissed (token only).
+ *
+ * Written for students of all ages: plain words, numbered steps side by
+ * side, big copyable code, live countdown.
  */
 
 
@@ -7596,6 +7887,8 @@ const CSS = `
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
   background: rgba(0, 0, 0, 0.7);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   pointer-events: auto;
@@ -7606,59 +7899,157 @@ const CSS = `
 #${OVERLAY_ID} .xapi-device-card {
   background: #fff;
   border-radius: 12px;
-  padding: 32px 40px;
-  max-width: 420px;
-  width: 90%;
+  padding: 28px 32px;
+  max-width: 720px;
+  width: 100%;
   text-align: center;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   user-select: none;
   -webkit-user-select: none;
 }
 #${OVERLAY_ID} .xapi-device-card h2 {
-  margin: 0 0 8px;
-  font-size: 20px;
+  margin: 0 0 4px;
+  font-size: 22px;
   color: #222;
+}
+#${OVERLAY_ID} .xapi-device-lang-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+#${OVERLAY_ID} .xapi-device-lang-label {
+  font-size: 12px;
+  color: #777;
+}
+#${OVERLAY_ID} .xapi-device-lang-select {
+  padding: 6px 8px;
+  min-height: 36px;
+  font-size: 13px;
+  color: #333;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#${OVERLAY_ID} .xapi-device-subtitle {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #555;
 }
 #${OVERLAY_ID} .xapi-device-card p {
   margin: 4px 0;
   font-size: 14px;
   color: #555;
 }
+#${OVERLAY_ID} .xapi-device-options {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0 4px;
+  text-align: center;
+}
+#${OVERLAY_ID} .xapi-device-option {
+  flex: 1 1 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 16px 12px;
+  background: #fafbfe;
+}
+#${OVERLAY_ID} .xapi-device-option-title {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #004999;
+  background: #e3efff;
+  border-radius: 999px;
+}
+#${OVERLAY_ID} .xapi-device-step {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #333;
+}
+#${OVERLAY_ID} .xapi-device-qr {
+  margin: 8px auto;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  max-width: 100%;
+}
+#${OVERLAY_ID} .xapi-device-qr-note {
+  font-size: 13px;
+  color: #555;
+}
+#${OVERLAY_ID} .xapi-device-code-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0 4px;
+  flex-wrap: wrap;
+}
 #${OVERLAY_ID} .xapi-device-card .xapi-device-code {
   display: inline-block;
-  margin: 16px 0;
-  padding: 12px 24px;
-  font-size: 28px;
+  padding: 10px 18px;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 32px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   color: #1a1a2e;
   background: #f0f0f5;
   border: 2px dashed #999;
   border-radius: 8px;
   user-select: all;
   -webkit-user-select: all;
+}
+#${OVERLAY_ID} .xapi-device-copy-btn {
+  padding: 10px 14px;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #004999;
+  background: #e3efff;
+  border: 1px solid #bcd6ff;
+  border-radius: 6px;
   cursor: pointer;
 }
-#${OVERLAY_ID} .xapi-device-card .xapi-device-code:hover {
-  background: #e8e8f0;
-}
-#${OVERLAY_ID} .xapi-device-qr {
-  margin: 0 auto;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
+#${OVERLAY_ID} .xapi-device-copy-btn:hover {
+  background: #d2e5ff;
 }
 #${OVERLAY_ID} .xapi-device-card .xapi-device-url {
   display: block;
-  margin: 8px 0 20px;
-  font-size: 13px;
+  margin: 8px 0 12px;
+  font-size: 12px;
   color: #0066cc;
   word-break: break-all;
 }
+#${OVERLAY_ID} .xapi-device-url-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  margin: 8px 0 12px;
+}
+#${OVERLAY_ID} .xapi-device-url-row .xapi-device-url {
+  flex: 1 1 auto;
+  margin: 0;
+  text-align: left;
+}
+#${OVERLAY_ID} .xapi-device-copy-btn-small {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  min-height: 32px;
+  font-size: 12px;
+}
 #${OVERLAY_ID} .xapi-device-card button.xapi-device-btn {
   display: inline-block;
-  padding: 12px 32px;
+  padding: 12px 24px;
+  min-height: 44px;
   font-size: 16px;
   font-weight: 600;
   color: #fff;
@@ -7674,15 +8065,60 @@ const CSS = `
 #${OVERLAY_ID} .xapi-device-card button.xapi-device-btn:active {
   background: #003d7a;
 }
-#${OVERLAY_ID} .xapi-device-card .xapi-device-expiry {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #999;
+#${OVERLAY_ID} .xapi-device-card button.xapi-device-btn-secondary {
+  color: #004999;
+  background: #fff;
+  border: 2px solid #0066cc;
+}
+#${OVERLAY_ID} .xapi-device-card button.xapi-device-btn-secondary:hover {
+  background: #e3efff;
+}
+#${OVERLAY_ID} .xapi-device-card button.xapi-device-btn-secondary:active {
+  background: #d2e5ff;
+}
+#${OVERLAY_ID} .xapi-device-no-code-note {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1c7a2e;
+}
+#${OVERLAY_ID} .xapi-device-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+#${OVERLAY_ID} .xapi-device-spinner {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 3px solid #dfe7f3;
+  border-top-color: #0066cc;
+  border-radius: 50%;
+  animation: xapi-device-spin 0.8s linear infinite;
+}
+#${OVERLAY_ID} .xapi-device-spinner-large {
+  margin: 20px auto;
+  width: 36px;
+  height: 36px;
+  border-width: 4px;
+}
+@keyframes xapi-device-spin {
+  to { transform: rotate(360deg); }
 }
 #${OVERLAY_ID} .xapi-device-card .xapi-device-status {
-  margin-top: 12px;
   font-size: 13px;
   color: #555;
+}
+#${OVERLAY_ID} .xapi-device-card .xapi-device-expiry {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #004999;
+}
+#${OVERLAY_ID} .xapi-device-card .xapi-device-expiry.expired {
+  color: #7a1f1f;
 }
 #${OVERLAY_ID} .xapi-device-card .xapi-device-error {
   margin-top: 12px;
@@ -7694,17 +8130,19 @@ const CSS = `
   border-radius: 6px;
   word-break: break-word;
 }
-#${OVERLAY_ID} .xapi-device-spinner {
-  margin: 20px auto;
-  width: 36px;
-  height: 36px;
-  border: 4px solid #dfe7f3;
-  border-top-color: #0066cc;
-  border-radius: 50%;
-  animation: xapi-device-spin 0.8s linear infinite;
+#${OVERLAY_ID} .xapi-device-card .xapi-device-error small {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #964242;
 }
-@keyframes xapi-device-spin {
-  to { transform: rotate(360deg); }
+@media (max-width: 640px) {
+  #${OVERLAY_ID} .xapi-device-card {
+    padding: 20px 16px;
+  }
+  #${OVERLAY_ID} .xapi-device-options {
+    flex-direction: column;
+  }
 }
 `;
 
@@ -7727,6 +8165,12 @@ let activeOverlay = null;
 let activeHandle = null;
 let previousBodyOverflow = null;
 let blockersInstalled = false;
+let countdownTimer = null;
+let countdownDeadline = 0;
+let currentLang = 'en';
+let currentView = 'loading';
+let lastInfo = null;
+let lastError = null;
 
 function swallowOutsideEvent(e) {
     if (!activeOverlay || !activeOverlay.parentNode) return;
@@ -7767,7 +8211,19 @@ function unlockScroll() {
     }
 }
 
+function stopCountdown() {
+    if (countdownTimer !== null) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+    }
+}
+
 function dismiss() {
+    stopCountdown();
+    countdownDeadline = 0;
+    currentView = 'loading';
+    lastInfo = null;
+    lastError = null;
     if (activeOverlay && activeOverlay.parentNode) {
         activeOverlay.parentNode.removeChild(activeOverlay);
     }
@@ -7789,7 +8245,7 @@ function ensureOverlay() {
         activeOverlay.id = OVERLAY_ID;
         activeOverlay.setAttribute('role', 'dialog');
         activeOverlay.setAttribute('aria-modal', 'true');
-        activeOverlay.setAttribute('aria-label', 'Sign in required');
+        activeOverlay.setAttribute('aria-label', t(currentLang, 'ariaDialogLabel'));
         activeOverlay.addEventListener('pointerdown', function (e) {
             if (e.target === activeOverlay) {
                 e.preventDefault();
@@ -7799,73 +8255,257 @@ function ensureOverlay() {
         document.body.appendChild(activeOverlay);
     }
     if (!activeHandle) {
-        activeHandle = { update: updateOverlay, showError: showError, dismiss: dismiss };
+        activeHandle = { update: updateOverlay, showError: showError, dismiss: dismiss, setLanguage: setLanguage };
+    }
+    return activeHandle;
+}
+
+function languageSelectorHtml() {
+    let options = '';
+    for (const code of SUPPORTED_LANGUAGES) {
+        options += '<option value="' + code + '"' + (code === currentLang ? ' selected' : '') + '>' + languageName(code) + '</option>';
+    }
+    return '<div class="xapi-device-lang-row">'
+        + '<label class="xapi-device-lang-label" for="xapi-device-lang-select">' + escapeHtml(t(currentLang, 'languageLabel')) + '</label>'
+        + '<select id="xapi-device-lang-select" class="xapi-device-lang-select">' + options + '</select>'
+        + '</div>';
+}
+
+function wireLanguageSelector() {
+    const select = activeOverlay.querySelector('.xapi-device-lang-select');
+    if (select) {
+        select.addEventListener('change', function () {
+            setLanguage(select.value);
+        });
+    }
+}
+
+/**
+ * Switches the UI language and re-renders the current state.
+ * Persists the choice for future logins.
+ * @param {string} lang - language code (en, es, fr)
+ */
+function setLanguage(lang) {
+    if (!SUPPORTED_LANGUAGES.includes(lang) || lang === currentLang) return activeHandle;
+    currentLang = lang;
+    setStoredLanguage(lang);
+    try {
+        if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('lang', lang);
+            window.history.replaceState(null, '', url.toString());
+        }
+    } catch (e) {
+        // URL not writable — ignore
+    }
+    if (!activeOverlay || !activeOverlay.parentNode) return activeHandle;
+    if (currentView === 'device' && lastInfo) {
+        renderDevice(lastInfo, false);
+        if (lastError) appendError(lastError);
+    } else {
+        renderLoading();
+        if (lastError) appendError(lastError);
     }
     return activeHandle;
 }
 
 function renderLoading() {
+    stopCountdown();
+    countdownDeadline = 0;
+    currentView = 'loading';
     ensureOverlay();
+    activeOverlay.setAttribute('aria-label', t(currentLang, 'ariaDialogLabel'));
     activeOverlay.innerHTML = `
       <div class="xapi-device-card">
-        <h2>Sign In</h2>
-        <div class="xapi-device-spinner" aria-hidden="true"></div>
-        <p>Signing you in…</p>
-        <p class="xapi-device-status">The game is paused until login completes.</p>
+        ${languageSelectorHtml()}
+        <h2>${escapeHtml(t(currentLang, 'title'))}</h2>
+        <p class="xapi-device-subtitle">${escapeHtml(t(currentLang, 'loadingSubtitle'))}</p>
+        <div class="xapi-device-spinner xapi-device-spinner-large" aria-hidden="true"></div>
+        <p class="xapi-device-status">${escapeHtml(t(currentLang, 'loadingStatus'))}</p>
       </div>
     `;
+    wireLanguageSelector();
 }
 
-function formatExpiry(expiresIn) {
-    if (!expiresIn || expiresIn <= 0) return '';
-    const mins = Math.floor(expiresIn / 60);
-    const secs = expiresIn % 60;
-    return mins > 0
-        ? 'Code expires in ' + mins + 'm ' + secs + 's'
-        : 'Code expires in ' + secs + 's';
+function formatCountdown(totalSeconds) {
+    const s = Math.max(0, totalSeconds);
+    const mins = Math.floor(s / 60);
+    const secs = s % 60;
+    return (mins < 10 ? '0' + mins : '' + mins) + ':' + (secs < 10 ? '0' + secs : '' + secs);
+}
+
+function startCountdown(expiresIn) {
+    stopCountdown();
+    if (expiresIn && expiresIn > 0) {
+        countdownDeadline = Date.now() + expiresIn * 1000;
+    }
+    const expiryEl = activeOverlay.querySelector('.xapi-device-expiry');
+    if (!expiryEl || !countdownDeadline) return;
+    const tick = function () {
+        if (!activeOverlay || !activeOverlay.parentNode || !document.body.contains(expiryEl)) {
+            stopCountdown();
+            return;
+        }
+        const remaining = Math.max(0, Math.ceil((countdownDeadline - Date.now()) / 1000));
+        if (remaining <= 0) {
+            expiryEl.textContent = t(currentLang, 'codeExpired');
+            expiryEl.classList.add('expired');
+            stopCountdown();
+            return;
+        }
+        expiryEl.textContent = t(currentLang, 'codeValidFor', { time: formatCountdown(remaining) });
+    };
+    tick();
+    countdownTimer = setInterval(tick, 1000);
+}
+
+function copyText(text, button) {
+    const done = function () {
+        if (!button || !button.parentNode) return;
+        const original = button.getAttribute('data-label') || t(currentLang, 'copyButton');
+        button.textContent = t(currentLang, 'copiedFeedback');
+        setTimeout(function () {
+            if (button.parentNode) button.textContent = original;
+        }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+    } else {
+        fallbackCopy(text);
+        done();
+    }
+}
+
+function fallbackCopy(text) {
+    try {
+        const area = document.createElement('textarea');
+        area.value = text;
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        document.body.removeChild(area);
+    } catch (e) {
+        console.warn('[OAuth2Device] Copy failed: ' + e.message);
+    }
 }
 
 function updateOverlay(info) {
     if (typeof document === 'undefined') return;
+    lastInfo = info;
+    lastError = null;
+    renderDevice(info, true);
+}
+
+function renderDevice(info, focusButton) {
+    stopCountdown();
+    currentView = 'device';
     ensureOverlay();
-    const verificationUrl = info.verification_uri_complete || info.verification_uri;
-    const expiryText = formatExpiry(info.expires_in);
+    activeOverlay.setAttribute('aria-label', t(currentLang, 'ariaDialogLabel'));
+    const completeUrl = info.verification_uri_complete || info.verification_uri;
+    const manualUrl = info.verification_uri || info.verification_uri_complete;
+    const code = info.user_code || '';
 
     activeOverlay.innerHTML = `
       <div class="xapi-device-card">
-        <h2>Sign In</h2>
-        <p>Scan the code below on another device:</p>
-        <canvas class="xapi-device-qr"></canvas>
-        <p>Or open the link below and enter this code:</p>
-        <div class="xapi-device-code" title="Click to select">${escapeHtml(info.user_code)}</div>
-        <a class="xapi-device-url" href="${escapeHtml(verificationUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(verificationUrl)}</a>
-        <button class="xapi-device-btn" type="button">Open Verification Page</button>
-        <p class="xapi-device-status">Waiting for approval… The game stays paused until login completes.</p>
-        ${expiryText ? '<div class="xapi-device-expiry">' + escapeHtml(expiryText) + '</div>' : ''}
+        ${languageSelectorHtml()}
+        <h2>${escapeHtml(t(currentLang, 'title'))}</h2>
+        <p class="xapi-device-subtitle">${t(currentLang, 'subtitlePick')}</p>
+        <div class="xapi-device-options">
+          <div class="xapi-device-option">
+            <span class="xapi-device-option-title">${escapeHtml(t(currentLang, 'optionA'))}</span>
+            <canvas class="xapi-device-qr"></canvas>
+            <p class="xapi-device-step">${t(currentLang, 'stepA1')}</p>
+            <p class="xapi-device-step">${t(currentLang, 'stepA2')}</p>
+          </div>
+          <div class="xapi-device-option">
+            <span class="xapi-device-option-title">${escapeHtml(t(currentLang, 'optionB'))}</span>
+            <p class="xapi-device-step">${t(currentLang, 'stepB1')}</p>
+            <button class="xapi-device-btn" type="button" data-open-url="${escapeHtml(completeUrl)}">${escapeHtml(t(currentLang, 'openButton'))}</button>
+            <p class="xapi-device-no-code-note">${escapeHtml(t(currentLang, 'noTypingNote'))}</p>
+            <p class="xapi-device-step">${escapeHtml(t(currentLang, 'copyLinkHint'))}</p>
+            <div class="xapi-device-url-row">
+              <a class="xapi-device-url" href="${escapeHtml(completeUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(completeUrl)}</a>
+              <button class="xapi-device-copy-btn xapi-device-copy-btn-small" type="button" data-label="${escapeHtml(t(currentLang, 'copyLinkButton'))}" data-copy-text="${escapeHtml(completeUrl)}">${escapeHtml(t(currentLang, 'copyLinkButton'))}</button>
+            </div>
+          </div>
+          <div class="xapi-device-option">
+            <span class="xapi-device-option-title">${escapeHtml(t(currentLang, 'optionC'))}</span>
+            <p class="xapi-device-step">${t(currentLang, 'stepC1')}</p>
+            <button class="xapi-device-btn xapi-device-btn-secondary" type="button" data-open-url="${escapeHtml(manualUrl)}">${escapeHtml(t(currentLang, 'openButton'))}</button>
+            <p class="xapi-device-step">${t(currentLang, 'stepC2')}</p>
+            <div class="xapi-device-code-row">
+              <span class="xapi-device-code" title="${escapeHtml(t(currentLang, 'codeTitleAttr'))}">${escapeHtml(code)}</span>
+              <button class="xapi-device-copy-btn" type="button" data-label="${escapeHtml(t(currentLang, 'copyButton'))}" data-copy-text="${escapeHtml(code)}">${escapeHtml(t(currentLang, 'copyButton'))}</button>
+            </div>
+            <p class="xapi-device-step">${escapeHtml(t(currentLang, 'copyLinkHint'))}</p>
+            <div class="xapi-device-url-row">
+              <a class="xapi-device-url" href="${escapeHtml(manualUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(manualUrl)}</a>
+              <button class="xapi-device-copy-btn xapi-device-copy-btn-small" type="button" data-label="${escapeHtml(t(currentLang, 'copyLinkButton'))}" data-copy-text="${escapeHtml(manualUrl)}">${escapeHtml(t(currentLang, 'copyLinkButton'))}</button>
+            </div>
+          </div>
+        </div>
+        <div class="xapi-device-status-row">
+          <div class="xapi-device-spinner" aria-hidden="true"></div>
+          <p class="xapi-device-status" aria-live="polite">${escapeHtml(t(currentLang, 'waiting'))}</p>
+        </div>
+        <div class="xapi-device-expiry" aria-live="polite"></div>
       </div>
     `;
 
+    wireLanguageSelector();
+
     const qrCanvas = activeOverlay.querySelector('.xapi-device-qr');
-    QRCode.toCanvas(qrCanvas, verificationUrl, { width: 200, margin: 1 })
+    QRCode.toCanvas(qrCanvas, completeUrl, { width: 180, margin: 1 })
         .catch(function (error) {
             console.error('[OAuth2Device] Failed to render QR code: ' + error.message);
-            const card = activeOverlay.querySelector('.xapi-device-card');
-            if (card && qrCanvas && qrCanvas.parentNode === card) card.removeChild(qrCanvas);
+            const option = qrCanvas ? qrCanvas.parentNode : null;
+            if (option) {
+                const note = document.createElement('p');
+                note.className = 'xapi-device-qr-note';
+                note.textContent = t(currentLang, 'qrFailedNote');
+                option.replaceChild(note, qrCanvas);
+            }
         });
 
-    activeOverlay.querySelector('.xapi-device-btn').addEventListener('click', function () {
-        window.open(verificationUrl, '_blank', 'noopener,noreferrer');
-    });
+    const openButtons = activeOverlay.querySelectorAll('[data-open-url]');
+    for (const btn of openButtons) {
+        btn.addEventListener('click', function () {
+            window.open(btn.getAttribute('data-open-url'), '_blank', 'noopener,noreferrer');
+        });
+    }
+
+    const copyBtns = activeOverlay.querySelectorAll('.xapi-device-copy-btn');
+    for (const btn of copyBtns) {
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            copyText(btn.getAttribute('data-copy-text') || code, btn);
+        });
+    }
+
+    startCountdown(info.expires_in);
+
+    if (focusButton) {
+        const mainBtn = activeOverlay.querySelector('.xapi-device-btn');
+        if (mainBtn) mainBtn.focus();
+    }
 }
 
 function showError(message) {
     if (typeof document === 'undefined') return;
+    lastError = message || t(currentLang, 'errorFallback');
     ensureOverlay();
-    let card = activeOverlay.querySelector('.xapi-device-card');
+    const card = activeOverlay.querySelector('.xapi-device-card');
     if (!card) {
         renderLoading();
-        card = activeOverlay.querySelector('.xapi-device-card');
     }
+    appendError(lastError);
+}
+
+function appendError(message) {
+    const card = activeOverlay.querySelector('.xapi-device-card');
+    if (!card) return;
     let errorBox = card.querySelector('.xapi-device-error');
     if (!errorBox) {
         errorBox = document.createElement('div');
@@ -7873,19 +8513,26 @@ function showError(message) {
         errorBox.setAttribute('role', 'alert');
         card.appendChild(errorBox);
     }
-    errorBox.textContent = message || 'Sign in failed. The game stays paused until login completes.';
+    const safe = escapeHtml(message || t(currentLang, 'errorFallback'));
+    errorBox.innerHTML = escapeHtml(t(currentLang, 'errorFriendly')) + '<small>' + safe + '</small>';
 }
 
 /**
  * Shows the blocking auth UI immediately (loading state).
  * The game stays non-clickable until dismiss() is called after a token.
- * @returns {{ update: (info: object) => void, showError: (message: string) => void, dismiss: () => void }}
+ * Language is resolved as: explicit option > ?lang URL parameter >
+ * stored choice > browser language > English. The screen also has a
+ * language selector (English / Español / Français).
+ * @param {object} [options]
+ * @param {string} [options.language] - forced language code (en, es, fr)
+ * @returns {{ update: (info: object) => void, showError: (message: string) => void, dismiss: () => void, setLanguage: (lang: string) => void }}
  */
-function showBlockingAuthUI() {
+function showBlockingAuthUI(options) {
     if (typeof document === 'undefined') {
         console.warn('[OAuth2Device] Cannot show blocking UI: not in a browser environment.');
-        return { update() {}, showError() {}, dismiss() {} };
+        return { update() {}, showError() {}, dismiss() {}, setLanguage() {} };
     }
+    currentLang = resolveLanguage(options && options.language);
     renderLoading();
     return activeHandle;
 }
@@ -7921,6 +8568,7 @@ class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
      * @property {string} [device_authorization_endpoint]
      * @property {number} [poll_interval]
      * @property {number} [max_poll_attempts]
+     * @property {string} [language] - UI language for the device sign-in screen (en, es, fr). Falls back to ?lang URL parameter, stored choice, browser language, English.
      */
     oauth2Settings = {
         token_endpoint:                 "https://.../token",
@@ -7935,6 +8583,7 @@ class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
         device_authorization_endpoint:  "",
         poll_interval:                  null,
         max_poll_attempts:              null,
+        language:                       "",
     };
 
     /**
@@ -7970,11 +8619,7 @@ class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
     async #initAuth() {
         this.oauth2 = new OAuth2Protocol(this.oauth2Settings);
 
-        if (this.onDeviceAuthorizationInfo) {
-            console.warn('[OAuth2Device] Custom onDeviceAuthorizationInfo is no longer supported and will be ignored. Using the built-in blocking UI.');
-        }
-
-        const blockingUI = showBlockingAuthUI();
+        const blockingUI = showBlockingAuthUI({ language: this.oauth2Settings.language });
 
         this.oauth2.onDeviceAuthorizationInfo = (info) => {
             if (info.popupBlocked) {
@@ -8677,6 +9322,7 @@ class JSTracker {
      * @property {string} [device_authorization_endpoint] - Device authorization endpoint for device_code grant
      * @property {number} [poll_interval] - Polling interval in seconds for device flow
      * @property {number} [max_poll_attempts] - Maximum poll attempts for device flow
+     * @property {string} [language] - UI language for the device sign-in screen (en, es, fr)
      */
     oauth2 = {
         token_endpoint:                 "https://.../token",
@@ -8691,6 +9337,7 @@ class JSTracker {
         device_authorization_endpoint:  "",
         poll_interval:                  null,
         max_poll_attempts:              null,
+        language:                       "",
     };
 
     /**
@@ -8846,6 +9493,10 @@ class JSTracker {
             if (sso_max_poll_attempts) {
                 xAPIConfig.max_poll_attempts = parseInt(sso_max_poll_attempts, 10);
             }
+            const sso_language = urlParams.get('sso_language');
+            if (sso_language) {
+                xAPIConfig.language = sso_language;
+            }
 
             // OAUTH 1.0 DATA
             username = urlParams.get('username');
@@ -8907,6 +9558,7 @@ class JSTracker {
             this.oauth2.device_authorization_endpoint = xAPIConfig.device_authorization_endpoint;
             this.oauth2.poll_interval = xAPIConfig.poll_interval;
             this.oauth2.max_poll_attempts = xAPIConfig.max_poll_attempts;
+            this.oauth2.language = xAPIConfig.language;
         } else if (username && password) {
             this.trackerSettings.oauth_type="OAuth1";
             this.oauth1.username = username;

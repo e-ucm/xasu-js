@@ -7,6 +7,8 @@
         "rootDir": "./src",
         "checkJs": true,
         "moduleResolution": "node10",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
         "target": "es2021",
         "strict": false,
         "noImplicitAny": false,

@@ -55,6 +55,12 @@ tracker.gameObject("healthPotion", tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM
 - On failure the overlay stays blocked and shows the error message; it is dismissed only after an access token is received.
 - `getUsername()` decodes `preferred_username` from the access token JWT.
 
+#### Device sign-in screen languages (EN / ES / FR)
+- Strings live in `src/Auth/locales/*.json` (`en.json`, `es.json`, `fr.json`) and are bundled via `src/Auth/deviceI18n.js`. Keep all three files with identical keys; countdown uses the `{time}` placeholder (`codeValidFor`).
+- Resolution order: `oauth2Settings.language` (or `?sso_language=`) > `?lang=` / `?locale=` URL param > stored selector choice (`localStorage`) > browser language > English.
+- The screen has a built-in language selector (English / Español / Français) that re-renders the current state, persists the choice, and updates `?lang=` in the URL.
+- Bundler notes: JSON uses `@rollup/plugin-json` (devDependency, wired in `rollup.config.js`); `tsconfig.json` has `resolveJsonModule` + `allowSyntheticDefaultImports` for the type build.
+
 ## Build and Test Commands
 - `npm run build` - Build the project (webpack + types)
 - `npm run test` - Run linting and tests

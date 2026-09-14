@@ -2310,6 +2310,7 @@ export class JSTracker {
          * @property {string} [device_authorization_endpoint] - Device authorization endpoint for device_code grant
          * @property {number} [poll_interval] - Polling interval in seconds for device flow
          * @property {number} [max_poll_attempts] - Maximum poll attempts for device flow
+         * @property {string} [language] - UI language for the device sign-in screen (en, es, fr)
          */
     oauth2: {
         token_endpoint: string;
@@ -2324,6 +2325,7 @@ export class JSTracker {
         device_authorization_endpoint: string;
         poll_interval: any;
         max_poll_attempts: any;
+        language: string;
     };
     /**
      *

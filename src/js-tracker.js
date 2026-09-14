@@ -104,6 +104,7 @@ export class JSTracker {
      * @property {string} [device_authorization_endpoint] - Device authorization endpoint for device_code grant
      * @property {number} [poll_interval] - Polling interval in seconds for device flow
      * @property {number} [max_poll_attempts] - Maximum poll attempts for device flow
+     * @property {string} [language] - UI language for the device sign-in screen (en, es, fr)
      */
     oauth2 = {
         token_endpoint:                 "https://.../token",
@@ -118,6 +119,7 @@ export class JSTracker {
         device_authorization_endpoint:  "",
         poll_interval:                  null,
         max_poll_attempts:              null,
+        language:                       "",
     };
 
     /**
@@ -273,6 +275,10 @@ export class JSTracker {
             if (sso_max_poll_attempts) {
                 xAPIConfig.max_poll_attempts = parseInt(sso_max_poll_attempts, 10);
             }
+            const sso_language = urlParams.get('sso_language');
+            if (sso_language) {
+                xAPIConfig.language = sso_language;
+            }
 
             // OAUTH 1.0 DATA
             username = urlParams.get('username');
@@ -334,6 +340,7 @@ export class JSTracker {
             this.oauth2.device_authorization_endpoint = xAPIConfig.device_authorization_endpoint;
             this.oauth2.poll_interval = xAPIConfig.poll_interval;
             this.oauth2.max_poll_attempts = xAPIConfig.max_poll_attempts;
+            this.oauth2.language = xAPIConfig.language;
         } else if (username && password) {
             this.trackerSettings.oauth_type="OAuth1";
             this.oauth1.username = username;

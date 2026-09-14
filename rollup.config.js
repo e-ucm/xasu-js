@@ -4,9 +4,11 @@ import terser from '@rollup/plugin-terser';
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from '@rollup/plugin-commonjs';
 import glslify from 'rollup-plugin-glslify';
+import json from '@rollup/plugin-json';
 
 export default defineConfig({
   input: 'src/js-tracker.js',
+  plugins: [json()],
   output: [
     {
       file: 'dist/js-tracker.bundle.js',
