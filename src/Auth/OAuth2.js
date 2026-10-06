@@ -18,6 +18,7 @@ export default class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
      * @property {string} token_endpoint
      * @property {string} grant_type
      * @property {string} client_id
+     * @property {string} [client_secret]
      * @property {string} [scope]
      * @property {string} [state]
      * @property {string} [code_challenge_method]
@@ -32,6 +33,7 @@ export default class xAPITrackerAssetOAuth2 extends xAPITrackerAsset {
     oauth2Settings = {
         token_endpoint:                 "https://.../token",
         client_id:                      "my_client_id",
+        client_secret:                  "",
         grant_type:                     "password",
         scope:                          "openid profile",
         state:                          "",

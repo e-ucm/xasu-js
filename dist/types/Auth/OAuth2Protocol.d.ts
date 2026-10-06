@@ -101,6 +101,7 @@ export default class OAuth2Protocol {
     onAuthorizationInfoUpdate: any;
     /** Internal hook wired to the built-in blocking UI. Not for host use. */
     onDeviceAuthorizationInfo: any;
+    clientSecret: any;
     getToken(): Promise<void>;
     refreshToken(): Promise<any>;
     hasTokenExpired(): any;

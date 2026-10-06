@@ -112,7 +112,7 @@ export default class OAuth2Protocol {
     userCode = null;
     verificationUri = null;
     verificationUriComplete = null;
-interval = null;
+    interval = null;
     maxPollAttempts = null;
     pollInterval = null;
 
@@ -129,6 +129,7 @@ interval = null;
         this.tokenEndpoint = this.#getRequiredValue(config, OAuth2Protocol.TOKEN_ENDPOINT_FIELD);
         this.grantType = this.#getRequiredValue(config, OAuth2Protocol.GRANT_TYPE_FIELD).toLowerCase();
         this.clientId = this.#getRequiredValue(config, OAuth2Protocol.CLIENT_ID_FIELD);
+        this.clientSecret = config["client_secret"]
         this.scope = config[OAuth2Protocol.SCOPE_FIELD] || null;
         this.state = config.state || null;
         this.pollInterval = parseInt(config[OAuth2Protocol.POLL_INTERVAL_FIELD], 10) || null;
@@ -150,7 +151,7 @@ interval = null;
             case 'password':
                 this.username = this.#getRequiredValue(config, 'username');
                 this.password = this.#getRequiredValue(config, 'password');
-                this.login_hint = this.#getRequiredValue(config, 'login_hint');
+                this.login_hint = config['login_hint'];
                 break;
             case 'urn:ietf:params:oauth:grant-type:device_code':
                 this.deviceAuthorizationEndpoint = this.#getRequiredValue(config, OAuth2Protocol.DEVICE_AUTHORIZATION_ENDPOINT_FIELD);
@@ -169,12 +170,13 @@ interval = null;
         console.log('[OAuth2] Starting');
         switch (this.grantType) {
             case 'refresh_token':
-                this.token = await this.#doRefreshToken(this.tokenEndpoint, this.clientId, this.token.refresh_token);
+                this.token = await this.#doRefreshToken(this.tokenEndpoint, this.clientId, this.clientSecret, this.token.refresh_token);
                 break;
             case 'password':
                 this.token = await this.#doResourceOwnedPasswordCredentialsFlow(
                     this.tokenEndpoint,
                     this.clientId,
+                    this.clientSecret,
                     this.username,
                     this.password,
                     this.login_hint,
@@ -256,7 +258,7 @@ interval = null;
      */
     async #doDeviceAuthorizationFlowOnce() {
         // Step 1: Request device and user codes
-        const deviceAuth = await this.#doDeviceAuthorizationRequest(this.deviceAuthorizationEndpoint, this.clientId, this.scope);
+        const deviceAuth = await this.#doDeviceAuthorizationRequest(this.deviceAuthorizationEndpoint, this.clientId, this.clientSecret, this.scope);
 
         console.log('[OAuth2Device] User code: ' + deviceAuth.user_code);
 
@@ -309,10 +311,9 @@ interval = null;
 
         console.log('[OAuth2Device] Polling token endpoint every ' + interval + 's for up to ' + maxAttempts + ' attempts.');
 
-        this.token = await this.#pollForToken(this.tokenEndpoint, this.clientId, deviceAuth.device_code, interval, maxAttempts);
+        this.token = await this.#pollForToken(this.tokenEndpoint, this.clientId, this.clientSecret, deviceAuth.device_code, interval, maxAttempts);
 
         if (this.token) {
-            this.token.client_id = this.clientId;
             console.log('[OAuth2Device] Token obtained: ' + this.token.access_token);
             if (this.token.username) {
                 console.log('[OAuth2Device] Username found: ' + this.token.username);
@@ -329,12 +330,13 @@ interval = null;
      *
      * @param {string} endpoint - The device authorization endpoint URL
      * @param {string} clientId - The client ID
+     * @param {string} [clientSecret] - The client Secret
      * @param {string} [scope] - Optional scope
      * @returns {Promise<OAuth2DeviceAuthorization>} The device authorization response
      * @throws {OAuth2AuthorizationError} If the request fails
      */
-    async #doDeviceAuthorizationRequest(endpoint, clientId, scope) {
-        const form = { client_id: clientId };
+    async #doDeviceAuthorizationRequest(endpoint, clientId, clientSecret, scope) {
+        const form = { client_id: clientId, client_secret: (clientSecret != "" ? clientSecret : null) };
         if (scope) {
             form.scope = scope;
         }
@@ -394,19 +396,21 @@ interval = null;
      *
      * @param {string} tokenUrl - The token endpoint URL
      * @param {string} clientId - The client ID
+     * @param {string} clientSecret - The client Secret
      * @param {string} deviceCode - The device code
      * @param {number} interval - Polling interval in seconds
      * @param {number} maxAttempts - Maximum number of poll attempts
      * @returns {Promise<OAuth2Token>} The obtained token
      * @throws {OAuth2AuthorizationError} If polling fails or times out
      */
-    async #pollForToken(tokenUrl, clientId, deviceCode, interval, maxAttempts) {
+    async #pollForToken(tokenUrl, clientId, clientSecret, deviceCode, interval, maxAttempts) {
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
             await new Promise(resolve => setTimeout(resolve, interval * 1000));
 
             const form = {
                 grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
                 client_id: clientId,
+                client_secret: clientSecret != "" ? clientSecret : null,
                 device_code: deviceCode,
             };
 
@@ -509,7 +513,7 @@ interval = null;
 
     // ─── Password Grant Flow ──────────────────────────────────────────────────
 
-    async #doResourceOwnedPasswordCredentialsFlow(tokenUrl, clientId, username, password, login_hint, scope, state) {
+    async #doResourceOwnedPasswordCredentialsFlow(tokenUrl, clientId, clientSecret, username, password, login_hint, scope, state) {
         const form = {
             username,
             password,
@@ -521,17 +525,21 @@ interval = null;
         if (state) {
             form.state = state;
         }
-        return await this.#doTokenRequest(tokenUrl, clientId, 'password', form);
+        return await this.#doTokenRequest(tokenUrl, clientId, clientSecret, 'password', form);
     }
 
     // ─── Token Requests ───────────────────────────────────────────────────────
 
-    async #doTokenRequest(tokenUrl, clientId, grantType, otherParams) {
+    async #doTokenRequest(tokenUrl, clientId, clientSecret, grantType, otherParams) {
         const form = {
             grant_type: grantType,
             client_id: clientId,
+            client_secret: clientSecret != "" ? clientSecret : null,
             ...otherParams,
         };
+
+        let responseStatus;
+        let responseBody;
 
         try {
             const response = await fetch(tokenUrl, {
@@ -539,8 +547,8 @@ interval = null;
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams(form),
             });
-            const data = await response.json();
-            return OAuth2Token.fromJson(data);
+            responseStatus = response.status;
+            responseBody = await response.text();
         } catch (error) {
             if (error instanceof OAuth2AuthorizationError) {
                 throw error;
@@ -550,17 +558,40 @@ interval = null;
                 'Token request to "' + tokenUrl + '" failed: ' + error.message
             );
         }
+
+        let json = null;
+        try {
+            json = JSON.parse(responseBody);
+        } catch (e) {
+            json = null;
+        }
+
+        if (json && json.error) {
+            throw new OAuth2AuthorizationError(
+                json.error,
+                json.error_description || json.error + ' (' + tokenUrl + ')'
+            );
+        }
+
+        if (responseStatus < 200 || responseStatus >= 300 || !json || !json.access_token) {
+            throw new OAuth2AuthorizationError(
+                'http_' + responseStatus,
+                'Token request to "' + tokenUrl + '" failed with HTTP status ' + responseStatus + ': ' + responseBody
+            );
+        }
+
+        return OAuth2Token.fromJson(json);
     }
 
-    async #doRefreshToken(tokenUrl, clientId, refreshToken) {
-        return await this.#doTokenRequest(tokenUrl, clientId, 'refresh_token', { refresh_token: refreshToken });
+    async #doRefreshToken(tokenUrl, clientId, clientSecret, refreshToken) {
+        return await this.#doTokenRequest(tokenUrl, clientId, clientSecret, 'refresh_token', { refresh_token: refreshToken });
     }
 
     async refreshToken() {
         if (!this.tokenRefreshInProgress) {
             try {
                 this.tokenRefreshInProgress = true;
-                this.token = await this.#doRefreshToken(this.tokenEndpoint, this.clientId, this.token.refresh_token);
+                this.token = await this.#doRefreshToken(this.tokenEndpoint, this.clientId, this.clientSecret, this.token.refresh_token);
                 this.tokenRefreshInProgress = false;
                 return this.token.access_token;
             } catch (error) {
@@ -583,7 +614,7 @@ interval = null;
 
     async #updateParamsForAuth(request) {
         if (this.hasTokenExpired()) {
-            this.token = await this.#doRefreshToken(this.tokenEndpoint, this.clientId, this.token.refresh_token);
+            this.token = await this.#doRefreshToken(this.tokenEndpoint, this.clientId, this.clientSecret, this.token.refresh_token);
             if (this.onAuthorizationInfoUpdate) {
                 this.onAuthorizationInfoUpdate(this.token);
             }
@@ -614,6 +645,7 @@ interval = null;
         const form = {
             grant_type: 'refresh_token',
             client_id: this.clientId,
+            client_secret: this.clientSecret != "" ? this.clientSecret : null,
             refresh_token: this.token.refresh_token,
         };
 

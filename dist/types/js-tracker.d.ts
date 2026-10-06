@@ -2301,6 +2301,7 @@ export class JSTracker {
          * @property {string} token_endpoint
          * @property {string} grant_type
          * @property {string} client_id
+         * @property {string} [client_secret]
          * @property {string} [scope]
          * @property {string} [state]
          * @property {string} [code_challenge_method]
@@ -2315,6 +2316,7 @@ export class JSTracker {
     oauth2: {
         token_endpoint: string;
         client_id: string;
+        client_secret: string;
         grant_type: string;
         scope: string;
         state: string;
