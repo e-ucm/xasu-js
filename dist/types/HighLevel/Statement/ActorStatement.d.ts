@@ -34,6 +34,11 @@ export default class ActorStatement {
     name: string;
     member: ActorStatement[];
     /**
+     * Check if the ActorStatement is empty (no identifying properties)
+     * @returns {boolean}
+     */
+    isEmpty(): boolean;
+    /**
      * Convert to xAPI Agent or Group object
      * @returns {Object}
      */
