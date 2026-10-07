@@ -1,6 +1,6 @@
 {
   "name": "js-tracker",
-  "version": "2.1.0-beta",
+  "version": "2.1.1-beta",
   "description": "Client Side xAPI-SG Tracker Asset written in JavaScript",
   "type": "module",
   "main": "dist/js-tracker.bundle.cjs",
