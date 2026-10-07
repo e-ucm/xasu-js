@@ -44,7 +44,7 @@ export default class LRSStatement extends Statement {
     toXAPI() {
         return {
             ...super.toXAPI(),
-            authority: this.authority.toXAPI(),
+            authority: !this.authority.isEmpty() ? this.authority.toXAPI() : null,
             stored: this.stored
         };
     }

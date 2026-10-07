@@ -110,6 +110,18 @@ export default class ActorStatement {
     }
 
     /**
+     * Check if the ActorStatement is empty (no identifying properties)
+     * @returns {boolean}
+     */
+    isEmpty() {
+        if (this.objectType === STATEMENT.ACTOR.TYPES.GROUP) {
+            return !this.name && (!this.member || this.member.length === 0);
+        } else {
+            return !this.mbox && !this.mbox_sha1sum && !this.openid && !this.account;
+        }
+    }
+
+    /**
      * Create an ActorStatement from xAPI Agent or Group object
      * @param {Object} xapiObj
      * @returns {ActorStatement}
