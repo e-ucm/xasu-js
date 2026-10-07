@@ -109,7 +109,51 @@ describe('ContextStatement context activities', function() {
 		expect(Object.keys(context.contextActivities)).to.have.lengthOf(before);
 	});
 
-	it('normalizes an array into an object keyed by relation', function() {
+	it('keeps the category a relation holds as plain IRIs', function() {
+	// grouping, category and other may hold IRIs instead of Activity Objects
+	const context = contextWith({ category: ['https://w3id.org/xapi/seriousgames'] });
+
+	expect(context.contextActivities.category).to.deep.equal(['https://w3id.org/xapi/seriousgames']);
+	expect(context.toXAPI().contextActivities.category).to.deep.equal(['https://w3id.org/xapi/seriousgames']);
+});
+
+it('keeps a category given as a single IRI', function() {
+	const context = contextWith({ category: 'https://w3id.org/xapi/seriousgames' });
+
+	expect(context.contextActivities.category).to.deep.equal(['https://w3id.org/xapi/seriousgames']);
+	expect(context.toXAPI().contextActivities.category).to.deep.equal(['https://w3id.org/xapi/seriousgames']);
+});
+
+it('keeps the category added with withContextCategory', function() {
+	const context = ContextStatement.fromXAPI({ registration: 'r', platform: BASE }, BASE);
+
+	context.addCategory('https://w3id.org/xapi/seriousgames');
+
+	expect(context.toXAPI().contextActivities.category).to.have.lengthOf(1);
+	expect(context.toXAPI().contextActivities.category[0].id).to.equal('https://w3id.org/xapi/seriousgames');
+	expect(context.toXAPI().contextActivities.category[0].definition.type)
+		.to.equal('http://adlnet.gov/expapi/activities/profile');
+});
+
+it('keeps a category sent as an Activity Object', function() {
+	const context = contextWith({
+		category: [{
+			objectType: 'Activity',
+			id: 'https://w3id.org/xapi/seriousgames',
+			definition: { type: 'http://adlnet.gov/expapi/activities/profile' }
+		}]
+	});
+
+	expect(context.toXAPI().contextActivities.category).to.have.lengthOf(1);
+	expect(context.toXAPI().contextActivities.category[0].id).to.equal('https://w3id.org/xapi/seriousgames');
+});
+
+it('discards values that cannot be an activity', function() {
+	expect(ContextStatement.normalizeContextActivities({ category: [7, true, null, '', 'https://w3id.org/xapi/seriousgames'] }))
+		.to.deep.equal({ category: ['https://w3id.org/xapi/seriousgames'] });
+});
+
+it('normalizes an array into an object keyed by relation', function() {
 		expect(ContextStatement.normalizeContextActivities([{ id: 'a' }])).to.deep.equal({});
 		expect(ContextStatement.normalizeContextActivities('nonsense')).to.deep.equal({});
 		expect(ContextStatement.normalizeContextActivities(null)).to.deep.equal({});
@@ -117,6 +161,24 @@ describe('ContextStatement context activities', function() {
 		expect(ContextStatement.normalizeContextActivities({ parent: 'nonsense' })).to.deep.equal({});
 		expect(ContextStatement.normalizeContextActivities({ parent: 7 })).to.deep.equal({});
 		expect(ContextStatement.normalizeContextActivities({ parent: { id: 'a' } })).to.deep.equal({ parent: [{ id: 'a' }] });
+	});
+
+	it('omits the context activities when there is no relation', function() {
+		const context = ContextStatement.fromXAPI({ registration: 'r', platform: BASE }, BASE);
+
+		// an empty object would declare relations holding no activity, which is not a valid context
+		expect(context.toXAPI()).to.not.have.property('contextActivities');
+		expect(context.toXAPI().registration).to.equal('r');
+		expect(context.toXAPI().platform).to.equal(BASE);
+	});
+
+	it('serializes the context activities once a relation is added', function() {
+		const context = ContextStatement.fromXAPI({ registration: 'r', platform: BASE }, BASE);
+
+		context.addContextActivity(PARENT, `${BASE}/admin`, `${BASE}/about`);
+
+		expect(context.toXAPI().contextActivities).to.have.property(PARENT);
+		expect(context.toXAPI().contextActivities[PARENT][0].id).to.equal(`${BASE}/admin`);
 	});
 });
 

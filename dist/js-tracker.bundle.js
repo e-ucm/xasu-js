@@ -4508,8 +4508,11 @@ class ContextStatement {
      * (parent, grouping, category, other) and whose values are arrays of activities. An array is
      * therefore malformed: adding a relation to it attaches a string key to the array, which every
      * serialization drops, so the activities silently disappear. A single object is accepted by
-     * xAPI 2.0 where 1.0.3 requires an array, so it is wrapped instead of rejected. Values that are
-     * not activities are discarded, as they cannot be serialized as part of a relation.
+     * xAPI 2.0 where 1.0.3 requires an array, so it is wrapped instead of rejected.
+     *
+     * A relation may hold Activity Objects or, for grouping, category and other, plain IRIs, so
+     * IRIs are kept for those relations while parent, which only accepts Activity Objects, and any
+     * value that cannot be an activity are discarded.
      *
      * @param {Object} input the context activities to normalize
      * @returns {Object} an object whose keys are relations and whose values are arrays of activities
@@ -4521,7 +4524,18 @@ class ContextStatement {
         const normalized = {};
         for (const [relation, activities] of Object.entries(input)) {
             const list = Array.isArray(activities) ? activities : [activities];
-            const kept = list.filter((activity) => !!activity && typeof activity === 'object');
+            const kept = list.filter((activity) => {
+                if (!activity) {
+                    return false;
+                }
+                if (typeof activity === 'object') {
+                    return true;
+                }
+                if (typeof activity !== 'string' || !isUri(activity)) {
+                    return false;
+                }
+                return relation !== STATEMENT.CONTEXT.ACTIVITIES.PARENT;
+            });
             if (kept.length > 0) {
                 normalized[relation] = kept;
             }
@@ -4552,9 +4566,12 @@ class ContextStatement {
                 return act;
             });
         }
+        // An empty object declares relations that hold no activity, which is not a valid context, so
+        // the property is omitted instead of being serialized empty
+        const hasContextActivities = Object.values(serializedContextActivities).some(acts => acts.length > 0);
         return {
             registration: this.registration,
-            contextActivities: serializedContextActivities,
+            ...(hasContextActivities ? { contextActivities: serializedContextActivities } : {}),
             ...(this.extensions ? { extensions: this.extensions } : {}),
             ...(this.platform ? { platform: this.platform } : {}),
             ...(this.language ? { language: this.language } : {})

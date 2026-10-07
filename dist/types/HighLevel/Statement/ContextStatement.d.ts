@@ -9,8 +9,11 @@ export default class ContextStatement {
      * (parent, grouping, category, other) and whose values are arrays of activities. An array is
      * therefore malformed: adding a relation to it attaches a string key to the array, which every
      * serialization drops, so the activities silently disappear. A single object is accepted by
-     * xAPI 2.0 where 1.0.3 requires an array, so it is wrapped instead of rejected. Values that are
-     * not activities are discarded, as they cannot be serialized as part of a relation.
+     * xAPI 2.0 where 1.0.3 requires an array, so it is wrapped instead of rejected.
+     *
+     * A relation may hold Activity Objects or, for grouping, category and other, plain IRIs, so
+     * IRIs are kept for those relations while parent, which only accepts Activity Objects, and any
+     * value that cannot be an activity are discarded.
      *
      * @param {Object} input the context activities to normalize
      * @returns {Object} an object whose keys are relations and whose values are arrays of activities
