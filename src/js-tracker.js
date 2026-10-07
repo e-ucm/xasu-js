@@ -57,7 +57,8 @@ export class JSTracker {
      * @property {string} parent_activity_id
      * @property {string} registration_id
     * @property {string} parent_activity_type
-    * @property {string} [auth_token] - Optional auth token for OAuth0
+    * @property {string} [category] - Category of the statements, added to the context of every statement
+     * @property {string} [auth_token] - Optional auth token for OAuth0
      */
     trackerSettings={
         generateSettingsFromURLParams:false,
@@ -77,6 +78,7 @@ export class JSTracker {
         parent_activity_id:'',
         registration_id: '',
         parent_activity_type:ALL.ACTIVITYTYPES.LESSON,
+        category: '',
         auth_token: '',
         actor_homepage:''
     };
@@ -725,6 +727,10 @@ export class SeriousGameTracker extends JSTracker {
     constructor() {
         super();
         this.parent_activity_id=this.trackerSettings.parent_activity_id || '';
+        // statements of a serious game are categorized as such, unless the game sets its own category
+        if(!this.trackerSettings.category) {
+            this.trackerSettings.category = SERIOUSGAMESPROFILE.CATEGORYID;
+        }
     }
 
     async login() {

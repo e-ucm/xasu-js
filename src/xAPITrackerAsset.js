@@ -183,6 +183,11 @@ export default class xAPITrackerAsset {
         } else {
             this.context = new ContextStatement(this.settings.default_uri, this.settings.platform);
         }
+        // the category classifies every statement of this tracker, so it is added before cloning the
+        // context, otherwise the cloned context used by the SCORM instances would lose it
+        if(this.settings.category) {
+            this.context.addCategory(this.settings.category);
+        }
         this.context_without_parent = this.context.clone();
         if(this.settings.parent_activity_id) {
             this.context.addContextActivity("parent", this.settings.parent_activity_id, this.settings.parent_activity_type);

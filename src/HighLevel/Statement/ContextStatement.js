@@ -32,8 +32,11 @@ export default class ContextStatement {
      */
     addCategory(categoryId) {
         if(categoryId) {
-            if(!this.contextActivities.category) {
-                 this.contextActivities.category = [];
+            // a relation key cannot be set on an array without being lost by any serialization, so the
+            // context activities are normalized before the category is added
+            this.contextActivities = ContextStatement.normalizeContextActivities(this.contextActivities);
+            if(!Array.isArray(this.contextActivities.category)) {
+                this.contextActivities.category = [];
             }
             this.contextActivities.category.push(
                 {
