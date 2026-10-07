@@ -98,8 +98,13 @@ export default class ContextStatement {
               activity = new ObjectStatement(activity, activityType, this.defaultURI);
         }
         if ([STATEMENT.CONTEXT.ACTIVITIES.PARENT, STATEMENT.CONTEXT.ACTIVITIES.GROUPING, STATEMENT.CONTEXT.ACTIVITIES.CATEGORY, STATEMENT.CONTEXT.ACTIVITIES.OTHER].includes(type)) {
+            // A relation key cannot be set on an array without being lost by any serialization,
+            // so the context activities are reset when they are not a plain object
+            if (!this.contextActivities || typeof this.contextActivities !== 'object' || Array.isArray(this.contextActivities)) {
+                this.contextActivities = {};
+            }
             // Accept single object or array
-            if (!this.contextActivities[type]) {
+            if (!Array.isArray(this.contextActivities[type])) {
                 this.contextActivities[type] = [];
             }
             if (Array.isArray(activity)) {
@@ -108,6 +113,34 @@ export default class ContextStatement {
                 this.contextActivities[type].push(activity);
             }
         }
+    }
+
+    /**
+     * Normalize the context activities of a statement.
+     *
+     * The xAPI specification defines contextActivities as an object whose keys are the relations
+     * (parent, grouping, category, other) and whose values are arrays of activities. An array is
+     * therefore malformed: adding a relation to it attaches a string key to the array, which every
+     * serialization drops, so the activities silently disappear. A single object is accepted by
+     * xAPI 2.0 where 1.0.3 requires an array, so it is wrapped instead of rejected. Values that are
+     * not activities are discarded, as they cannot be serialized as part of a relation.
+     *
+     * @param {Object} input the context activities to normalize
+     * @returns {Object} an object whose keys are relations and whose values are arrays of activities
+     */
+    static normalizeContextActivities(input) {
+        if (!input || typeof input !== 'object' || Array.isArray(input)) {
+            return {};
+        }
+        const normalized = {};
+        for (const [relation, activities] of Object.entries(input)) {
+            const list = Array.isArray(activities) ? activities : [activities];
+            const kept = list.filter((activity) => !!activity && typeof activity === 'object');
+            if (kept.length > 0) {
+                normalized[relation] = kept;
+            }
+        }
+        return normalized;
     }
     
     /**
@@ -181,7 +214,9 @@ export default class ContextStatement {
     clone() {
         const cloned = new ContextStatement(this.defaultURI, this.platform, this.registration);
         if(this.contextActivities) {
-            cloned.contextActivities = JSON.parse(JSON.stringify(this.contextActivities));
+            cloned.contextActivities = ContextStatement.normalizeContextActivities(
+                JSON.parse(JSON.stringify(this.contextActivities))
+            );
         }
         if(this.language) {
             cloned.language = this.language;
@@ -224,7 +259,7 @@ export default class ContextStatement {
         }
         const registrationId = xapiObj.registration;
         const ctx = new ContextStatement(base,platform, registrationId);
-        if (xapiObj.contextActivities) ctx.contextActivities = xapiObj.contextActivities;
+        if (xapiObj.contextActivities) ctx.contextActivities = ContextStatement.normalizeContextActivities(xapiObj.contextActivities);
         if (xapiObj.extensions) ctx.extensions = xapiObj.extensions;
         if (language) ctx.language = language;
         return ctx;

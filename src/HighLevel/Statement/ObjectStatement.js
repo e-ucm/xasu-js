@@ -21,7 +21,8 @@ export default class ObjectStatement {
         } else {
             this.id = setAsUri(id, baseURI);
         }
-        this.definitionType = setAsUri(type, baseURI);
+        // definition.type is optional in the xAPI specification
+        this.definitionType = type ? setAsUri(type, baseURI) : null;
         if(name) {
             this.definitionName.set(language, name);
         }

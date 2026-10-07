@@ -3,6 +3,20 @@
  */
 export default class ContextStatement {
     /**
+     * Normalize the context activities of a statement.
+     *
+     * The xAPI specification defines contextActivities as an object whose keys are the relations
+     * (parent, grouping, category, other) and whose values are arrays of activities. An array is
+     * therefore malformed: adding a relation to it attaches a string key to the array, which every
+     * serialization drops, so the activities silently disappear. A single object is accepted by
+     * xAPI 2.0 where 1.0.3 requires an array, so it is wrapped instead of rejected. Values that are
+     * not activities are discarded, as they cannot be serialized as part of a relation.
+     *
+     * @param {Object} input the context activities to normalize
+     * @returns {Object} an object whose keys are relations and whose values are arrays of activities
+     */
+    static normalizeContextActivities(input: any): any;
+    /**
      * Create a ContextStatement from xAPI context object
      * @param {Object} xapiObj
      * @param {string} baseURI - Optional base URI to resolve relative IDs
