@@ -127,7 +127,8 @@ export default class ObjectStatement {
         if (this.definitionType) {
             object.definition.type = this.definitionType;
         }
-        if (this.definitionExtensions) {
+        // an empty object declares nothing, so it is left out of the definition
+        if (this.definitionExtensions && Object.keys(this.definitionExtensions).length > 0) {
             object.definition.extensions = this.definitionExtensions;
         }
         return object;

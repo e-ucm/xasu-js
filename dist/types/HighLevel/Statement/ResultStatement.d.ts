@@ -76,9 +76,9 @@ export default class ResultStatement {
     /**
      * Set the score of the statement
      * @param {string} key the key for the score
-     * @param {number} value the score
+     * @param {number|string} value the score, a numeric string is accepted
      */
-    setScoreValue(key: string, value: number): void;
+    setScoreValue(key: string, value: number | string): void;
     /**
  * Set the score of the statement
  * @param {number} raw the raw score

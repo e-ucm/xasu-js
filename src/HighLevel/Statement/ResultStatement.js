@@ -102,15 +102,18 @@ export default class ResultStatement {
     /**
      * Set the score of the statement
      * @param {string} key the key for the score 
-     * @param {number} value the score 
+     * @param {number|string} value the score, a numeric string is accepted
      */
     setScoreValue(key, value) {
-        if(! this.Score) {
-            this.Score = {};
+        // a score part that is not a number would serialize as null, so it is left out rather
+        // than stored; an empty string is not one, since Number('') is 0
+        const score = Number(value);
+        if(STATEMENT.RESULT.SCORE.hasOwnProperty(key.toUpperCase()) && value !== '' && Number.isFinite(score)) {
+            if(! this.Score) {
+                this.Score = {};
+            }
+            this.Score[key] = score;
         }
-        if(STATEMENT.RESULT.SCORE.hasOwnProperty(key.toUpperCase())) {
-            this.Score[key] = Number(value);
-        }    
     }
 
         /**
@@ -121,19 +124,21 @@ export default class ResultStatement {
      * @param {number} scaled the scaled score
      */
     setScore(raw, min, max, scaled) {
-        if (raw) {
+        // a score of exactly 0 is a legitimate score, so each part is checked against being
+        // absent rather than against being truthy
+        if (isGiven(raw)) {
             this.setScoreRaw(raw);
         }
 
-        if (min) {
+        if (isGiven(min)) {
             this.setScoreMin(min);
         }
 
-        if (max) {
+        if (isGiven(max)) {
             this.setScoreMax(max);
         }
 
-        if (scaled) {
+        if (isGiven(scaled)) {
             this.setScoreScaled(scaled);
         }
     }
@@ -306,7 +311,7 @@ export default class ResultStatement {
         var response = '';
         if (this.Response) {
             let respStr = (typeof this.Response === 'string') ? this.Response : String(this.Response);
-            response = ',response,' + respStr.replaceAll(',', '\,');
+            response = ',response,' + respStr.replaceAll(',', '\\,');
         }
         var score = '';
 
@@ -398,5 +403,15 @@ var ismap = function(obj) {
  * @returns {boolean}
  */
 var exists = function(value) {
+    return !(typeof value === 'undefined' || value === null);
+};
+
+/**
+ * Check whether a value was given, so that 0 and the empty string count as given while an
+ * absent part does not
+ * @param {any} value the value to check
+ * @returns {boolean}
+ */
+var isGiven = function(value) {
     return !(typeof value === 'undefined' || value === null);
 };

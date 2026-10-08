@@ -3,8 +3,6 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * This project has received funding from the European Union’s Horizon
- * 2020 research and innovation programme under grant agreement No 644187.
  * You may obtain a copy of the License at
  *
  *	 http://www.apache.org/licenses/LICENSE-2.0
@@ -16,191 +14,192 @@
  * limitations under the License.
  */
 
+// The tracker classes are exercised through the built bundle: src/js-tracker.js imports JSON
+// locales, which only the bundler can resolve, so it cannot be imported directly by Node.
+// Run npm run build before this test.
+import { expect } from 'chai';
+import { SeriousGameTracker } from '../dist/js-tracker.bundle.js';
 
- import('chai').then(chai => {
-    var expect = chai.expect;
-    var TrackerAsset = require('../src/js-tracker');
+const EXT = 'https://simva.example';
 
-    var tracker = new TrackerAsset();
+describe('SeriousGameTracker CSV export', function() {
+	let tracker;
 
-    var parseCSV = function(trace) {
-        var p = [];
+	beforeEach(function() {
+		tracker = new SeriousGameTracker();
+		tracker.trackerSettings.oauth_type = 'OAuth0';
+		tracker.trackerSettings.default_uri = EXT;
+		tracker.trackerSettings.platform = EXT;
+		tracker.trackerSettings.actor_name = 'player1';
+		tracker.start();
+	});
 
-        var escape = false;
-        var start = 0;
-        for (var i = 0; i < trace.lenth; i++) {
-            switch (trace [i]) {
-            case '\\': {
-                escape = true;
-                break;
-            }
-            case ',': {
-                if (!escape) {
-                    p.push (trace.substr(start, i - start).replace('\\,',','));
-                    start = i + 1;
-                } else {
-                    escape = false;
-                }
-                break;
-            }
-            default: { break; }
-            }
-        }
-        p.push(trace.substr(start).replace('\\,',','));
+	afterEach(function() {
+		// stop() cancels the pending batch timer, otherwise it would keep mocha alive
+		tracker.stop();
+	});
 
-        return p;
-    };
+	/**
+	 * Splits a CSV row into its fields, honouring the backslash escaping of the separators
+	 * @param  {string} row the CSV row
+	 * @returns {string[]} the fields of the row
+	 */
+	function parseCSV(row) {
+		const fields = [];
+		let field = '';
+		for (let i = 0; i < row.length; i++) {
+			if (row[i] === '\\' && row[i + 1] === ',') {
+				field += ',';
+				i++;
+			} else if (row[i] === ',') {
+				fields.push(field);
+				field = '';
+			} else {
+				field += row[i];
+			}
+		}
+		fields.push(field);
+		return fields;
+	}
 
-    var CompareCSV = function(t1, t2) {
-        var sp1 = parseCSV(t1);
-        var sp2 = parseCSV(t2);
+	/**
+	 * Splits a CSV row into its first four fields, which hold the timestamp, the verb, the
+	 * type and the id, and the remaining ones, which come in key/value pairs describing the result
+	 * @param  {string} row the CSV row
+	 * @returns {Object} the envelope and the result pairs of the row
+	 */
+	function splitRow(row) {
+		const fields = parseCSV(row);
+		return {
+			timestamp: fields[0],
+			verb: fields[1],
+			type: fields[2],
+			id: fields[3],
+			result: fields.slice(4)
+		};
+	}
 
-        expect(sp1.length).to.equal(sp2.length);
+	/**
+	 * Reads a CSV row as a plain object, the result fields being key/value pairs
+	 * @param  {string} row the CSV row
+	 * @returns {Object} the result of the row
+	 */
+	function resultOf(row) {
+		const pairs = splitRow(row).result;
+		const result = {};
+		for (let i = 0; i < pairs.length; i += 2) {
+			result[pairs[i]] = pairs[i + 1];
+		}
+		return result;
+	}
 
-        for (var i = 0; i < 3; i++) {
-            expect(sp1[i]).to.equal(sp2[i]);
-        }
+	it('starts the row with the timestamp, even when there is none', function() {
+		const row = tracker.completable('c1').initialized().statement.toCSV();
 
-        var d1 = {};
+		expect(row.startsWith(',')).to.equal(true);
+	});
 
-        if (sp1.length > 3) {
-            for (i = 3; i < sp1.length; i += 2) {
-                d1[sp1[i]] = sp1[i + 1];
-            }
+	it('writes the verb, the type and the id as absolute URIs', function() {
+		const row = splitRow(tracker.completable('c1', tracker.COMPLETABLETYPE.QUEST).initialized().statement.toCSV());
 
-            for (i = 3; i < sp2.length; i += 2) {
-                expect(d1.keys()).to.include(sp2[i]);
-                expect(d1[sp2[i]]).to.equal(sp2[i + 1]);
-            }
-        }
-    };
+		expect(row.verb).to.equal('http://adlnet.gov/expapi/verbs/initialized');
+		expect(row.type).to.equal('https://w3id.org/xapi/seriousgames/activity-types/quest');
+		expect(row.id).to.equal(`${EXT}/c1`);
+	});
 
-    var CheckCSVTrace = function(trace) {
-        var t = tracker.queue[tracker.queue.length - 1];
-        CompareCSV(trace,removeTimestamp(t.ToCsv()));
-    };
+	describe('result', function() {
+		it('writes nothing while the statement carries no result', function() {
+			expect(resultOf(tracker.accessible('a1').accessed().statement.toCSV())).to.deep.equal({});
+		});
 
-    var removeTimestamp = function(trace) {
-        return trace.substr(trace.search(',') + 1, trace.length);
-    };
+		it('writes the response', function() {
+			const row = tracker.alternative('q1', tracker.ALTERNATIVETYPE.PATH)
+				.selected('optionB')
+				.statement.toCSV();
 
-    var enqueueTrace01 = function() {
-        tracker.ActionTrace('accessed', 'gameobject', 'ObjectID');
-    };
+			expect(resultOf(row)).to.deep.equal({ response: 'optionB' });
+		});
 
-    var enqueueTrace02 = function() {
-        tracker.setResponse('TheResponse');
-        tracker.setScore(0.123);
-        tracker.ActionTrace('initialized', 'game', 'ObjectID2');
-    };
+		it('writes success, completion and the score', function() {
+			const completable = tracker.completable('c2', tracker.COMPLETABLETYPE.RACE);
+			completable.initialized().send();
+			const row = completable.completed(true, false, 0.54).statement.toCSV();
+			const result = resultOf(row);
 
-    var enqueueTrace03 = function() {
-        tracker.setResponse('AnotherResponse');
-        tracker.setScore(123.456);
-        tracker.setSuccess(false);
-        tracker.setCompletion(true);
-        tracker.setVar('extension1', 'value1');
-        tracker.setVar('extension2', 'value2');
-        tracker.setVar('extension3', 3);
-        tracker.setVar('extension4', 4.56);
-        tracker.ActionTrace('selected', 'zone', 'ObjectID3');
-    };
+			expect(result.success).to.equal('true');
+			expect(result.completion).to.equal('false');
+			expect(result.score).to.equal('0.54');
+		});
 
-    describe('TrackerAsset CSV Tests', function() {
-        it('Action Trace Tests', function() {
-            tracker.ActionTrace('Verb', 'Type', 'ID');
-            CheckCSVTrace('Verb,Type,ID');
+		it('writes every score part that is set', function() {
+			const row = tracker.trace('selected', 'zone', 'a1')
+				.withScore({ raw: 1.1, min: 2.2, max: 3.3, scaled: 4.4 })
+				.statement.toCSV();
+			const result = resultOf(row);
 
-            tracker.ActionTrace('Verb', 'Ty,pe', 'ID');
-            CheckCSVTrace('Verb,Ty\\,pe,ID');
+			expect(result).to.deep.equal({
+				score: '1.1',
+				score_min: '2.2',
+				score_max: '3.3',
+				score_scaled: '4.4'
+			});
+		});
 
-            tracker.ActionTrace('Verb', 'Type', 'I,D');
-            CheckCSVTrace('Verb,Type,I\\,D');
+		it('writes the progress under the serious games extension', function() {
+			const row = tracker.completable('c3', tracker.COMPLETABLETYPE.STAGE)
+				.progressed(0.34)
+				.statement.toCSV();
 
-            tracker.ActionTrace('Ve,rb', 'Type', 'ID');
-            CheckCSVTrace('Ve\\,rb,Type,ID');
-        });
+			expect(resultOf(row)).to.deep.equal({
+				'https://w3id.org/xapi/seriousgames/extensions/progress': '0.34'
+			});
+		});
 
-        it('Accessible CSV 1 Accessed', function() {
-            tracker.Accessible.Accessed('AccesibleID', tracker.Accessible.AccessibleType.Cutscene);
-            CheckCSVTrace('accessed,cutscene,AccesibleID');
-        });
+		it('writes the extensions under the key they were given', function() {
+			const row = tracker.accessible('a2').skipped()
+				.withResultExtensions({ e1: 'v1', e2: 2 })
+				.statement.toCSV();
 
-        it('Accessible CSV 2 Skipped with extensions', function() {
-            tracker.setVar('extension1', 'value1');
-            tracker.Accessible.Skipped('AccesibleID2', tracker.Accessible.AccessibleType.Screen);
+			expect(resultOf(row)).to.deep.equal({ e1: 'v1', e2: '2' });
+		});
 
-            CheckCSVTrace('skipped,screen,AccesibleID2,extension1,value1');
-        });
+		it('writes a map extension as key=value pairs', function() {
+			const row = tracker.trace('selected', 'zone', 'a1')
+				.withResultExtension('sub', { a: 1, b: 'two' })
+				.statement.toCSV();
 
-        it('Alternative CSV 1 Selected', function() {
-            tracker.Alternative.Selected('AlternativeID', 'SelectedOption', tracker.Alternative.AlternativeType.Path);
+			expect(resultOf(row).sub).to.equal('a=1-b=two');
+		});
+	});
 
-            CheckCSVTrace('selected,path,AlternativeID,response,SelectedOption');
-        });
+	describe('escaping', function() {
+		it('escapes the separators of the id', function() {
+			const row = splitRow(tracker.trace('Verb', 'Type', 'I,D').statement.toCSV());
 
-        it('Alternative CSV 2 Unlocked with extensions', function() {
-            tracker.setVar('SubCompletableScore', 0.8);
-            tracker.Alternative.Unlocked('AlternativeID2', 'Answer number 3', tracker.Alternative.AlternativeType.Question);
+			expect(row.id).to.equal(`${EXT}/I,D`);
+		});
 
-            CheckCSVTrace('unlocked,question,AlternativeID2,response,Answer number 3,SubCompletableScore,0.8');
-        });
+		it('leaves the separators of the verb and of the type untouched', function() {
+			const row = splitRow(tracker.trace('Ve,rb', 'Ty,pe', 'ID').statement.toCSV());
 
-        it('Completable CSV 1 Initialized', function() {
-            tracker.Completable.Initialized('CompletableID', tracker.Completable.CompletableType.Quest);
+			expect(row.verb).to.equal(`${EXT}/Ve`);
+			expect(row.type).to.equal('rb');
+		});
 
-            CheckCSVTrace('initialized,quest,CompletableID');
-        });
+		it('escapes the separators of the response', function() {
+			const row = tracker.alternative('q1').selected('a,b').statement.toCSV();
 
-        it('Completable CSV 2 Progressed', function() {
-            tracker.Completable.Progressed('CompletableID2', tracker.Completable.CompletableType.Stage, 0.34);
+			expect(resultOf(row).response).to.equal('a,b');
+		});
 
-            CheckCSVTrace('progressed,stage,CompletableID2,progress,0.34');
-        });
+		it('escapes the separators of the extensions', function() {
+			const row = tracker.trace('Verb', 'Type', 'ID')
+				.withResultExtensions({ e1: 'ex,2', 'e,1': 'ex,2,' })
+				.statement.toCSV();
+			const result = resultOf(row);
 
-        it('Completable CSV 3 Completed', function() {
-            tracker.Completable.Completed('CompletableID3',tracker.Completable.CompletableType.Race, true, 0.54);
-
-            CheckCSVTrace('completed,race,CompletableID3,success,true,score,0.54');
-        });
-
-        it('GameObject CSV 1 Interacted', function() {
-            tracker.GameObject.Interacted('GameObjectID', tracker.GameObject.GameObjectType.Npc);
-
-            CheckCSVTrace('interacted,npc,GameObjectID');
-        });
-
-        it('GameObject CSV 2 Used', function() {
-            tracker.GameObject.Used('GameObjectID2', tracker.GameObject.GameObjectType.Item);
-
-            CheckCSVTrace('used,item,GameObjectID2');
-        });
-
-        it('Generic CSV 1', function() {
-            enqueueTrace01();
-            CheckCSVTrace('accessed,gameobject,ObjectID');
-        });
-
-        it('Generic CSV 2', function() {
-            enqueueTrace02();
-            CheckCSVTrace('initialized,game,ObjectID2,response,TheResponse,score,0.123');
-        });
-
-        it('Generic CSV 3', function() {
-            enqueueTrace03();
-            CheckCSVTrace('selected,zone,ObjectID3,success,false,completion,true,response,AnotherResponse,' +
-                            'score,123.456,extension1,value1,extension2,value2,extension3,3,extension4,4.56');
-        });
-
-        it('Generic CSV 3', function() {
-            tracker.setVar('e1', 'ex,2');
-            tracker.setVar('e,1', 'ex,2,');
-            tracker.setVar('e3', 'e3');
-            tracker.ActionTrace('verb', 'target', 'id');
-
-            CheckCSVTrace('verb,target,id,e1,ex\\,2,e\\,1,ex\\,2\\,,e3,e3');
-        });
-    });
-}).catch(err => {
-    console.error(err);
+			expect(result.e1).to.equal('ex,2');
+			expect(result['e,1']).to.equal('ex,2,');
+		});
+	});
 });

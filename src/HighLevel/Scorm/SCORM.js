@@ -1,8 +1,8 @@
 import xAPITrackerAsset from "../../xAPITrackerAsset.js";
 import ContextStatement from "../Statement/ContextStatement.js";
 import { SCORMPROFILE } from "../Statement/Ids/Profiles/Generated/ScormProfile.js";
-import { ALL } from "../Statement/Ids/Profiles/Generated/All.js";
 import StatementBuilder from "../StatementBuilder/StatementBuilder.js";
+
 /**
  * Scorm Tracker
  */

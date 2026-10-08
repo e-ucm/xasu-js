@@ -693,11 +693,6 @@ argparse@^2.0.1:
   resolved "https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz"
   integrity sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==
 
-argsparser@>=0.0.3:
-  version "0.0.7"
-  resolved "https://registry.npmjs.org/argsparser/-/argsparser-0.0.7.tgz"
-  integrity sha512-jWiKKi8EwhvFhtyY+2x5Y4zOa2Wp93mhQ++0MxcLF/SJNlmf5kro81o/3juM9iQOa6pE/poHAGKl5vP7Cbn8Dg==
-
 assertion-error@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/assertion-error/-/assertion-error-2.0.1.tgz"
@@ -1917,14 +1912,6 @@ jsesc@^2.5.1:
   resolved "https://registry.npmjs.org/jsesc/-/jsesc-2.5.2.tgz"
   integrity sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==
 
-jshint@^0.5.9:
-  version "0.5.9"
-  resolved "https://registry.npmjs.org/jshint/-/jshint-0.5.9.tgz"
-  integrity sha512-i/mir4CHUfEzwU0qIonfYT25AALitakjbBQJuL3+OZlE15AsL61gND3bcWzgPg2uW6WFKC8ALe5wbL+h22M1wA==
-  dependencies:
-    argsparser ">=0.0.3"
-    minimatch ">=0.0.4"
-
 json-buffer@3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/json-buffer/-/json-buffer-3.0.1.tgz"
@@ -2087,7 +2074,7 @@ mime-types@^2.1.12:
   dependencies:
     mime-db "1.52.0"
 
-minimatch@^3.0.4, minimatch@^3.0.5, minimatch@^3.1.2, minimatch@>=0.0.4, "minimatch@2 || 3":
+minimatch@^3.0.4, minimatch@^3.0.5, minimatch@^3.1.2, "minimatch@2 || 3":
   version "3.1.5"
   resolved "https://registry.npmjs.org/minimatch/-/minimatch-3.1.5.tgz"
   integrity sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==

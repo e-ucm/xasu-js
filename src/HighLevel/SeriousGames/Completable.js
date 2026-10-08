@@ -1,6 +1,5 @@
 import xAPITrackerAsset from "../../xAPITrackerAsset.js";
 import { ALL } from "../Statement/Ids/Profiles/Generated/All.js";
-import { SERIOUSGAMESPROFILE } from "../Statement/Ids/Profiles/Generated/index.js";
 import StatementBuilder from "../StatementBuilder/StatementBuilder.js";
 /**
  * Completable Tracker

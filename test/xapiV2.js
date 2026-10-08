@@ -1,44 +1,112 @@
+/*
+ * Copyright 2017 e-UCM, Universidad Complutense de Madrid
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *	 http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-//import xAPITrackerAssetOAuth1 from '../src/Auth/OAuth1';
-import xAPITrackerAssetOAuth2 from '../src/Auth/OAuth2.js';
-import {AccessibleTracker, ACCESSIBLETYPE } from '../src/HighLevel/Accessible.js';
-import { CompletableTracker , COMPLETABLETYPE } from '../src/HighLevel/Completable.js';
-import {AlternativeTracker , ALTERNATIVETYPE } from '../src/HighLevel/Alternative.js';
-import { GameObjectTracker , GAMEOBJECTTYPE } from '../src/HighLevel/GameObject.js';
-import fs from 'fs';
+// The tracker classes are exercised through the built bundle: src/js-tracker.js imports JSON
+// locales, which only the bundler can resolve, so it cannot be imported directly by Node.
+// Run npm run build before this test.
+import { expect } from 'chai';
+import { SeriousGameTracker } from '../dist/js-tracker.bundle.js';
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+const EXT = 'https://simva.example';
 
-// Get the __filename equivalent
-const __filename = fileURLToPath(import.meta.url);
+describe('SeriousGameTracker instances', function() {
+	let tracker;
 
-// Get the __dirname equivalent
-const __dirname = dirname(__filename);
+	beforeEach(function() {
+		tracker = new SeriousGameTracker();
+		tracker.trackerSettings.oauth_type = 'OAuth0';
+		tracker.trackerSettings.default_uri = EXT;
+		tracker.trackerSettings.platform = EXT;
+		tracker.trackerSettings.actor_name = 'player1';
+		tracker.start();
+	});
 
-console.log(__dirname);  // This will now behave like __dirname
-// Reading from a JSON file
-const currentdir=__dirname
-fs.readFile(currentdir+'/config.json', 'utf8', async (err, data) => {
-    if (err) {
-        console.error("Error reading file:", err);
-        return;
-    }
-    try {
-        const jsonData = JSON.parse(data);
-        console.log(jsonData); // Use the parsed JSON data
-        //var xapiTracker = new xAPITrackerAssetOAuth1(jsonData.endpoint, jsonData.username, jsonData.password, "https://simva-beta2.e-ucm.es/", "gxra")
-        var xapiTracker = new xAPITrackerAssetOAuth2(jsonData.lrs_endpoint, jsonData.auth_parameters, "https://simva-beta2.e-ucm.es/", "gxra")
-        var accessibleTracker=new AccessibleTracker(xapiTracker);
-        var completableTracker=new CompletableTracker(xapiTracker);
-        var alternativeTracker=new AlternativeTracker(xapiTracker);
-        var gameObjectTracker=new GameObjectTracker(xapiTracker);
-        accessibleTracker.Accessed("https://testid/");
-        completableTracker.Initialized("https://mynewSeriousGame", COMPLETABLETYPE.GAME);
-        completableTracker.Progressed("https://mynewSeriousGame", COMPLETABLETYPE.GAME, 0.5);
-        var mystatement=xapiTracker.Trace("initialized", "game", "https://github.com/xapijs/xapi");
-    } catch (error) {
-        console.error("Error parsing JSON:", error);
-    }
+	afterEach(function() {
+		// stop() cancels the pending batch timer, otherwise it would keep mocha alive
+		tracker.stop();
+	});
+
+	describe('caching', function() {
+		it('hands out the same instance for the same id and type', function() {
+			expect(tracker.gameObject('sword')).to.equal(tracker.gameObject('sword'));
+			expect(tracker.completable('level1')).to.equal(tracker.completable('level1'));
+			expect(tracker.alternative('q1')).to.equal(tracker.alternative('q1'));
+			expect(tracker.accessible('menu')).to.equal(tracker.accessible('menu'));
+		});
+
+		it('hands out a different instance for a different type', function() {
+			expect(tracker.gameObject('sword'))
+				.to.not.equal(tracker.gameObject('sword', tracker.GAMEOBJECTTYPE.NPC));
+			expect(tracker.completable('x'))
+				.to.not.equal(tracker.completable('x', tracker.COMPLETABLETYPE.LEVEL));
+		});
+
+		it('keeps the instances of the four kinds apart', function() {
+			expect(tracker.gameObject('shared')).to.not.equal(tracker.completable('shared'));
+		});
+
+		it('starts each kind with its own default type', function() {
+			expect(tracker.gameObject('a').Type)
+				.to.equal(tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM);
+			expect(tracker.completable('a').Type)
+				.to.equal(tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.SERIOUS_GAME);
+			expect(tracker.alternative('a').Type).to.equal(tracker.ALL.ACTIVITYTYPES.ASSESSMENT);
+			expect(tracker.accessible('a').Type)
+				.to.equal(tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.AREA);
+		});
+	});
+
+	describe('exposing the profile ids', function() {
+		it('reaches the serious games profile through the tracker', function() {
+			expect(tracker.SERIOUSGAMEPROFILE.VERBS.ACCESSED)
+				.to.equal('https://w3id.org/xapi/seriousgames/verbs/accessed');
+		});
+
+		it('reaches the four kinds of object type through the tracker', function() {
+			expect(tracker.ACCESSIBLETYPE.SCREEN).to.be.a('string');
+			expect(tracker.COMPLETABLETYPE.QUEST).to.be.a('string');
+			expect(tracker.ALTERNATIVETYPE.QUESTION).to.be.a('string');
+			expect(tracker.GAMEOBJECTTYPE.NPC).to.be.a('string');
+		});
+
+		it('reaches the statement ids through the tracker', function() {
+			expect(tracker.STATEMENT_BUILDER_IDS).to.be.an('object');
+			expect(tracker.STATEMENT_BUILDER_IDS.CONTEXT.ACTIVITIES.PARENT).to.be.a('string');
+		});
+	});
+
+	describe('the parent activity', function() {
+		it('is left out while no parent is configured', function() {
+			const statement = tracker.completable('c1').initialized().toXAPI();
+
+			expect(statement.context.contextActivities).to.not.have.property('parent');
+		});
+
+		it('is added to the context while a parent is configured', function() {
+			const parented = new SeriousGameTracker();
+			parented.trackerSettings.oauth_type = 'OAuth0';
+			parented.trackerSettings.default_uri = EXT;
+			parented.trackerSettings.platform = EXT;
+			parented.trackerSettings.parent_activity_id = `${EXT}/simlets/1/sessions/2`;
+			parented.start();
+
+			const context = parented.completable('c1').initialized().statement.context.contextActivities;
+
+			expect(context.parent[0].id).to.equal(`${EXT}/simlets/1/sessions/2`);
+			parented.stop();
+		});
+	});
 });
-

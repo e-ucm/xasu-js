@@ -37,6 +37,7 @@ export function getUrlLanguage() {
         const raw = params.get('lang') || params.get('locale') || params.get('lng');
         return normalizeLanguage(raw);
     } catch (e) {
+        console.log('[OAuth2Device] Failed to read language from URL: ' + e.message);
         return null;
     }
 }
@@ -49,6 +50,7 @@ export function getStoredLanguage() {
         if (typeof localStorage === 'undefined') return null;
         return normalizeLanguage(localStorage.getItem(LANGUAGE_STORAGE_KEY));
     } catch (e) {
+        console.log('[OAuth2Device] Failed to read language from storage: ' + e.message);
         return null;
     }
 }
@@ -61,6 +63,7 @@ export function setStoredLanguage(lang) {
         if (typeof localStorage === 'undefined') return;
         localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
     } catch (e) {
+        console.log('[OAuth2Device] Failed to store language: ' + e.message);
         // storage unavailable (private mode) — ignore
     }
 }
@@ -73,6 +76,7 @@ export function getBrowserLanguage() {
         if (typeof navigator === 'undefined' || !navigator.language) return null;
         return normalizeLanguage(navigator.language);
     } catch (e) {
+        console.log('[OAuth2Device] Failed to read browser language: ' + e.message);
         return null;
     }
 }

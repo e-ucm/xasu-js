@@ -211,7 +211,8 @@ export default class xAPITrackerAsset {
         this.online=false;
         this.offset = 0;
         this.statementsToSend = [];
-        this.timer = null;
+        this.#stopTimer();
+        this.retryDelay = null;
         this.actor = null;
         this.context = null;
         this.xapi=null;
@@ -303,7 +304,7 @@ export default class xAPITrackerAsset {
                 this.retryDelay = this.settings.batch_timeout;
             }
             this.retryDelay = Math.min(this.retryDelay * 2, this.settings.max_retry_delay);
-            this.timer = null;
+            this.#stopTimer();
             if (this.offset < this.statementsToSend.length) {
                 this.#startTimer();
             }
@@ -326,6 +327,16 @@ export default class xAPITrackerAsset {
     }
 
     /**
+     * Cancels the pending batch timer, if any
+     */
+    #stopTimer() {
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+    }
+
+    /**
      * Starts the timer for batch processing
      */
     #startTimer() {
@@ -333,8 +344,9 @@ export default class xAPITrackerAsset {
         let timeout = this.retryDelay ? this.retryDelay : this.settings.batch_timeout;
 
         this.timer = setTimeout(async () => {
-            await this.#sendBatch();
+            // release the handle first, a failing batch arms the timer again by itself
             this.timer = null;
+            await this.#sendBatch();
             if (this.offset < this.statementsToSend.length) {
                 this.#startTimer();
             }
@@ -349,7 +361,11 @@ export default class xAPITrackerAsset {
      * @returns {StatementBuilder} A new StatementBuilder instance
      */
     trace(verbId, objectType, objectId, context = this.context, lrs = false) {
-        const statement = new Statement(this.actor, verbId, objectId, objectType, context, this.settings.default_uri);
+        // each statement gets its own context, otherwise the activities and the extensions that a
+        // builder adds would end up in every other statement of the tracker, and in the tracker
+        const statement = lrs
+            ? new LRSStatement(this.actor, verbId, objectId, objectType, context.clone(), this.settings.default_uri)
+            : new Statement(this.actor, verbId, objectId, objectType, context.clone(), this.settings.default_uri);
         if(lrs) {
             return new LRSStatementBuilder(this, statement);
         } else {

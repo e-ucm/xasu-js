@@ -116,6 +116,11 @@ class ActorStatement {
             this.openid = undefined;
             this.account = undefined;
         }
+        // an actor built empty has no type yet, setting an identifier on it makes it an Agent
+        if (this.objectType === undefined && type !== STATEMENT.ACTOR.GROUPTYPE.NAME
+                && type !== STATEMENT.ACTOR.GROUPTYPE.MEMBER) {
+            this.objectType = STATEMENT.ACTOR.TYPES.AGENT;
+        }
         switch (type) {
             case STATEMENT.ACTOR.GROUPTYPE.NAME:
                 if (this.objectType === STATEMENT.ACTOR.TYPES.AGENT) {
@@ -4334,7 +4339,8 @@ class ObjectStatement {
         if (this.definitionType) {
             object.definition.type = this.definitionType;
         }
-        if (this.definitionExtensions) {
+        // an empty object declares nothing, so it is left out of the definition
+        if (this.definitionExtensions && Object.keys(this.definitionExtensions).length > 0) {
             object.definition.extensions = this.definitionExtensions;
         }
         return object;
@@ -4572,10 +4578,12 @@ class ContextStatement {
         // An empty object declares relations that hold no activity, which is not a valid context, so
         // the property is omitted instead of being serialized empty
         const hasContextActivities = Object.values(serializedContextActivities).some(acts => acts.length > 0);
+        // the same goes for the extensions: an empty object declares nothing, so it is left out
+        const hasExtensions = this.extensions && Object.keys(this.extensions).length > 0;
         return {
             registration: this.registration,
             ...(hasContextActivities ? { contextActivities: serializedContextActivities } : {}),
-            ...(this.extensions ? { extensions: this.extensions } : {}),
+            ...(hasExtensions ? { extensions: this.extensions } : {}),
             ...(this.platform ? { platform: this.platform } : {}),
             ...(this.language ? { language: this.language } : {})
         };
@@ -4724,8 +4732,8 @@ class VerbStatement {
             verb.id = this.id;
         }
         
-        if(this.display) {
-            verb.display = this.display;
+        if(this.display && this.display.size > 0) {
+            verb.display = Object.fromEntries(this.display);
         }
         return verb;
     }
@@ -4859,15 +4867,18 @@ class ResultStatement {
     /**
      * Set the score of the statement
      * @param {string} key the key for the score 
-     * @param {number} value the score 
+     * @param {number|string} value the score, a numeric string is accepted
      */
     setScoreValue(key, value) {
-        if(! this.Score) {
-            this.Score = {};
+        // a score part that is not a number would serialize as null, so it is left out rather
+        // than stored; an empty string is not one, since Number('') is 0
+        const score = Number(value);
+        if(STATEMENT.RESULT.SCORE.hasOwnProperty(key.toUpperCase()) && value !== '' && Number.isFinite(score)) {
+            if(! this.Score) {
+                this.Score = {};
+            }
+            this.Score[key] = score;
         }
-        if(STATEMENT.RESULT.SCORE.hasOwnProperty(key.toUpperCase())) {
-            this.Score[key] = Number(value);
-        }    
     }
 
         /**
@@ -4878,19 +4889,21 @@ class ResultStatement {
      * @param {number} scaled the scaled score
      */
     setScore(raw, min, max, scaled) {
-        if (raw) {
+        // a score of exactly 0 is a legitimate score, so each part is checked against being
+        // absent rather than against being truthy
+        if (isGiven(raw)) {
             this.setScoreRaw(raw);
         }
 
-        if (min) {
+        if (isGiven(min)) {
             this.setScoreMin(min);
         }
 
-        if (max) {
+        if (isGiven(max)) {
             this.setScoreMax(max);
         }
 
-        if (scaled) {
+        if (isGiven(scaled)) {
             this.setScoreScaled(scaled);
         }
     }
@@ -5063,7 +5076,7 @@ class ResultStatement {
         var response = '';
         if (this.Response) {
             let respStr = (typeof this.Response === 'string') ? this.Response : String(this.Response);
-            response = ',response,' + respStr.replaceAll(',', '\,');
+            response = ',response,' + respStr.replaceAll(',', '\\,');
         }
         var score = '';
 
@@ -5155,6 +5168,16 @@ var ismap = function(obj) {
  * @returns {boolean}
  */
 var exists = function(value) {
+    return !(typeof value === 'undefined' || value === null);
+};
+
+/**
+ * Check whether a value was given, so that 0 and the empty string count as given while an
+ * absent part does not
+ * @param {any} value the value to check
+ * @returns {boolean}
+ */
+var isGiven = function(value) {
     return !(typeof value === 'undefined' || value === null);
 };
 
@@ -5364,8 +5387,9 @@ class InteractionObjectStatement extends ObjectStatement {
         if (xapiObj.definition) {
             if (xapiObj.definition.interactionType) obj.interactionType = xapiObj.definition.interactionType;
             if (xapiObj.definition.correctResponsesPattern) {
-                obj.correctResponsesPattern = [];
-                obj.addCorrectResponsesPattern([xapiObj.definition.correctResponsesPattern]);
+                // addCorrectResponsesPattern takes a string or an array of them, so wrapping the
+                // value in an array would nest the array and every entry would be discarded
+                obj.addCorrectResponsesPattern(xapiObj.definition.correctResponsesPattern);
             }
             // Use INTERACTIONCOMPONENTS mapping for dynamic property assignment
             const componentsMap = STATEMENT.INTERACTIONOBJECT.INTERACTIONCOMPONENTS;
@@ -5696,81 +5720,6 @@ class Statement {
             result=this.result.toCSV();
         }
         return `${csv.join(",")}${result}`;
-    }
-}
-
-/**
-* Statement class
-*/
-class LRSStatement extends Statement {
-    /**
-     * Constructor of the Statement class
-     * @param {ActorStatement} actor actor of the statement
-     * @param {typeof ALL.VERBS[keyof typeof ALL.VERBS]} verbId verb id of the statement
-     * @param {string} objectId object id of the statement
-     * @param {typeof ALL.ACTIVITYTYPES[keyof typeof ALL.ACTIVITYTYPES]|string} objectType object Type of the statement
-     * @param {ContextStatement} context context of the statement
-     * @param {string} defaultURI default URI for the statement construction
-     */
-    constructor(actor, verbId, objectId, objectType, context, defaultURI) {
-        super(actor, verbId, objectId, objectType, context, defaultURI);
-        this.authority=new ActorStatement({});
-        this.stored = new Date().toISOString();
-    }
-
-    /**
-     * @param {string} stored
-     */
-    stored;
-
-    /**
-     * @param {ActorStatement} authority
-     **/
-    authority;
-    
-        
-    /**
-     * Convert to xAPI format
-     * @returns {Object} xAPI statement object
-     */
-    toXAPI() {
-        return {
-            ...super.toXAPI(),
-            authority: !this.authority.isEmpty() ? this.authority.toXAPI() : undefined,
-            stored: this.stored
-        };
-    }
-
-    /**
-     * Create a Statement from an xAPI object
-     * @param {Object} xapiObj
-     * @param {string} baseURI default URI for the statement construction (optional)
-     * @param {string} platform platform for the statement construction (optional)
-     * @returns {LRSStatement} A new LRSStatement instance created from the xAPI object
-     */
-    static fromXAPI(xapiObj, baseURI, platform = null) {
-        // Get the base statement from parent
-        const baseStmt = super.fromXAPI(xapiObj, baseURI, platform);
-        
-        // Create an LRSStatement instance and copy all properties at once
-        const stmt = Object.create(LRSStatement.prototype);
-        Object.assign(stmt, baseStmt);
-        
-        // Initialize LRS-specific properties
-        // Load authority from incoming xAPI object if present, otherwise create empty
-        stmt.authority = xapiObj.authority ? ActorStatement.fromXAPI(xapiObj.authority) : new ActorStatement({});
-        stmt.stored = xapiObj.stored ? xapiObj.stored : new Date().toISOString();
-        
-        return stmt;
-    }
-
-    /**
-     * Convert to CSV format
-     * 
-     * @returns {String}
-     */
-    toCSV() {
-        return `${super.toCSV()},${this.authority.toCSV()},${this.stored}`;
     }
 }
 
@@ -6168,11 +6117,90 @@ class StatementBuilder {
    */
   async send() {
     if (!this._sendPromise) {
+      // the promise itself is kept, awaiting it before storing it would store the resolved
+      // value instead, which is undefined for enqueue and would let a second send through
       // @ts-ignore
-      this._sendPromise = await this.client.enqueue(this.statement);
+      this._sendPromise = this.client.enqueue(this.statement);
     }
-    return this._sendPromise;
+    return await this._sendPromise;
   }
+}
+
+/**
+* Statement class
+*/
+class LRSStatement extends Statement {
+    /**
+     * Constructor of the Statement class
+     * @param {ActorStatement} actor actor of the statement
+     * @param {typeof ALL.VERBS[keyof typeof ALL.VERBS]|string} verbId verb id of the statement
+     * @param {string} objectId object id of the statement
+     * @param {typeof ALL.ACTIVITYTYPES[keyof typeof ALL.ACTIVITYTYPES]|string} objectType object Type of the statement
+     * @param {ContextStatement} context context of the statement
+     * @param {string} defaultURI default URI for the statement construction
+     */
+    constructor(actor, verbId, objectId, objectType, context, defaultURI) {
+        super(actor, verbId, objectId, objectType, context, defaultURI);
+        this.authority=new ActorStatement({});
+        this.stored = new Date().toISOString();
+    }
+
+    /**
+     * @param {string} stored
+     */
+    stored;
+
+    /**
+     * @param {ActorStatement} authority
+     **/
+    authority;
+    
+        
+    /**
+     * Convert to xAPI format
+     * @returns {Object} xAPI statement object
+     */
+    toXAPI() {
+        return {
+            ...super.toXAPI(),
+            // an undefined key would still show up in the serialized statement, so the
+            // authority and the stored field are only declared when they were actually given
+            ...(!this.authority.isEmpty() ? { authority: this.authority.toXAPI() } : {}),
+            ...(this.stored ? { stored: this.stored } : {})
+        };
+    }
+
+    /**
+     * Create a Statement from an xAPI object
+     * @param {Object} xapiObj
+     * @param {string} baseURI default URI for the statement construction (optional)
+     * @param {string} platform platform for the statement construction (optional)
+     * @returns {LRSStatement} A new LRSStatement instance created from the xAPI object
+     */
+    static fromXAPI(xapiObj, baseURI, platform = null) {
+        // Get the base statement from parent
+        const baseStmt = super.fromXAPI(xapiObj, baseURI, platform);
+        
+        // Create an LRSStatement instance and copy all properties at once
+        const stmt = Object.create(LRSStatement.prototype);
+        Object.assign(stmt, baseStmt);
+        
+        // Initialize LRS-specific properties
+        // Load authority from incoming xAPI object if present, otherwise create empty
+        stmt.authority = xapiObj.authority ? ActorStatement.fromXAPI(xapiObj.authority) : new ActorStatement({});
+        stmt.stored = xapiObj.stored ? xapiObj.stored : new Date().toISOString();
+        
+        return stmt;
+    }
+
+    /**
+     * Convert to CSV format
+     * 
+     * @returns {String}
+     */
+    toCSV() {
+        return `${super.toCSV()},${this.authority.toCSV()},${this.stored}`;
+    }
 }
 
 class LRSStatementBuilder extends StatementBuilder {
@@ -6561,7 +6589,8 @@ class xAPITrackerAsset {
         this.online=false;
         this.offset = 0;
         this.statementsToSend = [];
-        this.timer = null;
+        this.#stopTimer();
+        this.retryDelay = null;
         this.actor = null;
         this.context = null;
         this.xapi=null;
@@ -6652,7 +6681,7 @@ class xAPITrackerAsset {
                 this.retryDelay = this.settings.batch_timeout;
             }
             this.retryDelay = Math.min(this.retryDelay * 2, this.settings.max_retry_delay);
-            this.timer = null;
+            this.#stopTimer();
             if (this.offset < this.statementsToSend.length) {
                 this.#startTimer();
             }
@@ -6675,6 +6704,16 @@ class xAPITrackerAsset {
     }
 
     /**
+     * Cancels the pending batch timer, if any
+     */
+    #stopTimer() {
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+    }
+
+    /**
      * Starts the timer for batch processing
      */
     #startTimer() {
@@ -6682,8 +6721,9 @@ class xAPITrackerAsset {
         let timeout = this.retryDelay ? this.retryDelay : this.settings.batch_timeout;
 
         this.timer = setTimeout(async () => {
-            await this.#sendBatch();
+            // release the handle first, a failing batch arms the timer again by itself
             this.timer = null;
+            await this.#sendBatch();
             if (this.offset < this.statementsToSend.length) {
                 this.#startTimer();
             }
@@ -6698,7 +6738,11 @@ class xAPITrackerAsset {
      * @returns {StatementBuilder} A new StatementBuilder instance
      */
     trace(verbId, objectType, objectId, context = this.context, lrs = false) {
-        const statement = new Statement(this.actor, verbId, objectId, objectType, context, this.settings.default_uri);
+        // each statement gets its own context, otherwise the activities and the extensions that a
+        // builder adds would end up in every other statement of the tracker, and in the tracker
+        const statement = lrs
+            ? new LRSStatement(this.actor, verbId, objectId, objectType, context.clone(), this.settings.default_uri)
+            : new Statement(this.actor, verbId, objectId, objectType, context.clone(), this.settings.default_uri);
         if(lrs) {
             return new LRSStatementBuilder(this, statement);
         } else {
@@ -7218,6 +7262,7 @@ class OAuth2Protocol {
                 popupBlocked = true;
             }
         } catch (e) {
+            console.log('[OAuth2Device] Failed to open verification URL in a new window: ' + e.message);
             popupBlocked = true;
         }
 
@@ -7293,6 +7338,7 @@ class OAuth2Protocol {
             try {
                 json = JSON.parse(responseBody);
             } catch (e) {
+                console.log('[OAuth2Device] Failed to parse device authorization response: ' + e.message);
                 throw new OAuth2AuthorizationError('invalid_response', 'Failed to parse device authorization response.');
             }
 
@@ -7383,6 +7429,7 @@ class OAuth2Protocol {
                         ? new OAuth2DeviceAuthorizationError(json.error, json.error_description)
                         : null;
                 } catch (e) {
+                    console.log('[OAuth2Device] Failed to parse token response: ' + e.message);
                     // parse failed, error stays null
                 }
 
@@ -7425,6 +7472,7 @@ class OAuth2Protocol {
                 const json = JSON.parse(responseBody);
                 tokenResponse = OAuth2Token.fromJson(json);
             } catch (e) {
+                console.error('[OAuth2Device] Failed to parse token response: ' + e.message);
                 throw new OAuth2AuthorizationError('invalid_response', 'Failed to parse token response.');
             }
 
@@ -7498,6 +7546,7 @@ class OAuth2Protocol {
         try {
             json = JSON.parse(responseBody);
         } catch (e) {
+            console.log('[OAuth2Device] Failed to parse token response: ' + e.message);
             json = null;
         }
 
@@ -7643,6 +7692,7 @@ class OAuth2Protocol {
             const parsed = new URL(url);
             return parsed.protocol === 'http:' || parsed.protocol === 'https:';
         } catch (e) {
+            console.log('[OAuth2Device] Failed to parse URL: ' + e.message);
             return false;
         }
     }
@@ -7664,6 +7714,7 @@ class OAuth2Protocol {
                 error = new OAuth2AuthorizationError(json.error, json.error_description || body);
             }
         } catch (e) {
+            console.log('[OAuth2Device] Failed to parse error response: ' + e.message);
             // parse failed
         }
 
@@ -7885,6 +7936,7 @@ function getUrlLanguage() {
         const raw = params.get('lang') || params.get('locale') || params.get('lng');
         return normalizeLanguage(raw);
     } catch (e) {
+        console.log('[OAuth2Device] Failed to read language from URL: ' + e.message);
         return null;
     }
 }
@@ -7897,6 +7949,7 @@ function getStoredLanguage() {
         if (typeof localStorage === 'undefined') return null;
         return normalizeLanguage(localStorage.getItem(LANGUAGE_STORAGE_KEY));
     } catch (e) {
+        console.log('[OAuth2Device] Failed to read language from storage: ' + e.message);
         return null;
     }
 }
@@ -7909,6 +7962,7 @@ function setStoredLanguage(lang) {
         if (typeof localStorage === 'undefined') return;
         localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
     } catch (e) {
+        console.log('[OAuth2Device] Failed to store language: ' + e.message);
         // storage unavailable (private mode) — ignore
     }
 }
@@ -7921,6 +7975,7 @@ function getBrowserLanguage() {
         if (typeof navigator === 'undefined' || !navigator.language) return null;
         return normalizeLanguage(navigator.language);
     } catch (e) {
+        console.log('[OAuth2Device] Failed to read browser language: ' + e.message);
         return null;
     }
 }
@@ -8401,6 +8456,7 @@ function setLanguage(lang) {
             window.history.replaceState(null, '', url.toString());
         }
     } catch (e) {
+        console.log('[OAuth2Device] Failed to update URL with language: ' + e.message);
         // URL not writable — ignore
     }
     if (!activeOverlay || !activeOverlay.parentNode) return activeHandle;
@@ -9130,7 +9186,7 @@ class GameObjectTracker {
      * @returns {StatementBuilder}
      */
     used() {
-        return this.Tracker.trace(ALL.VERBS.USED,this.Type,this.GameobjectId);
+        return this.Tracker.trace(SERIOUSGAMESPROFILE.VERBS.USED,this.Type,this.GameobjectId);
     }
 }
 

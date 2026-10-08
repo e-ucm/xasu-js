@@ -6,7 +6,6 @@ import ContextStatement from "./ContextStatement.js";
 import { v4 as uuidv4 } from 'uuid';
 import InteractionObjectStatement from "./InteractionObjectStatement.js";
 import AttachmentStatement from "./AttachementStatement.js";
-import { isUri } from "./helper.js";
 import { ALL } from "./Ids/Profiles/Generated/index.js";
 
 /**

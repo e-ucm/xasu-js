@@ -53,8 +53,8 @@ export default class VerbStatement {
             verb.id = this.id;
         }
         
-        if(this.display) {
-            verb.display = this.display;
+        if(this.display && this.display.size > 0) {
+            verb.display = Object.fromEntries(this.display);
         }
         return verb;
     }

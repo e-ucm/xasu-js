@@ -3,7 +3,6 @@ import LRSStatement from "../Statement/LRSStatement.js";
 import StatementBuilder from "./StatementBuilder.js";
 import { STATEMENT } from "../Statement/Ids/Statements.js";
 import { ALL } from "../Statement/Ids/Profiles/Generated/All.js";
-import Statement from "../Statement/Statement.js";
 
 export default class LRSStatementBuilder extends StatementBuilder {
     /**

@@ -1,358 +1,256 @@
 /*
  * Copyright 2017 e-UCM, Universidad Complutense de Madrid
  *
- * Licensed under the Apache License, Version 2.0 (the 'License');
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * This project has received funding from the European Union’s Horizon
- * 2020 research and innovation programme under grant agreement No 644187.
  * You may obtain a copy of the License at
  *
  *	 http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
+// The tracker classes are exercised through the built bundle: src/js-tracker.js imports JSON
+// locales, which only the bundler can resolve, so it cannot be imported directly by Node.
+// Run npm run build before this test.
+import { expect } from 'chai';
+import { SeriousGameTracker } from '../dist/js-tracker.bundle.js';
 
- import('chai').then(chai => {
-    var expect = chai.expect;
-    var TrackerAsset = require('../src/js-tracker');
-    var tracker = new TrackerAsset();
-    tracker.HttpRequest = function(url, method, headers, body, error, success) {
-        if (connected) {
-            var result = JSON.parse('{' +
-             '\"authToken\": \"5a26cb5ac8b102008b41472b5a30078bc8b102008b4147589108928341\", ' +
-             '\"actor\": { \"account\": { \"homePage\": \"http://a2:3000/\", \"name\": \"Anonymous\"}, \"name\": \"test-animal-name\"}, ' +
-             '\"playerAnimalName\": \"test-animal-name\", ' +
-             '\"playerId\": \"5a30078bc8b102008b41475769103\", ' +
-             '\"objectId\": \"http://a2:3000/api/proxy/gleaner/games/5a26cb5ac8b102008b41472a/5a26cb5ac8b102008b41472b\", ' +
-             '\"session\": 1, ' +
-             '\"firstSessionStarted\": \"2017-12-12T16:44:59.273Z\", ' +
-             '\"currentSessionStarted\": \"2017-12-12T16:44:59.273Z\" ' +
-             '}');
-            netstorage += body;
+const EXT = 'https://simva.example';
+const BATCH_LENGTH = 2;
 
-            success(result);
-        } else {
-            error('Can\'t connect');
-        }
-    };
+/**
+ * Builds a logged in tracker whose XAPI client is replaced by a stub, so the tests observe
+ * the batches the tracker would have sent without reaching a real LRS
+ * @param  {Object} [settings] extra tracker settings
+ * @returns {Object} the tracker, its login and its stubbed client
+ */
+async function connected(settings = {}) {
+	const tracker = new SeriousGameTracker();
+	tracker.trackerSettings.oauth_type = 'OAuth0';
+	tracker.trackerSettings.auth_token = 'a-token';
+	tracker.trackerSettings.default_uri = EXT;
+	tracker.trackerSettings.platform = EXT;
+	tracker.trackerSettings.actor_name = 'player1';
+	tracker.trackerSettings.batch_length = BATCH_LENGTH;
+	Object.assign(tracker.trackerSettings, settings);
 
-    var storage = [];
-    tracker.LocalStorage = {
-        getItem: function(name) {
-            return storage[name];
-        },
-        setItem: function(name, data) {
-            storage[name] = data;
-        }
-    };
+	await tracker.login();
+	tracker.start();
 
-    var settings = {
-        host: 'http://localhost/',
-        port: 80,
-        secure: false,
-        trackingCode: 'test',
-        userToken: '',
-        max_flush: 4,
-        batch_size: 10,
-        backupStorage: true,
-        debug: false,
-        force_actor: true
-    };
+	const batches = [];
+	let failure = null;
+	tracker.tracker.xapi = {
+		sendStatements: async ({ statements }) => {
+			batches.push(statements);
+			if (failure) throw failure;
+			return { ok: true };
+		}
+	};
 
-    var enqueueTrace01 = function() {
-        return tracker.ActionTrace('accessed', 'gameobject', 'ObjectID');
-    };
+	return {
+		tracker,
+		batches,
+		failWith(error) { failure = error; },
+		sent() { return batches.flat(); }
+	};
+}
 
-    var enqueueTrace02 = function() {
-        tracker.setResponse('TheResponse');
-        tracker.setScore(0.123);
-        return tracker.ActionTrace('initialized', 'game', 'ObjectID2');
-    };
+describe('xAPITrackerAsset connection', function() {
+	let subject;
+	let tracker;
 
-    var enqueueTrace03 = function() {
-        tracker.setResponse('AnotherResponse');
-        tracker.setScore(123.456);
-        tracker.setSuccess(false);
-        tracker.setCompletion(true);
-        tracker.setVar('extension1', 'value1');
-        tracker.setVar('extension2', 'value2');
-        tracker.setVar('extension3', 3);
-        tracker.setVar('extension4', 4.56);
-        return tracker.ActionTrace('selected', 'zone', 'ObjectID3');
-    };
+	beforeEach(async function() {
+		subject = await connected();
+		tracker = subject.tracker;
+	});
 
-    var obsize = function(obj) {
-        var size = 0, key;
-        for (key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                size++;
-            }
-        }
-        return size;
-    };
+	afterEach(function() {
+		// stop() cancels the pending batch timer, otherwise it would keep mocha alive
+		tracker.stop();
+	});
 
-    var connected = true;
-    var netstorage = '';
-    var initTracker = function(callback) {
-        tracker.Stop();
-        netstorage = '';
-        tracker.settings = settings;
-        tracker.Start(callback);
-    };
+	describe('login', function() {
+		it('connects when a token was given', async function() {
+			expect(tracker.isLoggedIn()).to.equal(true);
+			expect(tracker.tracker.connected).to.equal(true);
+		});
 
+		it('stays disconnected without a token', async function() {
+			const anonymous = await connected({ auth_token: '' });
 
-    describe('TrackerAsset Connection Tests', function() {
-        it('TestCorrectActor', function() {
-            initTracker(function() {
-                expect(tracker.actor).not.to.equal(null);
-                expect(tracker.actor.name).to.equal('test-animal-name');
-                expect(tracker.actor.account).not.to.equal(null);
-                expect(tracker.actor.account.name).to.equal('Anonymous');
-                expect(tracker.actor.account.homepage).to.equal('http://a2:3000/');
-            });
-        });
+			expect(anonymous.tracker.isLoggedIn()).to.equal(false);
+			expect(anonymous.tracker.tracker.online).to.equal(false);
+			anonymous.tracker.stop();
+		});
+	});
 
-        it('TestTraceIncludesCorrectActor', function() {
-            initTracker(function() {
-                tracker.LocalStorage.setItem(tracker.backup_file, '');
+	describe('the actor', function() {
+		it('is built from the actor settings', function() {
+			expect(tracker.tracker.actor.toXAPI()).to.deep.equal({
+				objectType: 'Agent',
+				account: { name: 'player1', homePage: EXT }
+			});
+		});
+	});
 
-                enqueueTrace01();
-                tracker.Flush(function() {
-                    var text = netstorage;
-                    var file = JSON.parse(text);
-                    var tracejson = file[file.length - 1];
+	describe('queueing', function() {
+		it('holds a statement until the batch is full', async function() {
+			await tracker.completable('c1').initialized().send();
 
-                    expect(obsize(tracejson)).to.equal(6);
-                    expect(tracejson.actor.name).to.equal('test-animal-name');
-                });
-            });
-        });
+			expect(tracker.tracker.statementsToSend).to.have.lengthOf(1);
+			expect(subject.batches).to.have.lengthOf(0);
+		});
 
-        it('TestTraceSendingSync', function() {
-            initTracker(function() {
-                tracker.LocalStorage.setItem(tracker.backup_file, '');
+		it('sends a batch once the batch is full', async function() {
+			await tracker.completable('c1').initialized().send();
+			await tracker.completable('c2').initialized().send();
 
-                enqueueTrace01();
-                tracker.Flush(function() {
-                    var text = netstorage;
-                    var file = JSON.parse(text);
-                    var tracejson = file[file.length - 1];
+			expect(subject.batches).to.have.lengthOf(1);
+			expect(subject.batches[0]).to.have.lengthOf(BATCH_LENGTH);
+			expect(tracker.tracker.offset).to.equal(BATCH_LENGTH);
+		});
 
-                    expect(obsize(tracejson)).to.equal(6);
-                    expect(tracejson.object.id).to.contain('ObjectID');
-                    expect(tracejson.object.definition.type).to.equal('https://w3id.org/xapi/seriousgames/activity-types/game-object');
-                    expect(tracejson.verb.id).to.equal('https://w3id.org/xapi/seriousgames/verbs/accessed');
+		it('sends the queued statements on flush', async function() {
+			await tracker.completable('c1').initialized().send();
+			await tracker.flush();
 
-                    netstorage += ',';
-                    enqueueTrace02();
-                    enqueueTrace03();
-                    tracker.Flush(function() {
-                        var text = '[' + netstorage + ']';
-                        file = JSON.parse(text);
+			expect(subject.sent()).to.have.lengthOf(1);
+			expect(subject.sent()[0].object.id).to.equal(`${EXT}/c1`);
+		});
 
-                        expect(obsize(file)).to.equal(2);
-                        expect(obsize(file[0])).to.equal(1);
-                        expect(obsize(file[1])).to.equal(2);
-                    });
-                });
-            });
-        });
+		it('keeps the statements in the order they were queued', async function() {
+			await tracker.completable('c1').initialized().send();
+			await tracker.completable('c2').initialized().send();
+			await tracker.completable('c3').initialized().send();
+			await tracker.flush();
 
-        it('TestBackupSync', function() {
-            initTracker(function() {
-                storage[settings.BackupFile] = '';
+			expect(subject.sent().map(s => s.object.id)).to.deep.equal([
+				`${EXT}/c1`, `${EXT}/c2`, `${EXT}/c3`
+			]);
+		});
 
-                tracker.LocalStorage.setItem(tracker.backup_file, '');
+		it('sends the actor and the context of every statement', async function() {
+			await tracker.completable('c1').initialized().send();
+			await tracker.flush();
 
-                enqueueTrace01();
-                tracker.Flush(function() {
-                    netstorage += ',';
-                    enqueueTrace02();
-                    enqueueTrace03();
-                    tracker.Flush(function() {
-                        var text = storage[tracker.backup_file];
-                        var file = text.split('\n');
-                        expect(file.length).to.equal(4);
-                    });
-                });
-            });
-        });
+			const [statement] = subject.sent();
+			expect(statement.actor.account.name).to.equal('player1');
+			expect(statement.context.platform).to.equal(EXT);
+			expect(statement.context.contextActivities.category[0].id)
+				.to.equal('https://w3id.org/xapi/seriousgames/v1.0');
+		});
 
-        it('TestTraceSending_IntermitentConnection', function() {
-            initTracker(function() {
-                netstorage = '';
-                enqueueTrace01();
+		it('does not resend the statements that were already sent', async function() {
+			await tracker.completable('c1').initialized().send();
+			await tracker.completable('c2').initialized().send();
+			await tracker.flush();
+			await tracker.flush();
 
-                tracker.Flush(function() {
-                    var text = netstorage;
-                    var file = JSON.parse(text);
-                    var tracejson = file[file.length - 1];
+			expect(subject.sent()).to.have.lengthOf(2);
+		});
+	});
 
-                    expect(obsize(tracejson)).to.equal(6);
-                    expect(tracejson.object.id).to.contain('ObjectID');
-                    expect(tracejson.object.definition.type).to.equal('https://w3id.org/xapi/seriousgames/activity-types/game-object');
-                    expect(tracejson.verb.id).to.equal('https://w3id.org/xapi/seriousgames/verbs/accessed');
+	describe('while offline', function() {
+		beforeEach(function() {
+			tracker.tracker.online = false;
+		});
 
-                    connected = false;
-                    enqueueTrace02();
-                    enqueueTrace03();
+		it('queues without sending', async function() {
+			await tracker.completable('c1').initialized().send();
+			await tracker.flush();
 
-                    tracker.Flush(function() {
-                        var text = netstorage;
-                        var file = JSON.parse(text);
-                        expect(obsize(file)).to.equal(1);
-                        connected = true;
+			expect(tracker.tracker.statementsToSend).to.have.lengthOf(1);
+			expect(subject.batches).to.have.lengthOf(0);
+		});
+	});
 
-                        netstorage += ',';
+	describe('flushing an empty queue', function() {
+		it('sends nothing', async function() {
+			await tracker.flush();
+			await tracker.flush();
 
-                        tracker.Flush(function() {
-                            var text = netstorage;
-                            text = '[' + text + ']';
-                            var file = JSON.parse(text);
+			expect(subject.batches).to.have.lengthOf(0);
+			expect(tracker.tracker.offset).to.equal(0);
+		});
+	});
 
-                            expect(obsize(file)).to.equal(2);
-                            expect(obsize(file[0])).to.equal(1);
-                            expect(obsize(file[1])).to.equal(2);
-                        });
-                    });
-                });
-            });
-        });
+	describe('when the LRS refuses a batch', function() {
+		/**
+		 * Fills a batch so that the tracker tries to send it, which fails
+		 * @returns {Promise<any>} the error the tracker reported, or undefined if it reported none
+		 */
+		async function sendFailingBatch() {
+			try {
+				await tracker.completable('c1').initialized().send();
+				await tracker.completable('c2').initialized().send();
+				return undefined;
+			} catch (error) {
+				return error;
+			}
+		}
 
-        it('TestBackupSync_IntermitentConnection', function() {
-            initTracker(function() {
-                netstorage = '';
-                storage[tracker.backup_file] = '';
+		it('skips the batch and reports the failure', async function() {
+			subject.failWith({ response: { status: 400, data: { message: 'Bad Request' } } });
 
-                enqueueTrace01();
-                tracker.Flush(function() {
-                    var text = storage[tracker.backup_file];
-                    var file = text.split('\n');
-                    expect(file.length).to.equal(2);
+			expect(await sendFailingBatch()).to.not.equal(undefined);
+			expect(tracker.tracker.offset).to.equal(BATCH_LENGTH);
+		});
 
-                    connected = false;
+		it('goes offline and backs off after a server error', async function() {
+			subject.failWith({ response: { status: 500, data: { message: 'Server Error' } } });
 
-                    enqueueTrace02();
-                    enqueueTrace03();
-                    tracker.Flush(function() {
-                        var text = storage[tracker.backup_file];
-                        var file = text.split('\n');
-                        expect(file.length).to.equal(4);
+			await sendFailingBatch();
 
-                        connected = true;
+			expect(tracker.tracker.online).to.equal(false);
+			expect(tracker.tracker.offset).to.equal(0);
+			expect(tracker.tracker.retryDelay).to.be.a('number');
+		});
 
-                        tracker.Flush(function() {
-                            var text = storage[tracker.backup_file];
-                            var file = text.split('\n');
-                            expect(file.length).to.equal(4);
+		it('keeps the statements queued while the tracker stays offline', async function() {
+			subject.failWith({ response: { status: 500, data: { message: 'Server Error' } } });
+			await sendFailingBatch();
 
-                            connected = true;
-                        });
-                    });
-                });
-            });
-        });
+			// the tracker only reconnects through login(), so a later flush sends nothing
+			subject.failWith(null);
+			await tracker.flush();
 
-        it('TestTraceSending_WithoutStart', function() {
-            tracker.Stop();
+			expect(tracker.tracker.statementsToSend).to.have.lengthOf(2);
+			expect(tracker.tracker.offset).to.equal(0);
+		});
+	});
 
-            tracker.Accessible.Accessed('error');
+	describe('stop', function() {
+		it('drops the queue and goes offline', async function() {
+			await tracker.completable('c1').initialized().send();
+			tracker.stop();
 
-            tracker.Flush(function(error, result) {
-                expect(error).to.equal(true);
-            });
-        });
+			expect(tracker.tracker.statementsToSend).to.have.lengthOf(0);
+			expect(tracker.tracker.offset).to.equal(0);
+			expect(tracker.isStarted()).to.equal(false);
+			expect(tracker.isLoggedIn()).to.equal(false);
+		});
+	});
 
-        it('TestTraceSendingStartFailed', function() {
-            tracker.Stop();
+	describe('the XAPI client', function() {
+		it('is not handed out while the tracker is offline', function() {
+			tracker.tracker.online = false;
 
-            connected = false;
+			expect(() => tracker.tracker.getXAPIClient()).to.throw(/offline/);
+		});
 
-            initTracker(function() {
-                netstorage = '';
-                storage[tracker.backup_file] = '';
+		it('is not handed out while the tracker is disconnected', function() {
+			tracker.tracker.connected = false;
 
-                enqueueTrace01();
-                tracker.Flush(function() {
-                    expect(netstorage).to.equal('');
-                    expect(storage[tracker.backup_file]).to.not.equal('');
+			expect(() => tracker.tracker.getXAPIClient()).to.throw(/not connected/);
+		});
 
-                    connected = true;
-                    enqueueTrace02();
-                    enqueueTrace03();
-                    
-                    tracker.Flush(function() {
-                        var text = netstorage;
-
-                        text = netstorage.replace('][', '],[');
-                        text = '[' + text + ']';
-
-                        var file = JSON.parse(text);
-
-                        expect(obsize(file)).to.equal(2);
-                        expect(obsize(file[0])).to.equal(1);
-                        expect(obsize(file[1])).to.equal(2);
-
-                        var tracejson = file[0][0];
-
-                        expect(obsize(tracejson)).to.equal(6);
-                        expect(tracejson.object.id).to.contain('ObjectID');
-                        expect(tracejson.object.definition.type).to.equal('https://w3id.org/xapi/seriousgames/activity-types/game-object');
-                        expect(tracejson.verb.id).to.equal('https://w3id.org/xapi/seriousgames/verbs/accessed');
-
-                        text = storage[tracker.backup_file];
-                        file = text.split('\n');
-                        expect(file.length).to.equal(4);
-                    });
-                });
-            });
-        });
-
-        it('TestEmptyQueueFlush', function() {
-            connected = false;
-
-            initTracker(function() {
-                netstorage = '';
-                storage[tracker.backup_file] = '';
-
-                tracker.Flush(function() {
-                    expect(netstorage).to.equal('');
-
-                    tracker.Flush(function() {
-                        expect(netstorage).to.equal('');
-
-                        connected = true;
-                        tracker.Flush(function() {
-                            expect(netstorage).to.equal('');
-                            connected = false;
-
-                            enqueueTrace01();
-                            tracker.Flush(function() {
-                                tracker.Flush(function() {
-                                    connected = true;
-                                    tracker.Flush(function() {
-                                        tracker.Flush(function() {
-                                            var file = JSON.parse(netstorage);
-
-                                            expect(file.length).to.equal(1);
-
-                                            var backup = storage[tracker.backup_file].split('\n');
-                                            expect(backup.length).to.equal(2);
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    });
-}).catch(err => {
-    console.error(err);
+		it('is handed out once the tracker is online', function() {
+			expect(tracker.tracker.getXAPIClient()).to.equal(tracker.tracker.xapi);
+		});
+	});
 });

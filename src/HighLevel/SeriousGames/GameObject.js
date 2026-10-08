@@ -1,7 +1,7 @@
 import xAPITrackerAsset from "../../xAPITrackerAsset.js";
 import { SERIOUSGAMEPROFILE } from "../Statement/Ids/Profiles/SeriousGameProfile.js";
-import { SERIOUSGAMESPROFILE } from "../Statement/Ids/Profiles/Generated/SeriousGamesProfile.js";
 import { ALL } from "../Statement/Ids/Profiles/Generated/All.js";
+import { SERIOUSGAMESPROFILE } from "../Statement/Ids/Profiles/Generated/SeriousGamesProfile.js";
 import StatementBuilder from "../StatementBuilder/StatementBuilder.js";
 
 /**
@@ -48,7 +48,7 @@ export class GameObjectTracker {
      * @returns {StatementBuilder}
      */
     used() {
-        return this.Tracker.trace(ALL.VERBS.USED,this.Type,this.GameobjectId);
+        return this.Tracker.trace(SERIOUSGAMESPROFILE.VERBS.USED,this.Type,this.GameobjectId);
     }
 }
 

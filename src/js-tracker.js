@@ -1,7 +1,6 @@
 import xAPITrackerAsset from './xAPITrackerAsset.js';
 import xAPITrackerAssetOAuth1 from './Auth/OAuth1.js';
 import xAPITrackerAssetOAuth2 from './Auth/OAuth2.js';
-import OAuth2Protocol from './Auth/OAuth2Protocol.js';
 import { AccessibleTracker, ACCESSIBLETYPE } from './HighLevel/SeriousGames/Accessible.js';
 import { CompletableTracker, COMPLETABLETYPE } from './HighLevel/SeriousGames/Completable.js';
 import { AlternativeTracker, ALTERNATIVETYPE } from './HighLevel/SeriousGames/Alternative.js';
@@ -15,7 +14,6 @@ import { ALL } from './HighLevel/Statement/Ids/Profiles/Generated/All.js';
 import { SERIOUSGAMESPROFILE } from './HighLevel/Statement/Ids/Profiles/Generated/SeriousGamesProfile.js';
 import { SCORMPROFILE } from './HighLevel/Statement/Ids/Profiles/Generated/ScormProfile.js';
 import { STATEMENT } from './HighLevel/Statement/Ids/Statements.js';
-import XAPI from '@xapi/xapi';
 const msFn = ms.default || ms;
 
 /**

@@ -129,7 +129,7 @@ export default class OAuth2Protocol {
         this.tokenEndpoint = this.#getRequiredValue(config, OAuth2Protocol.TOKEN_ENDPOINT_FIELD);
         this.grantType = this.#getRequiredValue(config, OAuth2Protocol.GRANT_TYPE_FIELD).toLowerCase();
         this.clientId = this.#getRequiredValue(config, OAuth2Protocol.CLIENT_ID_FIELD);
-        this.clientSecret = config["client_secret"]
+        this.clientSecret = config["client_secret"];
         this.scope = config[OAuth2Protocol.SCOPE_FIELD] || null;
         this.state = config.state || null;
         this.pollInterval = parseInt(config[OAuth2Protocol.POLL_INTERVAL_FIELD], 10) || null;
@@ -283,6 +283,7 @@ export default class OAuth2Protocol {
                 popupBlocked = true;
             }
         } catch (e) {
+            console.log('[OAuth2Device] Failed to open verification URL in a new window: ' + e.message);
             popupBlocked = true;
         }
 
@@ -358,6 +359,7 @@ export default class OAuth2Protocol {
             try {
                 json = JSON.parse(responseBody);
             } catch (e) {
+                console.log('[OAuth2Device] Failed to parse device authorization response: ' + e.message);
                 throw new OAuth2AuthorizationError('invalid_response', 'Failed to parse device authorization response.');
             }
 
@@ -448,6 +450,7 @@ export default class OAuth2Protocol {
                         ? new OAuth2DeviceAuthorizationError(json.error, json.error_description)
                         : null;
                 } catch (e) {
+                    console.log('[OAuth2Device] Failed to parse token response: ' + e.message);
                     // parse failed, error stays null
                 }
 
@@ -490,6 +493,7 @@ export default class OAuth2Protocol {
                 const json = JSON.parse(responseBody);
                 tokenResponse = OAuth2Token.fromJson(json);
             } catch (e) {
+                console.error('[OAuth2Device] Failed to parse token response: ' + e.message);
                 throw new OAuth2AuthorizationError('invalid_response', 'Failed to parse token response.');
             }
 
@@ -563,6 +567,7 @@ export default class OAuth2Protocol {
         try {
             json = JSON.parse(responseBody);
         } catch (e) {
+            console.log('[OAuth2Device] Failed to parse token response: ' + e.message);
             json = null;
         }
 
@@ -708,6 +713,7 @@ export default class OAuth2Protocol {
             const parsed = new URL(url);
             return parsed.protocol === 'http:' || parsed.protocol === 'https:';
         } catch (e) {
+            console.log('[OAuth2Device] Failed to parse URL: ' + e.message);
             return false;
         }
     }
@@ -729,6 +735,7 @@ export default class OAuth2Protocol {
                 error = new OAuth2AuthorizationError(json.error, json.error_description || body);
             }
         } catch (e) {
+            console.log('[OAuth2Device] Failed to parse error response: ' + e.message);
             // parse failed
         }
 

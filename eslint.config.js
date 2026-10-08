@@ -1,6 +1,15 @@
-module.exports = {
+export default {
     files: ["**/*.js"], // Adjust this to match your project file patterns if needed
+    ignores: [
+        "dist/**",
+        "node_modules/**",
+        "plugins/**",
+        "xapi-authored-profiles/**",
+        "src/HighLevel/Statement/Ids/Profiles/Generated/**",
+    ],
     languageOptions: {
+        ecmaVersion: 2022,
+        sourceType: "module",
         globals: {
             ADL: false,
             angular: false,
@@ -20,7 +29,7 @@ module.exports = {
     },
     rules: {
         // Add your ESLint rules here
-        strict: ["error", "global"],
+        strict: "off", // ES modules are always strict
         // Example additional rules
         "no-unused-vars": "warn",
         "no-console": "off",

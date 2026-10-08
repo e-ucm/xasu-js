@@ -3,7 +3,6 @@
 
 import xAPITrackerAsset from "../../xAPITrackerAsset.js";
 import InteractionObjectStatement from "../Statement/InteractionObjectStatement.js";
-import LRSStatement from "../Statement/LRSStatement.js";
 import Statement from "../Statement/Statement.js";
 import { STATEMENT } from "../Statement/Ids/Statements.js";
 import { ALL } from "../Statement/Ids/Profiles/Generated/All.js";
@@ -399,9 +398,11 @@ export default class StatementBuilder {
    */
   async send() {
     if (!this._sendPromise) {
+      // the promise itself is kept, awaiting it before storing it would store the resolved
+      // value instead, which is undefined for enqueue and would let a second send through
       // @ts-ignore
-      this._sendPromise = await this.client.enqueue(this.statement);
+      this._sendPromise = this.client.enqueue(this.statement);
     }
-    return this._sendPromise;
+    return await this._sendPromise;
   }
 }

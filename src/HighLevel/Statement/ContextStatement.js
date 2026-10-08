@@ -186,10 +186,12 @@ export default class ContextStatement {
         // An empty object declares relations that hold no activity, which is not a valid context, so
         // the property is omitted instead of being serialized empty
         const hasContextActivities = Object.values(serializedContextActivities).some(acts => acts.length > 0);
+        // the same goes for the extensions: an empty object declares nothing, so it is left out
+        const hasExtensions = this.extensions && Object.keys(this.extensions).length > 0;
         return {
             registration: this.registration,
             ...(hasContextActivities ? { contextActivities: serializedContextActivities } : {}),
-            ...(this.extensions ? { extensions: this.extensions } : {}),
+            ...(hasExtensions ? { extensions: this.extensions } : {}),
             ...(this.platform ? { platform: this.platform } : {}),
             ...(this.language ? { language: this.language } : {})
         };

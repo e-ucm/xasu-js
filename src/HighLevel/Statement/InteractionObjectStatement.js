@@ -1,4 +1,3 @@
-import { isUri, setAsUri } from "./helper.js";
 import ObjectStatement from "./ObjectStatement.js";
 import { STATEMENT } from "./Ids/Statements.js";
 
@@ -208,8 +207,9 @@ export default class InteractionObjectStatement extends ObjectStatement {
         if (xapiObj.definition) {
             if (xapiObj.definition.interactionType) obj.interactionType = xapiObj.definition.interactionType;
             if (xapiObj.definition.correctResponsesPattern) {
-                obj.correctResponsesPattern = [];
-                obj.addCorrectResponsesPattern([xapiObj.definition.correctResponsesPattern]);
+                // addCorrectResponsesPattern takes a string or an array of them, so wrapping the
+                // value in an array would nest the array and every entry would be discarded
+                obj.addCorrectResponsesPattern(xapiObj.definition.correctResponsesPattern);
             }
             // Use INTERACTIONCOMPONENTS mapping for dynamic property assignment
             const componentsMap = STATEMENT.INTERACTIONOBJECT.INTERACTIONCOMPONENTS;

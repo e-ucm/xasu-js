@@ -441,6 +441,7 @@ export function setLanguage(lang) {
             window.history.replaceState(null, '', url.toString());
         }
     } catch (e) {
+        console.log('[OAuth2Device] Failed to update URL with language: ' + e.message);
         // URL not writable — ignore
     }
     if (!activeOverlay || !activeOverlay.parentNode) return activeHandle;

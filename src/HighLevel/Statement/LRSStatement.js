@@ -1,9 +1,5 @@
-import VerbStatement from "./VerbStatement.js";
-import ObjectStatement from "./ObjectStatement.js";
-import ResultStatement from "./ResultStatement.js";
 import ActorStatement from "./ActorStatement.js";
 import ContextStatement from "./ContextStatement.js";
-import InteractionObjectStatement from "./InteractionObjectStatement.js";
 import Statement from "./Statement.js";
 import { ALL } from "./Ids/Profiles/Generated/index.js";
 
@@ -14,7 +10,7 @@ export default class LRSStatement extends Statement {
     /**
      * Constructor of the Statement class
      * @param {ActorStatement} actor actor of the statement
-     * @param {typeof ALL.VERBS[keyof typeof ALL.VERBS]} verbId verb id of the statement
+     * @param {typeof ALL.VERBS[keyof typeof ALL.VERBS]|string} verbId verb id of the statement
      * @param {string} objectId object id of the statement
      * @param {typeof ALL.ACTIVITYTYPES[keyof typeof ALL.ACTIVITYTYPES]|string} objectType object Type of the statement
      * @param {ContextStatement} context context of the statement
@@ -44,8 +40,10 @@ export default class LRSStatement extends Statement {
     toXAPI() {
         return {
             ...super.toXAPI(),
-            authority: !this.authority.isEmpty() ? this.authority.toXAPI() : undefined,
-            stored: this.stored
+            // an undefined key would still show up in the serialized statement, so the
+            // authority and the stored field are only declared when they were actually given
+            ...(!this.authority.isEmpty() ? { authority: this.authority.toXAPI() } : {}),
+            ...(this.stored ? { stored: this.stored } : {})
         };
     }
 

@@ -48,6 +48,11 @@ export default class ActorStatement {
             this.openid = undefined;
             this.account = undefined;
         }
+        // an actor built empty has no type yet, setting an identifier on it makes it an Agent
+        if (this.objectType === undefined && type !== STATEMENT.ACTOR.GROUPTYPE.NAME
+                && type !== STATEMENT.ACTOR.GROUPTYPE.MEMBER) {
+            this.objectType = STATEMENT.ACTOR.TYPES.AGENT;
+        }
         switch (type) {
             case STATEMENT.ACTOR.GROUPTYPE.NAME:
                 if (this.objectType === STATEMENT.ACTOR.TYPES.AGENT) {
