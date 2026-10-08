@@ -4649,8 +4649,16 @@ class ContextStatement {
     clone() {
         const cloned = new ContextStatement(this.defaultURI, this.platform, this.registration);
         if(this.contextActivities) {
+            // the activities added through addContextActivity are ObjectStatement instances, which a
+            // JSON copy would flatten into their internal fields, so they are converted first
+            const serialized = {};
+            for (const [relation, activities] of Object.entries(this.contextActivities)) {
+                serialized[relation] = activities.map(activity =>
+                    activity && typeof activity.toXAPI === 'function' ? activity.toXAPI() : activity
+                );
+            }
             cloned.contextActivities = ContextStatement.normalizeContextActivities(
-                JSON.parse(JSON.stringify(this.contextActivities))
+                JSON.parse(JSON.stringify(serialized))
             );
         }
         if(this.language) {
