@@ -1,280 +1,143 @@
-[![Build Status](https://travis-ci.org/e-ucm/js-tracker.svg?branch=master)](https://travis-ci.org/e-ucm/js-tracker) [![Coverage Status](https://coveralls.io/repos/e-ucm/js-tracker/badge.svg?branch=master&service=github)](https://coveralls.io/github/e-ucm/js-tracker?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/8332c331fee826d6ed36/maintainability)](https://codeclimate.com/github/e-ucm/js-tracker/maintainability) [![Dependency Status](https://david-dm.org/e-ucm/js-tracker.svg)](https://david-dm.org/e-ucm/js-tracker) [![devDependency Status](https://david-dm.org/e-ucm/js-tracker/dev-status.svg)](https://david-dm.org/e-ucm/js-tracker#info=devDependencies) [![Pull Request Stats](http://issuestats.com/github/e-ucm/js-tracker/badge/pr?style=flat)](http://issuestats.com/github/e-ucm/js-tracker) [![Issue Stats](http://issuestats.com/github/e-ucm/js-tracker/badge/issue?style=flat)](http://issuestats.com/github/e-ucm/js-tracker)
+[![Build Status](https://travis-ci.org/e-ucm/js-tracker.svg?branch=master)](https://travis-ci.org/e-ucm/js-tracker) [![Coverage Status](https://coveralls.io/repos/e-ucm/js-tracker/badge.svg?branch=master&service=github)](https://coveralls.io/github/e-ucm/js-tracker?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/8332c331fee826d6ed36/maintainability)](https://codeclimate.com/github/e-ucm/js-tracker/maintainability) [![Dependency Status](https://david-dm.org/e-ucm/js-tracker.svg)](https://david-dm.org/e-ucm/js-tracker) [![devDependency Status](https://david-dm.org/e-ucm/js-tracker/dev-status.svg)](https://david-dm.org/e-ucm/js-tracker#info=devDependencies) [![Pull Request Stats](http://issuestats.com/github/e-ucm/js-tracker)](http://issuestats.com/github/e-ucm/js-tracker) [![Issue Stats](http://issuestats.com/github/e-ucm/js-tracker)](http://issuestats.com/github/e-ucm/js-tracker)
 
+# Xasu JS — xAPI Analytics Supplier for the browser
 
-# JavaScript tracker
+<img src="https://user-images.githubusercontent.com/3171485/173609418-2cc2def0-2631-4c1a-adeb-b68e072a02e0.png" width="180px" height="180px" align="right">
 
-This code belongs to e-UCM research group and has been developed for the H2020 BEACONING Project and sends analytics information to a server; or, if the server is currently unavailable, stores them locally until it becomes available again.
+Xasu (xAPI Analytics Supplier) collects [xAPI](https://xapi.com/) Learning Analytics from a game and
+sends the statements to a Learning Record Store. Xasu is a *tracker*: integrated into a game, it
+records the player's interactions for later analysis. That matters when a serious game has to show
+it works, whether it teaches, trains, or shifts a player's perspective on a real-world issue. Rather
+than making every developer learn xAPI, Xasu offers a high-level API that fills in the structure of
+a statement with sane defaults, and lets them refine anything it builds.
 
-![Beaconing logo](http://beaconing.eu/wp-content/themes/beaconing/images/logo/original_version_(black).png)
+Xasu is developed by the [e-UCM group](https://www.e-ucm.es) as part of its ecosystem for Learning
+Analytics (Simva, T-Mon, Pumva, μfasa and Xasu). This repository is the JavaScript implementation,
+for games and web applications that run in a browser. There is a separate Unity asset for Unity
+projects, with the same API and the same xAPI profiles.
 
-After a game is developed, a common need is to know how the players play, what interactions they follow within the game and how much time they spend in a game session; collectively, these are known as game analytics. Analytics are used to locate gameplay bottlenecks and assess game effectiveness and learning outcomes, among other tasks.
+## The "Super" in Xasu
+
+The *su* also stands for *super*, since it is:
+
+- Super **Simple** (high-level API): the four game objects of the serious games profile —
+  `completable()`, `accessible()`, `alternative()`, `gameObject()` — build a complete statement from
+  an id and an activity type. Everything else is optional refinement on top. The result is that the
+  learning curve is xAPI's semantics, not xAPI's syntax.
+
+- Super **Supportive** (multi-platform, multi-protocol, cmi5): Xasu runs wherever a browser does, in
+  any engine that exports to JavaScript. It supports OAuth 0, OAuth 1 and OAuth 2 (including the
+  device code flow, for consoles and TVs with no keyboard), and the cmi5 profile through `JSScormTracker`.
+
+- Super **Asynchronous** (uses async/await): the tracker owns a queue, so a game never blocks on the
+  network. `send()` returns a promise, and `flush()` resolves once the queue has been handed to the
+  LRS even though statements travel in batches.
+
+- Super **Flexible** (batching, backups, configuration): statements go out in batches whose length
+  and timeout you choose. A second endpoint can receive a copy of everything, as xAPI or as CSV. The
+  whole configuration can also be read from the query string, which lets one build serve many
+  deployments.
+
+- Super **Reliable** (communication policy and error resiliency): a failed batch is retried with an
+  exponential backoff up to `max_retry_delay`. A statement the LRS rejects outright is skipped so it
+  cannot block everything queued behind it, while a network failure takes the tracker offline and
+  keeps the statements for later.
+
+## Documentation
+
+The documentation is split by what you are doing, following [Diátaxis](https://diataxis.fr/):
+
+| | |
+| --- | --- |
+| **[Tutorials](docs/tutorials/)** | Learning. From nothing to statements arriving at an LRS, in three lessons. |
+| **[How-to guides](docs/how-to/)** | Doing. One task at a time — instrument a mechanic, name your statements, tune batching. |
+| **[Reference](docs/reference/)** | Looking up. Every class, method, parameter, and return value. Generated from the JSDoc. |
+| **[Explanation](docs/explanation/)** | Understanding. Why the code works the way it does, and what each choice cost. |
+
+An example page to poke at is in [`test_app.html`](test_app.html).
 
 ## Installation
-1. Obtain bundle library
-    * Download files from Release
-    * Clone or download repository and obtain them from /dist/
-1. Copy into your project folder
-1. Include library using, for example, `<script type="text/javascript" src="js-tracker-webpack.bundle.js"></script>>`
-1. Configure the tracker by:
-```js
-var tracker = new SeriousGameTracker();
 
-tracker.trackerSettings.activity_id="https://myendpoint.com/activities/activityId";
-tracker.trackerSettings.generateSettingsFromURLParams=false;
-tracker.trackerSettings.batch_endpoint = "https://myendpoint.com";
-tracker.trackerSettings.platform = "https://myhomepage.com";
-tracker.trackerSettings.actor_name = "username";
+Copy the bundle into your project, or install from npm:
+
+```bash
+npm install js-tracker
 ```
-or 
-```js
-var tracker = new SeriousGameTracker();
 
-tracker.trackerSettings.activity_id="https://myendpoint.com/activities/activityId";
-tracker.trackerSettings.generateSettingsFromURLParams=true;
-tracker.trackerSettings.default_uri="mygame";
+```js
+import { SeriousGameTracker } from 'js-tracker';
 ```
-Here is the complete list of configuration options for a JavaScript tracker:
 
-**Tracker Configuration**
+For a plain page with no build step, use the UMD bundle:
 
-* **generateSettingsFromURLParams**: boolean (default: `false`)
-	+ Generate settings from URL parameters.
-* **oauth_type**: string (default: `OAuth0`)
-	+ OAuth type (0, 1 or 2).
-* **batch_mode**: boolean (default: `true`)
-	+ Enable batch mode for sending data to the tracker.
-* **batch_endpoint**: string (default: `null`)
-	+ Endpoint for sending batch data to the tracker.
-* **batch_length**: integer (default: `100`)
-	+ Maximum number of traces stored in the tracker queue.
-* **batch_timeout**: integer (default: `30000`) // 30 seconds
-	+ Timeout for sending batch data to the tracker.
-* **platform**: string (default: ``)
-	+ Homepage URL for the actor and platform url in the context.
-* **actor_name**: string (default: `mydefaultactor`)
-	+ Name of the actor.
-* **backup_mode**: boolean (default: `false`)
-	+ Enable backup mode for sending data to the tracker.
-* **backup_endpoint**: string (default: `null`)
-	+ Endpoint for sending backup data to the tracker.
-* **backup_type**: string (default: `null`)
-	+ Type of backup data to send to the tracker.
-* **default_uri**: string (default: `null`)
-	+ Default URI for the tracker.
-* **max_retry_delay**: integer (default: `5000`) // 5 seconds
-	+ Maximum retry delay for sending data to the tracker.
+```html
+<script src="dist/js-tracker-webpack.bundle.js"></script>
+```
 
-**OAuth1 Configuration**
-
-* **tracker.oauth1.username**: string (default: `username`)
-	+ Username for OAuth1 authentication.
-* **tracker.oauth1.password**: string (default: `supersecret`)
-	+ Password for OAuth1 authentication.
-
-**OAuth2 Configuration**
-
-* **tracker.oauth2.token_endpoint**: string (default: `null`)
-	+ Token endpoint for OAuth2 authentication.
-* **tracker.oauth2.grant_type**: string (default: `null`)
-	+ Grant type for OAuth2 authentication.
-* **tracker.oauth2.client_id**: string (default: `null`)
-	+ Client ID for OAuth2 authentication.
-* **tracker.oauth2.scope**: string (default: `null`)
-	+ Scope for OAuth2 authentication.
-* **tracker.oauth2.state**: string (default: `null`)
-	+ State for OAuth2 authentication.
-* **tracker.oauth2.code_challenge_method**: string (default: `null`)
-	+ Code challenge method for OAuth2 authentication.
-* **tracker.oauth2.username**: string (default: `username`)
-	+ Username for OAuth2 authentication.
-* **tracker.oauth2.password**: string (default: `supersecret`)
-	+ Password for OAuth2 authentication.
-* **tracker.oauth2.login_hint**: string (default: `null`)
-	+ Login hint for OAuth2 authentication.
-
-**Debug Configuration**
-
-* **debug**: boolean (default: `false`)
-	+ Enable debug mode to see tracker messages in the Unity console.
-
-1. **Optional** Login the user configured by using `tracker.login()`
-1. Start the tracker by using `tracker.start()`
-1. Send traces
-
-## Integration example
-
-An example test app can be found [here](https://github.com/e-ucm/js-tracker/blob/master/test_app.html).
-
-### Tracker Login and Start
-
-For tracker to send traces to the server, `tracker.login()` has to be called. If you want to use an authenticated user, you can login before starting the tracker with `tracker.start()`.
+## Getting started
 
 ```js
-var tracker = new SeriousGameTracker();
+import { SeriousGameTracker } from 'js-tracker';
 
-tracker.trackerSettings.batch_endpoint = "https://myendpoint.com/";
-tracker.trackerSettings.oauth_type = "OAuth1";
-tracker.oauth1.username = "username";
-tracker.oauth1.password = "password";
+const tracker = new SeriousGameTracker();
 
-//Login is optional. If not logged, anonymous actor is retrieved on start
-tracker.login();
+tracker.trackerSettings.batch_endpoint = 'https://lrs.example/xapi';
+tracker.trackerSettings.default_uri = 'https://game.example';
+tracker.trackerSettings.platform = 'https://game.example';
+tracker.trackerSettings.actor_name = 'player1';
+
+await tracker.login();   // optional: without it the actor is anonymous
 tracker.start();
+
+await tracker.completable('quest-1', tracker.COMPLETABLETYPE.QUEST).initialized().send();
+await tracker.accessible('MainMenu', tracker.ACCESSIBLETYPE.SCREEN).accessed().send();
 ```
 
-### Sending Traces to the Learning Record Store (LRS) Server
-
-There are two methods used for sending traces that generate for you StatementBuilder that you can extend:
-1. Using the xAPI for serious games interfaces (accessible(), alternative(), completable() and gameObject()).
-1. Using `tracker.trace(verb,objectType,objectId)` method. This is **not recomended unless you have clear in mind what you're doing**. Remember that xAPI traces are focused on sending actions, not purely variable changes. If you want to track variables, you can add them as extensions using `.withResultExtension(key, val)`.
-
-To extend yours statements, you can extend the StatementBuilder using : 
-* `.withSuccess(bool success)` : Set success to statemement
-* `.withScore({raw:number, min:number, max:number, scaled:number})` : Set score to statemement
-* `.withRawScore(double score)` : Set raw score to statemement
-* `.withMinScore(double score)` : Set min score to statemement
-* `.withMaxScore(double score)` : Set max score to statemement
-* `.withScaledScore(double score)` : Set scaled score to statemement
-* `.withCompletion(bool completion)` : Set completion status to statement
-* `.withDuration(Date init, Date end)` : Set duration to statement
-* `.withResponse(string response)` : Set response to statement
-* `.withProgress(double progress)` : Set progress to statement
-* `.withResultExtension(key, val)` : Add result extension to statement
-* `.withResultExtensions(exts = {})` : Add result extensions as Object key/values list of the statement
-* `.apply(function fn)` : Applies a function to the statement
-
-The statements are not sent until you enqueue it using `.send()` to the StatementBuilder.
+Every tracking method returns a builder that you can chain onto, and nothing is queued until you
+call `send()`:
 
 ```js
-//simple trace
-tracker.gameObject("GameObjectID2", tracker.GAMEOBJECTTYPE.Item)
-      .used()
-      .withResultExtension("extension1", "value1")
-	  .send();
-
-//Very complex trace
-tracker.accessible("AccesibleID2", tracker.ACCESSIBLETYPE.Screen)
-      .skipped()
-      .withResponse("AnotherResponse")
-      .withScore(123.456)
-      .withSuccess(false)
-      .withCompletion(true)
-      .withResultExtension("extension1", "value1")
-      .withResultExtension("extension2", "value2")
-      .withResultExtension("extension3", 3)
-      .withResultExtension("extension4", 4.56)
-	  .send();
-
-tracker.trace("selected", "zone", "ObjectID3")
-	  .send();
-
-tracker.flush();
+await tracker.gameObject('Item/HealthPotion', tracker.GAMEOBJECTTYPE.ITEM)
+	.used()
+	.withScore({ raw: 3, max: 5 })
+	.withResultExtension('playerLevel', 12)
+	.send();
 ```
 
-### Trace sending automatization
+The [tutorial](docs/index.md) takes this further, and the
+[reference](docs/reference/statement-builders.md) lists every setter.
 
-As in JavaScript is a language very oriented to Async programming, there are multiple alternatives to generate an automatic loop for sending traces automatically. For example, you can create a loop like:
-```js
+## Game objects
 
-setInterval(function(){
-	if(connected)
-		tracker.flush(function(result, error){
-			console.log("flushed");
-		})
-}, 3000);
+A **game object** is an element of the game on which the player performs an action. The kind is
+chosen by the shape of the action, not by what the thing is called:
+
+| Game object | For | Methods |
+| --- | --- | --- |
+| `completable` | Something with progress and an end | `initialized`, `progressed`, `completed` |
+| `accessible` | Something the player moves through or past | `accessed`, `skipped` |
+| `alternative` | A choice between options | `selected`, `unlocked` |
+| `gameObject` | A thing in the world | `interacted`, `used` |
+
+Each takes an activity type as its second argument, drawn from `COMPLETABLETYPE`, `ACCESSIBLETYPE`,
+`ALTERNATIVETYPE` and `GAMEOBJECTTYPE` respectively. The
+[reference](docs/reference/game-objects.md) lists every type constant, and
+[how to choose a game object](docs/how-to/choose-a-game-object.md) works through when to use which.
+
+## Development
+
+```bash
+npm ci
+npm run build          # bundles in dist/ and the type declarations
+npm run verify         # type check, lint, and tests
+npm run docs:reference # regenerates docs/reference from the JSDoc
 ```
 
-## User Guide
+The tests import the tracker from `dist/`, so `npm run build` has to run before them.
 
-The tracker send your generated data to a Learning Record Store (LRS) Server API designed to collect, analyze and visualize the data. It consists on defining a set of **game objects**. A game object represents an element of the game on which players can perform one or several types of interactions. Some examples of player's interactions are:
+## Credits and acknowledgements
 
-* start or complete (interaction) a level (game object)
-* increase or decrease (interaction) the number of coins (game object)
-* select or unlock (interaction) a power-up (game object)
-
-A **gameplay** is the flow of interactions that a player performs over these game objects in a sequential order.
-
-The main typed of game objects supported are:
-
-* [Completable](https://github.com/e-ucm/xapi-seriousgames/blob/master/xAPI%20Profile.md#tracking-progress) - for Game, Session, Level, Quest, Stage, Combat, StoryNode, Race or any other generic Completable. Methods: `Initialized`, `Progressed` and `Completed`.
-* [Accessible](https://github.com/e-ucm/xapi-seriousgames/blob/master/xAPI%20Profile.md#tracking-navigation) - for Screen, Area, Zone, Cutscene or any other generic Accessible. Methods: `Accessed` and `Skipped`.
-* [Alternative](https://github.com/e-ucm/xapi-seriousgames/blob/master/xAPI%20Profile.md#tracking-decisions) - for Question, Menu, Dialog, Path, Arena or any other generic Alternative. Methods: `Selected` and `Unlocked`.
-* [GameObject](https://github.com/e-ucm/xapi-seriousgames/blob/master/xAPI%20Profile.md#tracking-game-world-interactions) for Enemy, Npc, Item or any other generic GameObject. Methods: `Interacted` and `Used`.
-
-##### Completable
-
-Usage example for the tracking of an in-game quest. We decided to use a completable game object for this use-case as the most suitable option:
-
-```js
-// Completable
-// Initialized
-tracker.completable("MyGameQuestId", tracker.COMPLETABLETYPE.Quest)
-        .initialized()
-	  	.send();
-
-// Progressed
-var progress = 0.8;
-tracker.completable("MyGameQuestId", tracker.COMPLETABLETYPE.Quest)
-        .progressed(progress)
-	  	.send();
-
-// Completed
-var success = true;
-var score = 0.75;
-var t = tracker.completable("MyGameQuestId", tracker.COMPLETABLETYPE.Quest)
-              .completed(success,score)
-	  		  .send();
-```
-
-##### Accessible
-
-Usage example for the tracking the player's movement through some in-game screens and skipping the `Intro` cutscene:
-
-```js
-// Accessible
-// The player accessed the 'MainMenu' screen
-tracker.accessible("MainMenu", tracker.ACCESSIBLETYPE.Screen)
-        .accessed()
-	    .send();
-
-// The player skipped a cutscene
-tracker.accessible("Intro", tracker.ACCESSIBLETYPE.Cutscene)
-        .skipped()
-		.send();
-```
-
-##### Alternative
-
-Usage example for the tracking the player's choices during a conversation:
-
-```js
-// Alternative
-// The player selected the 'Ivan' answer for the question 'What's his name?'
-tracker.alternative("What's his name?", tracker.ALTERNATIVETYPE.Question)
-        .selected("Ivan")
-		.send();
-
-// The player unlocked 'Combat Mode' for the menu 'Menues/Start'
-tracker.alternative("Menues/Start", tracker.ALTERNATIVETYPE.Menu)
-      .unlocked("Combat Mode")
-	  .send();
-```
-
-##### Game Object
-
-Usage example for the tracking the player's with a NPC villager and using a health potion (item):
-
-```js
-// Game Object
-// The player interacted with a Non Playable Character
-tracker.gameObject("NPC/Villager", tracker.GAMEOBJECTTYPE.Npc)
-        .interacted()
-		.send();
-
-// The player used a health potion
-tracker.gameObject("Item/HealthPotion/Consumable", tracker.GAMEOBJECTTYPE.Item)
-        .used()
-		.send();
-```
-
-Note that in order to track other type of user interactions it is required to perform a previous analysis to identify the most suitable game objects ([Completable](https://github.com/e-ucm/xapi-seriousgames/blob/master/xAPI%20Profile.md#tracking-progress), [Accessible](https://github.com/e-ucm/xapi-seriousgames/blob/master/xAPI%20Profile.md#tracking-navigation), [Alternative](https://github.com/e-ucm/xapi-seriousgames/blob/master/xAPI%20Profile.md#tracking-decisions), [GameObject](https://github.com/e-ucm/xapi-seriousgames/blob/master/xAPI%20Profile.md#tracking-game-world-interactions)) for the given case. For instance, in order to track conversations [alternatives](https://github.com/e-ucm/xapi-seriousgames/blob/master/xAPI%20Profile.md#tracking-decisions) are the best choice.
+Developed by the e-UCM research group in the context of the H2020 BEACONING project. The xAPI
+vocabulary under `src/HighLevel/Statement/Ids/Profiles/Generated` is generated from the
+[xAPI-authored-profiles](https://github.com/adlnet/xapi-authored-profiles) repository and is
+committed to this one, so building needs no network access.

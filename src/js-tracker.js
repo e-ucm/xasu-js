@@ -37,26 +37,26 @@ export class JSTracker {
     /**
      * Settings of JSTracker
      * @typedef {Object} trackerSettings
-     * @property {boolean} generateSettingsFromURLParams
-     * @property {string} oauth_type
-     * @property {boolean} batch_mode
-     * @property {string} batch_endpoint
-     * @property {string} oauth_type
-     * @property {number} batch_length
-     * @property {number} batch_timeout
-     * @property {string} platform
-     * @property {string} actor_name
-     * @property {boolean} backup_mode
-     * @property {string} backup_endpoint
-     * @property {string} backup_type
-     * @property {string} default_uri
-     * @property {number} max_retry_delay
-     * @property {boolean} debug
-     * @property {string} parent_activity_id
-     * @property {string} registration_id
-    * @property {string} parent_activity_type
-    * @property {string} [category] - Category of the statements, added to the context of every statement
-     * @property {string} [auth_token] - Optional auth token for OAuth0
+     * @property {boolean} [generateSettingsFromURLParams=false] - Read the settings from the query parameters of the page
+     * @property {string} [oauth_type="OAuth0"] - Which authentication to use: `OAuth0`, `OAuth1`, or `OAuth2`
+     * @property {boolean} [batch_mode=true] - Accepted for compatibility, the tracker always batches and has no other mode
+     * @property {string} [batch_endpoint="http://myurl.com/endpoint"] - The LRS statements are sent to
+     * @property {number} [batch_length=100] - How many statements fill a batch, which is also the latency of sending one
+     * @property {number} [batch_timeout=30000] - How long a partial batch waits before it is sent, in milliseconds
+     * @property {string} [platform="http://myhomepage.com"] - Homepage of the game, recorded in the context of every statement
+     * @property {string} [actor_name="my_default_actor"] - Name of the account of the actor
+     * @property {string} [actor_homepage=""] - Homepage of the account service of the actor, when it is not the platform
+     * @property {boolean} [backup_mode=false] - Accepted for compatibility, a backup is sent whenever flush is called with it
+     * @property {string} [backup_endpoint="http://myurl.com/backup-endpoint"] - Where a copy of the statements is sent
+     * @property {string} [backup_type="XAPI"] - The form of that copy: `XAPI` or `CSV`
+     * @property {string} [default_uri="mydefaulturi"] - Base for every id that is not already an absolute IRI
+     * @property {number} [max_retry_delay=120000] - Ceiling of the retry backoff, in milliseconds
+     * @property {boolean} [debug=false] - Log every batch, and turn the warnings into thrown errors
+     * @property {string} [parent_activity_id=""] - Activity this content belongs to, added as the parent of every statement
+     * @property {string} [registration_id=""] - Registration that ties these statements to one attempt at some material
+     * @property {string} [parent_activity_type] - Type of the parent activity
+     * @property {string} [category] - Category added to the context of every statement; a serious game defaults to the serious games category
+     * @property {string} [auth_token] - Token used when `oauth_type` is `OAuth0`
      */
     trackerSettings={
         generateSettingsFromURLParams:false,
@@ -81,6 +81,7 @@ export class JSTracker {
         actor_homepage:''
     };
     /**
+     * The credentials used when oauth_type is OAuth1
      * @typedef {Object} oauth1
      * @property {string} username
      * @property {string} password
@@ -91,21 +92,22 @@ export class JSTracker {
     };
 
 /**
+     * The settings used when oauth_type is OAuth2
      * @typedef {Object} oauth2
-     * @property {string} token_endpoint
-     * @property {string} grant_type
+     * @property {string} token_endpoint - Where the access token is requested
+     * @property {string} grant_type - `password`, `refresh_token`, or `urn:ietf:params:oauth:grant-type:device_code`
      * @property {string} client_id
-     * @property {string} [client_secret]
-     * @property {string} [scope]
-     * @property {string} [state]
-     * @property {string} [code_challenge_method]
-     * @property {string} [username]
-     * @property {string} [password]
-     * @property {string} [login_hint]
-     * @property {string} [device_authorization_endpoint] - Device authorization endpoint for device_code grant
-     * @property {number} [poll_interval] - Polling interval in seconds for device flow
-     * @property {number} [max_poll_attempts] - Maximum poll attempts for device flow
-     * @property {string} [language] - UI language for the device sign-in screen (en, es, fr)
+     * @property {string} [client_secret] - Only for a confidential client
+     * @property {string} [scope="openid profile"]
+     * @property {string} [state] - Only for the authorization code flow
+     * @property {string} [code_challenge_method] - Only `S256` is supported
+     * @property {string} [username] - For the password grant
+     * @property {string} [password] - For the password grant
+     * @property {string} [login_hint] - Which account the provider should offer first
+     * @property {string} [device_authorization_endpoint] - Where the device code is requested, for the device_code grant
+     * @property {number} [poll_interval] - Seconds between polls of the token endpoint, for the device_code grant
+     * @property {number} [max_poll_attempts] - How many times to poll before giving up, for the device_code grant
+     * @property {string} [language] - Language of the device sign-in screen: `en`, `es`, or `fr`
      */
     oauth2 = {
         token_endpoint:                 "https://.../token",

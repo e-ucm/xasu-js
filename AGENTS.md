@@ -63,10 +63,28 @@ tracker.gameObject("healthPotion", tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM
 
 ## Build and Test Commands
 - `npm run build` - Build the project (webpack + types)
+- `npm run verify` - Type check, lint, tests, and build — what CI runs
 - `npm run test` - Run linting and tests
 - `npm run lint` - Run linting only
+- `npm run typecheck` - `tsc --noEmit`
 - `npm run build:types` - Build TypeScript definitions
 - `npm run build:webpack` - Build webpack bundles only
+- `npm run docs:reference` - Regenerate `docs/reference/**` from the JSDoc
+
+## Tests
+- `test/*.js` - mocha, ESM, run against `dist/js-tracker.bundle.js` and not `src/` (the locale
+  JSON in `src/Auth/deviceI18n.js` is unresolvable by Node). `npm run build` must run first.
+- Any test that queues a statement must call `tracker.stop()` in `afterEach`, or the pending batch
+  timer keeps the process alive and mocha hangs after reporting success.
+
+## Documentation
+- `docs/index.md` - Diátaxis landing page, the four quadrants
+- `docs/tutorials/**` - lessons, numbered
+- `docs/how-to/**` - one task per file
+- `docs/reference/**` - **generated**; do not edit, run `npm run docs:reference`. CI fails on drift.
+- `docs/explanation/**` - why the code is this way
+- `docs/explanation/decisions/**` - ADRs, one per decision, with context/decision/consequences and
+  commit citations. Adding a decision means adding a numbered record and an index row.
 
 ## Important Files
 - `src/js-tracker.js` - Main entry point with all tracker classes

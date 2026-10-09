@@ -18,6 +18,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "generate:profiles": "git submodule update --init --recursive && node scripts/generateProfiles.js",
+    "docs:reference": "node scripts/generateApiReference.js",
     "build:types": "npx tsc --project tsconfig.json",
     "build:webpack": "webpack && rollup -c",
     "build": "npm run build:webpack && npm run build:types",
