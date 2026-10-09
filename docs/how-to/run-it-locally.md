@@ -9,7 +9,7 @@ npm ci
 ```
 
 That is enough. `npm ci` installs the dependencies and builds, because `package.json` has a
-`prepare` script — the same one that makes `npm install github:e-ucm/js-tracker#<tag>` build the
+`prepare` script — the same one that makes `npm install github:e-ucm/xasu-js#<tag>` build the
 tracker's `dist/` instead of requiring a committed copy.
 
 To rebuild without reinstalling:
@@ -24,7 +24,7 @@ from a fresh clone.
 
 ## Why the build has to come first
 
-The tests import the tracker from `dist/js-tracker.bundle.js`, not from `src/`. `src/js-tracker.js`
+The tests import the tracker from `dist/xasu-js.bundle.js`, not from `src/`. `src/xasu-js.js`
 imports the device screen's locale JSON, and Node will not resolve a JSON import inside a `.js`
 file — only the bundler can. So a test run against an unbuilt `dist/` is not testing the current
 source.

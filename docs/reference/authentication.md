@@ -1,6 +1,6 @@
 # Authentication
 
-Reference for the authentication layers. `JSTracker.login()` picks the asset that matches `trackerSettings.oauth_type`, and the asset asks its protocol object for a token. The protocol classes are documented here for the cases where a game needs to reason about the token itself.
+Reference for the authentication layers. `XasuJS.login()` picks the asset that matches `trackerSettings.oauth_type`, and the asset asks its protocol object for a token. The protocol classes are documented here for the cases where a game needs to reason about the token itself.
 Extends `xAPITrackerAsset`.
 
 ## `xAPITrackerAssetOAuth1`

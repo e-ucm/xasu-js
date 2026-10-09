@@ -1,1 +1,1 @@
-module.exports = require('./src/js-tracker');
+module.exports = require('./src/xasu-js');

@@ -39,7 +39,7 @@ architecture, the statements, delivery, authentication and the project itself.
 ## Things worth knowing before you read any of it
 
 - **The 2026 rewrite replaced the implementation, not the idea.** Commit `6fb62c7` (2024-06-25)
-  deleted 1,232 lines from `src/js-tracker.js` — including the `localStorage` fallback — and the
+  deleted 1,232 lines from `src/xasu-js.js` — including the `localStorage` fallback — and the
   class-based tracker arrived in `cb63bb4` and `0cfb0b0` a year and a half later. Some behaviour
   that used to exist no longer does, and the ADRs say so rather than implying continuity.
 - **The history is dominated by one author.** Of 246 commits, 170 are from one contributor, and the

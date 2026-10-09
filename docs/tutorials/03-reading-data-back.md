@@ -69,7 +69,7 @@ await tracker.login();
 `LRSTracker` reads what is already in the LRS:
 
 ```js
-import { LRSTracker } from 'js-tracker';
+import { LRSTracker } from 'xasu-js';
 
 const lrs = new LRSTracker();
 // ... same settings ...

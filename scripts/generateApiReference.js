@@ -758,7 +758,7 @@ const PAGES = [
 			"Reference for the four tracker classes. They are documented in the order a game uses them: " +
 			"create one, log in, start it, send statements, flush, stop. Every statement method returns " +
 			"a builder, which is documented in [Statement builders](statement-builders.md).",
-		files: ["src/js-tracker.js"],
+		files: ["src/xasu-js.js"],
 		settings: [
 			{
 				typedef: "trackerSettings",
@@ -840,7 +840,7 @@ const PAGES = [
 		file: "authentication.md",
 		title: "Authentication",
 		intro:
-			"Reference for the authentication layers. `JSTracker.login()` picks the asset that matches " +
+			"Reference for the authentication layers. `XasuJS.login()` picks the asset that matches " +
 			"`trackerSettings.oauth_type`, and the asset asks its protocol object for a token. The " +
 			"protocol classes are documented here for the cases where a game needs to reason about the " +
 			"token itself.",
@@ -912,7 +912,7 @@ const index = [
 	"",
 	"## Trackers",
 	"",
-	"- [Tracker classes](trackers.md) — `JSTracker`, `SeriousGameTracker`, `JSScormTracker`, " +
+	"- [Tracker classes](trackers.md) — `XasuJS`, `SeriousGameTracker`, `JSScormTracker`, " +
 	"`LRSTracker`, and every setting they take",
 	"",
 	"## Statements",

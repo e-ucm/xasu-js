@@ -1,6 +1,6 @@
 # Architecture decision records
 
-Ten decisions that explain why js-tracker looks the way it does. Each one is written from the
+Ten decisions that explain why xasu-js looks the way it does. Each one is written from the
 repository's own history: the commits are real, the dates are real, and where a decision was later
 partly reversed, the ADR says so and links the reversal.
 

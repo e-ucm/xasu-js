@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-// The tracker classes are exercised through the built bundle: src/js-tracker.js imports JSON
+// The tracker classes are exercised through the built bundle: src/xasu-js.js imports JSON
 // locales, which only the bundler can resolve, so it cannot be imported directly by Node.
 // Run npm run build before this test.
 import { expect } from 'chai';
-import { SeriousGameTracker, JSTracker } from '../dist/js-tracker.bundle.js';
+import { SeriousGameTracker, XasuJS } from '../dist/xasu-js.bundle.js';
 
 const EXT = 'https://simva.example';
 
@@ -276,7 +276,7 @@ describe('SeriousGameTracker xAPI statements', function() {
 	describe('without a started tracker', function() {
 		it('refuses to build a trace', function() {
 			expect(function() {
-				new JSTracker().trace('v', 't', 'i');
+				new XasuJS().trace('v', 't', 'i');
 			}).to.throw(/not initialized/);
 		});
 	});

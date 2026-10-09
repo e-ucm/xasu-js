@@ -1,16 +1,16 @@
 {
-  "name": "js-tracker",
-  "version": "2.2.1-beta",
+  "name": "xasu-js",
+  "version": "2.3.0-beta",
   "description": "Client Side xAPI-SG Tracker Asset written in JavaScript",
   "type": "module",
-  "main": "dist/js-tracker.bundle.cjs",
-  "module": "dist/js-tracker.bundle.js",
-  "types": "dist/types/js-tracker.d.ts",
+  "main": "dist/xasu-js.bundle.cjs",
+  "module": "dist/xasu-js.bundle.js",
+  "types": "dist/types/xasu-js.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/js-tracker.d.ts",
-      "import": "./dist/js-tracker.bundle.js",
-      "require": "./dist/js-tracker.bundle.cjs"
+      "types": "./dist/types/xasu-js.d.ts",
+      "import": "./dist/xasu-js.bundle.js",
+      "require": "./dist/xasu-js.bundle.cjs"
     }
   },
   "files": [
@@ -21,7 +21,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": "https://github.com/e-ucm/js-tracker",
+  "repository": "https://github.com/e-ucm/xasu-js",
   "author": "e-UCM Research Group",
   "license": "Apache-2.0",
   "engines": {

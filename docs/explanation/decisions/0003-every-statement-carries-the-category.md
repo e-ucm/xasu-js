@@ -34,7 +34,7 @@ its own; setting it to `''` sends no category at all.
 
 - A serious game's statements are categorized without the game doing anything, which is what makes
   them queryable as a set.
-- A plain `JSTracker` sends no category, which is right: it makes no claim about which profile it
+- A plain `XasuJS` sends no category, which is right: it makes no claim about which profile it
   follows.
 
 **Negative**

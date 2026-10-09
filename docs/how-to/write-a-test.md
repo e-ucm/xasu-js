@@ -8,7 +8,7 @@ Tests are mocha, run against the built bundle, and written in ESM. There is no T
 
 ```js
 import { expect } from 'chai';
-import { SeriousGameTracker } from '../dist/js-tracker.bundle.js';
+import { SeriousGameTracker } from '../dist/xasu-js.bundle.js';
 
 describe('Thing under test', function() {
 	let tracker;
@@ -36,7 +36,7 @@ describe('Thing under test', function() {
 
 ## Two rules that are not stylistic
 
-**Import from `dist/`, not `src/`.** `src/js-tracker.js` imports the device screen's locale JSON,
+**Import from `dist/`, not `src/`.** `src/xasu-js.js` imports the device screen's locale JSON,
 which Node cannot resolve inside a `.js` file. Only the bundle is importable, so `dist/` has to be
 built before the tests — `npm ci` does it.
 

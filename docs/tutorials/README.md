@@ -22,7 +22,7 @@ All three assume:
 
 - an LRS (Learning Record Store) endpoint and credentials. A mock LRS works fine, since none of
   this needs a real server to be understood,
-- Node 18 or newer, and the tracker installed (`npm install js-tracker`),
+- Node 18 or newer, and the tracker installed (`npm install xasu-js`),
 - the bundle built locally, if you are running against a clone: `npm run build`.
 
 ```bash

@@ -1,6 +1,6 @@
-# js-tracker documentation
+# xasu-js documentation
 
-js-tracker collects [xAPI](https://xapi.com/) Learning Analytics from a game and sends the
+xasu-js collects [xAPI](https://xapi.com/) Learning Analytics from a game and sends the
 statements to a Learning Record Store. It is the JavaScript implementation of
 [Xasu](https://www.e-ucm.es), and it is aimed at serious games: it speaks the
 [xAPI serious games profile](https://github.com/e-ucm/xapi-seriousgames), and it carries the
@@ -10,9 +10,9 @@ It is not published to a registry. It is consumed straight from this repository,
 tag or a commit:
 
 ```bash
-npm install github:e-ucm/js-tracker#v2.2.1-beta
-npm install github:e-ucm/js-tracker#semver:^2.2.0-beta   # newest tag in the range
-npm install github:e-ucm/js-tracker#a2e28ea                # one exact commit
+npm install github:e-ucm/xasu-js#v2.2.1-beta
+npm install github:e-ucm/xasu-js#semver:^2.2.0-beta   # newest tag in the range
+npm install github:e-ucm/xasu-js#a2e28ea                # one exact commit
 ```
 
 The documentation is organised with the [Diátaxis](https://diataxis.fr) method. The four
@@ -32,7 +32,7 @@ Do not read them in order. Pick the question you have.
 
 ```
 a game
-  └─ tracker (SeriousGameTracker / JSScormTracker / LRSTracker / JSTracker)
+  └─ tracker (SeriousGameTracker / JSScormTracker / LRSTracker / XasuJS)
        ├─ settings      : what to send, to whom, as whom       (tracker.trackerSettings)
        └─ tracker.tracker : xAPITrackerAsset
             ├─ actor     : who is playing

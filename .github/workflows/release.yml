@@ -73,7 +73,7 @@ jobs:
             echo "::error::tag $TAG does not match package.json version $VERSION"
             exit 1
           fi
-          echo "releasing js-tracker@$VERSION"
+          echo "releasing xasu-js@$VERSION"
 
       # Two assets, because there are two kinds of consumer: the tarball for anything that
       # installs, and the raw UMD bundle for the page that loads the tracker with a <script>
@@ -84,9 +84,9 @@ jobs:
           set -euo pipefail
           npm pack
           VERSION=$(node -p "require('./package.json').version")
-          cp dist/js-tracker-webpack.bundle.js "js-tracker-webpack.bundle.js"
-          ls -la ./*.tgz ./js-tracker-webpack.bundle.js
-          echo "assets for js-tracker@$VERSION collected"
+          cp dist/xasu-js.bundle.js "xasu-js.bundle.js"
+          ls -la ./*.tgz ./xasu-js.bundle.js
+          echo "assets for xasu-js@$VERSION collected"
 
       - name: Create the release
         env:
@@ -94,7 +94,7 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          ASSETS=(js-tracker-webpack.bundle.js js-tracker-*.tgz)
+          ASSETS=(xasu-js.bundle.js xasu-js-*.tgz)
           echo "assets: ${ASSETS[*]}"
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "${ASSETS[@]}" --clobber
@@ -114,20 +114,26 @@ jobs:
             echo "With a build step (npm installs it, and builds it during the install):"
             echo ""
             echo '```bash'
-            echo "npm install github:e-ucm/js-tracker#v$VERSION"
+            echo "npm install github:e-ucm/xasu-js#v$VERSION"
             echo '```'
             echo ""
             echo "With no build step at all, the prebuilt tarball:"
             echo ""
             echo '```bash'
-            echo "npm install https://github.com/e-ucm/js-tracker/releases/download/v$VERSION/js-tracker-$VERSION.tgz"
+            echo "npm install https://github.com/e-ucm/xasu-js/releases/download/v$VERSION/xasu-js-$VERSION.tgz"
             echo '```'
             echo ""
             echo "Or drop the UMD bundle next to your page and use a script tag:"
             echo ""
             echo '```html'
-            echo "<script src=\"js-tracker-webpack.bundle.js\"></script>"
+            echo "<script src=\"xasu-js.bundle.js\"></script>"
             echo '```'
             echo ""
-            echo "([download it](https://github.com/e-ucm/js-tracker/releases/download/v$VERSION/js-tracker-webpack.bundle.js))"
+            echo "Or use a script tag with the bundle full URL:"
+            echo ""
+            echo '```html'
+            echo "<script src=\"https://github.com/e-ucm/xasu-js/releases/download/v$VERSION/xasu-js.bundle.js\"></script>"
+            echo '```'
+            echo ""
+            echo "([download it](https://github.com/e-ucm/xasu-js/releases/download/v$VERSION/xasu-js.bundle.js))"
           } >> "$GITHUB_STEP_SUMMARY"

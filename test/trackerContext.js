@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-// The tracker classes are exercised through the built bundle: src/js-tracker.js imports JSON
+// The tracker classes are exercised through the built bundle: src/xasu-js.js imports JSON
 // locales, which only the bundler can resolve, so it cannot be imported directly by Node.
 // Run npm run build before this test.
 import { expect } from 'chai';
-import { SeriousGameTracker, JSTracker } from '../dist/js-tracker.bundle.js';
+import { SeriousGameTracker, XasuJS } from '../dist/xasu-js.bundle.js';
 
 const EXT = 'https://simva.example';
 const PROFILE_CATEGORY = 'https://w3id.org/xapi/seriousgames/v1.0';
@@ -105,12 +105,12 @@ describe('SeriousGameTracker category', function() {
 	});
 
 	it('does not categorize the statements of a plain tracker unless asked to', function() {
-		const withoutCategory = started(JSTracker);
+		const withoutCategory = started(XasuJS);
 
 		expect(withoutCategory.trace('v', `${EXT}/about#activity`, `${EXT}/activities/1`).toXAPI().context)
 			.to.not.have.property('contextActivities');
 
-		const withCategory = started(JSTracker, { category: `${EXT}/about` });
+		const withCategory = started(XasuJS, { category: `${EXT}/about` });
 
 		expect(withCategory.trace('v', `${EXT}/about#activity`, `${EXT}/activities/1`)
 			.toXAPI().context.contextActivities.category[0].id).to.equal(`${EXT}/about`);

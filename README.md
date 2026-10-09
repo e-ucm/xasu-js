@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/e-ucm/js-tracker.svg?branch=master)](https://travis-ci.org/e-ucm/js-tracker) [![Coverage Status](https://coveralls.io/repos/e-ucm/js-tracker/badge.svg?branch=master&service=github)](https://coveralls.io/github/e-ucm/js-tracker?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/8332c331fee826d6ed36/maintainability)](https://codeclimate.com/github/e-ucm/js-tracker/maintainability) [![Dependency Status](https://david-dm.org/e-ucm/js-tracker.svg)](https://david-dm.org/e-ucm/js-tracker) [![devDependency Status](https://david-dm.org/e-ucm/js-tracker/dev-status.svg)](https://david-dm.org/e-ucm/js-tracker#info=devDependencies) [![Pull Request Stats](http://issuestats.com/github/e-ucm/js-tracker)](http://issuestats.com/github/e-ucm/js-tracker) [![Issue Stats](http://issuestats.com/github/e-ucm/js-tracker)](http://issuestats.com/github/e-ucm/js-tracker)
+[![Build Status](https://travis-ci.org/e-ucm/xasu-js.svg?branch=master)](https://travis-ci.org/e-ucm/xasu-js) [![Coverage Status](https://coveralls.io/repos/e-ucm/xasu-js/badge.svg?branch=master&service=github)](https://coveralls.io/github/e-ucm/xasu-js?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/8332c331fee826d6ed36/maintainability)](https://codeclimate.com/github/e-ucm/xasu-js/maintainability) [![Dependency Status](https://david-dm.org/e-ucm/xasu-js.svg)](https://david-dm.org/e-ucm/xasu-js) [![devDependency Status](https://david-dm.org/e-ucm/xasu-js/dev-status.svg)](https://david-dm.org/e-ucm/xasu-js#info=devDependencies) [![Pull Request Stats](http://issuestats.com/github/e-ucm/xasu-js)](http://issuestats.com/github/e-ucm/xasu-js) [![Issue Stats](http://issuestats.com/github/e-ucm/xasu-js)](http://issuestats.com/github/e-ucm/xasu-js)
 
 # Xasu JS — xAPI Analytics Supplier for the browser
 
@@ -62,18 +62,18 @@ The tracker is not published to a registry. It is consumed straight from this re
 to a tag or a commit:
 
 ```bash
-npm install github:e-ucm/js-tracker#v2.2.1-beta
+npm install github:e-ucm/xasu-js#v2.2.1-beta
 ```
 
 ```js
-import { SeriousGameTracker } from 'js-tracker';
+import { SeriousGameTracker } from 'xasu-js';
 ```
 
 A commit hash works too, which is what you want when reproducing a specific build, and a semver
 range resolves against the tags:
 
 ```bash
-npm install github:e-ucm/js-tracker#semver:^2.2.0-beta
+npm install github:e-ucm/xasu-js#semver:^2.2.0-beta
 ```
 
 See [how to install from GitHub](docs/how-to/install-from-github.md) for every form.
@@ -81,19 +81,19 @@ See [how to install from GitHub](docs/how-to/install-from-github.md) for every f
 npm builds the tracker from source during the install, because the repository carries a `prepare`
 script and does not commit its `dist/`. That costs about 30 seconds and a build toolchain on the
 first install of a given commit. If you would rather not, install the packed tarball attached to
-the [release](https://github.com/e-ucm/js-tracker/releases) instead.
+the [release](https://github.com/e-ucm/xasu-js/releases) instead.
 
 For a plain page with no build step, download the UMD bundle from the
-[same release](https://github.com/e-ucm/js-tracker/releases) and load it locally:
+[same release](https://github.com/e-ucm/xasu-js/releases) and load it locally:
 
 ```html
-<script src="js-tracker-webpack.bundle.js"></script>
+<script src="xasu-js-webpack.bundle.js"></script>
 ```
 
 ## Getting started
 
 ```js
-import { SeriousGameTracker } from 'js-tracker';
+import { SeriousGameTracker } from 'xasu-js';
 
 const tracker = new SeriousGameTracker();
 

@@ -1,7 +1,7 @@
 # Tracker classes
 
 Reference for the four tracker classes. They are documented in the order a game uses them: create one, log in, start it, send statements, flush, stop. Every statement method returns a builder, which is documented in [Statement builders](statement-builders.md).
-## `JSTracker`
+## `XasuJS`
 
 Main JavaScript Tracker class for xAPI tracking functionality
 
@@ -15,7 +15,7 @@ Indicates if the tracker has been started
 
 ### `new Class(...)`
 
-Creates a new JSTracker instance
+Creates a new XasuJS instance
 
 ### `async login()`
 
@@ -64,11 +64,11 @@ Creates a new statement builder from an xAPI statement
 
 **Returns** `StatementBuilder` — A new StatementBuilder instance
 
-Extends `JSTracker`.
+Extends `XasuJS`.
 
 ## `JSScormTracker`
 
-SCORM-specific tracker extending JSTracker
+SCORM-specific tracker extending XasuJS
 
 ### `scormInstances`
 
@@ -117,11 +117,11 @@ Creates a new statement builder from an xAPI statement
 
 **Returns** `StatementBuilder` — A new StatementBuilder instance
 
-Extends `JSTracker`.
+Extends `XasuJS`.
 
 ## `LRSTracker`
 
-SCORM-specific tracker extending JSTracker
+SCORM-specific tracker extending XasuJS
 
 ### `new Class(...)`
 
@@ -189,11 +189,11 @@ Gets more statements using a "more" URL from a previous query result
 
 **Returns** `Promise` — A promise that resolves with the fetched statements
 
-Extends `JSTracker`.
+Extends `XasuJS`.
 
 ## `SeriousGameTracker`
 
-Serious Game Tracker extending JSTracker with game-specific functionality
+Serious Game Tracker extending XasuJS with game-specific functionality
 
 ### `SERIOUSGAMEPROFILE`
 

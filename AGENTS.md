@@ -1,11 +1,11 @@
-# js-tracker Agent Guidelines
+# xasu-js Agent Guidelines
 
 ## Project Overview
 This is a JavaScript xAPI tracker for serious games analytics. It helps track player interactions and analytics for games by sending statements to a Learning Record Store (LRS).
 
 ## Core Classes
-- `JSTracker` - Base tracker class with authentication and core functionality
-- `SeriousGameTracker` - Extends JSTracker with game-specific tracking methods
+- `XasuJS` - Base tracker class with authentication and core functionality
+- `SeriousGameTracker` - Extends XasuJS with game-specific tracking methods
 - `JSScormTracker` - SCORM-specific tracker
 - `LRSTracker` - LRS-specific tracker with query capabilities
 
@@ -73,14 +73,14 @@ tracker.gameObject("healthPotion", tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM
 
 ## Releasing
 - The tracker is **not published to a registry**. It is consumed straight from the repository:
-  `npm install github:e-ucm/js-tracker#v2.2.1-beta`. A tag, a commit hash, a branch, or
+  `npm install github:e-ucm/xasu-js#v2.2.1-beta`. A tag, a commit hash, a branch, or
   `#semver:<range>` all work after the `#`.
 - See `docs/how-to/install-from-github.md` for the procedure.
 - `dist/` is **not committed** — it is gitignored. `package.json` has `"prepare": "npm run build"`,
   so a git install builds the consumer's copy from source. `npm ci` runs `prepare`, so `npx mocha`
   works on a fresh clone without a manual build.
 - Pushing a `v*` tag triggers `.github/workflows/release.yml`: it verifies, packs, and attaches
-  `js-tracker-<version>.tgz` plus `js-tracker-webpack.bundle.js` to a GitHub Release. Those assets
+  `xasu-js-<version>.tgz` plus `xasu-js-webpack.bundle.js` to a GitHub Release. Those assets
   are the only prebuilt copies now.
 - The tag must name the version in `package.json`; the release workflow fails if it does not.
   `v2.1.2-beta` sits on a commit that says `2.1.0-beta`, so a tag can resolve to something other
@@ -93,7 +93,7 @@ tracker.gameObject("healthPotion", tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM
   filter is the one case that can skip it, and it fails silently.
 
 ## Tests
-- `test/*.js` - mocha, ESM, run against `dist/js-tracker.bundle.js` and not `src/` (the locale
+- `test/*.js` - mocha, ESM, run against `dist/xasu-js.bundle.js` and not `src/` (the locale
   JSON in `src/Auth/deviceI18n.js` is unresolvable by Node). `npm ci` builds `dist/` via `prepare`.
 - Any test that queues a statement must call `tracker.stop()` in `afterEach`, or the pending batch
   timer keeps the process alive and mocha hangs after reporting success.
@@ -108,7 +108,7 @@ tracker.gameObject("healthPotion", tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM
   commit citations. Adding a decision means adding a numbered record and an index row.
 
 ## Important Files
-- `src/js-tracker.js` - Main entry point with all tracker classes
+- `src/xasu-js.js` - Main entry point with all tracker classes
 - `src/HighLevel/SeriousGames/*` - Game-specific tracking components
 - `src/HighLevel/Scorm/*` - SCORM tracking components
 - `src/HighLevel/StatementBuilder/*` - Statement building components

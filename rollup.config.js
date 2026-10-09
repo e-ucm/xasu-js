@@ -7,11 +7,11 @@ import glslify from 'rollup-plugin-glslify';
 import json from '@rollup/plugin-json';
 
 export default defineConfig({
-  input: 'src/js-tracker.js',
+  input: 'src/xasu-js.js',
   plugins: [json()],
   output: [
     {
-      file: 'dist/js-tracker.bundle.js',
+      file: 'dist/xasu-js.bundle.js',
       format: 'es',
       plugins: [
               nodeResolve({
@@ -28,7 +28,7 @@ export default defineConfig({
             ]
     },
     {
-      file: 'dist/js-tracker.bundle.cjs',
+      file: 'dist/xasu-js.bundle.cjs',
       format: 'cjs',
       plugins: [
               nodeResolve({
@@ -45,12 +45,12 @@ export default defineConfig({
             ]
     },
     {
-      file: 'dist/js-tracker.bundle.min.js',
+      file: 'dist/xasu-js.bundle.min.js',
       format: 'es',
       plugins: [terser()],
     },
     {
-      file: 'dist/js-tracker.bundle.min.cjs',
+      file: 'dist/xasu-js.bundle.min.cjs',
       format: 'cjs',
       plugins: [terser()],
     },

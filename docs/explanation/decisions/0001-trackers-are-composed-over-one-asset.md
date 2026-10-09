@@ -23,7 +23,7 @@ Four classes over one asset.
 
 - **`xAPITrackerAsset`** owns the queue, the retry policy, the backup endpoint, the actor, the
   context, and the LRS client. It knows nothing about game objects.
-- **`JSTracker`** owns the settings and the lifecycle — `login()`, `start()`, `stop()`,
+- **`XasuJS`** owns the settings and the lifecycle — `login()`, `start()`, `stop()`,
   `flush()` — and holds the asset as `tracker.tracker`. It is the base for everything else.
 - **`SeriousGameTracker`**, **`JSScormTracker`** and **`LRSTracker`** extend it and add capability:
   the game object factories, a SCORM instance registry, and the LRS queries.

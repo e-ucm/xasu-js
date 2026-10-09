@@ -9,7 +9,7 @@ ones the code actually produces.
 ## 1. Install
 
 ```bash
-npm install github:e-ucm/js-tracker#v2.2.1-beta
+npm install github:e-ucm/xasu-js#v2.2.1-beta
 ```
 
 npm builds the tracker from source during the install, so there is no separate build step for you.
@@ -17,18 +17,18 @@ npm builds the tracker from source during the install, so there is no separate b
 For a bundler, import the classes:
 
 ```js
-import { SeriousGameTracker } from 'js-tracker';
+import { SeriousGameTracker } from 'xasu-js';
 ```
 
 For a plain HTML page with no build step, download the UMD bundle from
-[the release](https://github.com/e-ucm/js-tracker/releases) and load it locally:
+[the release](https://github.com/e-ucm/xasu-js/releases) and load it locally:
 
 ```html
-<script src="js-tracker-webpack.bundle.js"></script>
+<script src="xasu-js-webpack.bundle.js"></script>
 ```
 
-The bundle is also available as CommonJS (`js-tracker.bundle.cjs`), and TypeScript definitions
-(`dist/types/js-tracker.d.ts`) are generated with it.
+The bundle is also available as CommonJS (`xasu-js.bundle.cjs`), and TypeScript definitions
+(`dist/types/xasu-js.d.ts`) are generated with it.
 
 ## 2. Create and configure a tracker
 
@@ -38,13 +38,13 @@ There are four classes, all exported:
 | --- | --- |
 | `SeriousGameTracker` | Games. Adds the serious games category and gives you the four game object kinds. |
 | `JSScormTracker` | SCORM content. Adds a `scorm()` factory and the SCORM activity types. |
-| `LRSTracker` | Reading data back from the LRS. Everything `JSTracker` does, plus queries. |
-| `JSTracker` | The base tracker. A plain tracker with no category and no game object methods. |
+| `LRSTracker` | Reading data back from the LRS. Everything `XasuJS` does, plus queries. |
+| `XasuJS` | The base tracker. A plain tracker with no category and no game object methods. |
 
 Pick `SeriousGameTracker` for the rest of this tutorial.
 
 ```js
-import { SeriousGameTracker } from 'js-tracker';
+import { SeriousGameTracker } from 'xasu-js';
 
 const tracker = new SeriousGameTracker();
 

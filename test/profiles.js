@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-// The tracker classes are exercised through the built bundle: src/js-tracker.js imports JSON
+// The tracker classes are exercised through the built bundle: src/xasu-js.js imports JSON
 // locales, which only the bundler can resolve, so it cannot be imported directly by Node.
 // Run npm run build before this test.
 import { expect } from 'chai';
-import { JSScormTracker, JSTracker, SeriousGameTracker } from '../dist/js-tracker.bundle.js';
+import { JSScormTracker, XasuJS, SeriousGameTracker } from '../dist/xasu-js.bundle.js';
 
 const EXT = 'https://simva.example';
 
@@ -41,7 +41,7 @@ describe('the ids of the xAPI profiles', function() {
 	let tracker;
 
 	beforeEach(function() {
-		tracker = started(JSTracker);
+		tracker = started(XasuJS);
 	});
 
 	afterEach(function() {
@@ -49,7 +49,7 @@ describe('the ids of the xAPI profiles', function() {
 		tracker.stop();
 	});
 
-	const ALL = new JSTracker().ALL;
+	const ALL = new XasuJS().ALL;
 
 	describe('their shape', function() {
 		it('exposes the five groups of ids the statements need', function() {
@@ -212,14 +212,14 @@ describe('statements built with the ids of other profiles', function() {
 	let tracker;
 
 	beforeEach(function() {
-		tracker = started(JSTracker);
+		tracker = started(XasuJS);
 	});
 
 	afterEach(function() {
 		tracker.stop();
 	});
 
-	const ALL = new JSTracker().ALL;
+	const ALL = new XasuJS().ALL;
 
 	describe('verbs', function() {
 		it('sends a verb taken from another profile unchanged', function() {
@@ -411,7 +411,7 @@ describe('statements built with the ids of other profiles', function() {
 
 	describe('categories', function() {
 		it('categorizes a statement with the category of another profile', function() {
-			const categorised = started(JSTracker);
+			const categorised = started(XasuJS);
 			categorised.trackerSettings.category = ALL.CATEGORYID.VIDEOPROFILE;
 			categorised.start();
 
@@ -455,7 +455,7 @@ describe('the serious game trackers against the profile they use', function() {
 		tracker.stop();
 	});
 
-	const ALL = new JSTracker().ALL;
+	const ALL = new XasuJS().ALL;
 	const SG = ALL.ACTIVITYTYPES;
 
 	describe('accessible', function() {
@@ -599,7 +599,7 @@ describe('the SCORM tracker against the scorm profile', function() {
 		if (tracker.tracker) tracker.stop();
 	});
 
-	const ALL = new JSTracker().ALL;
+	const ALL = new XasuJS().ALL;
 
 	it('exposes the scorm activity types', function() {
 		expect(tracker.SCORMPROFILE.ACTIVITYTYPES.LESSON).to.equal(ALL.ACTIVITYTYPES.LESSON);

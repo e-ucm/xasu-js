@@ -4,7 +4,7 @@ Four flows, and what one of them changes about the page.
 
 ## The four flows
 
-`JSTracker.login()` picks the asset that matches `trackerSettings.oauth_type`:
+`XasuJS.login()` picks the asset that matches `trackerSettings.oauth_type`:
 
 | `oauth_type` | What it does | Where the settings live |
 | --- | --- | --- |

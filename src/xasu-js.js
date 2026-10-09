@@ -19,7 +19,7 @@ const msFn = ms.default || ms;
 /**
  * Main JavaScript Tracker class for xAPI tracking functionality
  */
-export class JSTracker {
+export class XasuJS {
     ALL = ALL;
     STATEMENT_BUILDER_IDS = STATEMENT;
     /**
@@ -35,7 +35,7 @@ export class JSTracker {
     Started = false;
     
     /**
-     * Settings of JSTracker
+     * Settings of XasuJS
      * @typedef {Object} trackerSettings
      * @property {boolean} [generateSettingsFromURLParams=false] - Read the settings from the query parameters of the page
      * @property {string} [oauth_type="OAuth0"] - Which authentication to use: `OAuth0`, `OAuth1`, or `OAuth2`
@@ -127,7 +127,7 @@ export class JSTracker {
     };
 
     /**
-     * Creates a new JSTracker instance
+     * Creates a new XasuJS instance
      */
     constructor() {
     }
@@ -413,9 +413,9 @@ export class JSTracker {
 }
 
 /**
- * SCORM-specific tracker extending JSTracker
+ * SCORM-specific tracker extending XasuJS
  */
-export class JSScormTracker extends JSTracker {
+export class JSScormTracker extends XasuJS {
     SCORMPROFILE = SCORMPROFILE;
     STATEMENT_BUILDER_IDS = STATEMENT;
     ALL = ALL;
@@ -488,9 +488,9 @@ export class JSScormTracker extends JSTracker {
 }
 
 /**
- * SCORM-specific tracker extending JSTracker
+ * SCORM-specific tracker extending XasuJS
  */
-export class LRSTracker extends JSTracker {
+export class LRSTracker extends XasuJS {
     ALL = ALL;    
     STATEMENT_BUILDER_IDS = STATEMENT;
     /**
@@ -691,9 +691,9 @@ export class LRSTracker extends JSTracker {
 
 
 /**
- * Serious Game Tracker extending JSTracker with game-specific functionality
+ * Serious Game Tracker extending XasuJS with game-specific functionality
  */
-export class SeriousGameTracker extends JSTracker {
+export class SeriousGameTracker extends XasuJS {
     /**
      * Accessible type constants
      */

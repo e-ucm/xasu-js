@@ -8,7 +8,7 @@
 `dist/` holds the webpack bundle, the UMD bundle, the four Rollup outputs (ESM, CJS and both
 minified), and the generated type declarations.
 
-The earlier decision (2026-04-21) was to commit them, so that `npm install github:e-ucm/js-tracker#<ref>`
+The earlier decision (2026-04-21) was to commit them, so that `npm install github:e-ucm/xasu-js#<ref>`
 would work: npm clones a git dependency and packs it, and a repository carrying its own build output
 installs without anyone building anything.
 
@@ -33,8 +33,8 @@ temporary directory, installing that clone's `dependencies` **and** `devDependen
 time, from source. `dist/` moves to `.gitignore` and is untracked.
 
 The second half of the earlier decision is **unchanged**: the test suite still imports the tracker
-from `dist/js-tracker.bundle.js` rather than from `src/`. That part was forced, and it remains
-correct — `src/js-tracker.js` imports the device screen's locale JSON through
+from `dist/xasu-js.bundle.js` rather than from `src/`. That part was forced, and it remains
+correct — `src/xasu-js.js` imports the device screen's locale JSON through
 `src/Auth/deviceI18n.js`, and Node will not resolve a JSON import inside a `.js` file, only a
 bundler can. Importing the statement classes directly would test something other than the shipped
 artifact.
@@ -90,7 +90,7 @@ being there.
 - `e721ef1`, `838c4ad` — 2026-04-21, the first builds, and the origin of committing `dist/`
 - `d1bbb80` — 2026-09-14, 271 lines of bundle for one source change
 - `4425974` — 2026-10-08, the tests moved to the built bundle
-- `6d3333a` — the `types` entry fixed to `dist/types/js-tracker.d.ts`
+- `6d3333a` — the `types` entry fixed to `dist/types/xasu-js.d.ts`
 - npm documentation on [git dependencies](https://docs.npmjs.com/cli/installing-a-package-from-a-git-repository)
   and [the `prepare` lifecycle](https://docs.npmjs.com/cli/v11/using-npm/scripts#prepare)
 

@@ -11,7 +11,7 @@ if they are stale. To change what they say, change the JSDoc.
 
 | Page | Contents |
 | --- | --- |
-| [Tracker classes](./trackers.md) | `JSTracker`, `SeriousGameTracker`, `JSScormTracker`, `LRSTracker` — every method, plus `trackerSettings`, `oauth1` and `oauth2` with their defaults |
+| [Tracker classes](./trackers.md) | `XasuJS`, `SeriousGameTracker`, `JSScormTracker`, `LRSTracker` — every method, plus `trackerSettings`, `oauth1` and `oauth2` with their defaults |
 
 ## Statements
 
@@ -37,9 +37,9 @@ The vocabulary of about 50 profiles — 2,157 ids — ships with the tracker and
 runtime rather than listed here**. To see what is available, read it off a tracker:
 
 ```js
-import { JSTracker } from 'js-tracker';
+import { XasuJS } from 'xasu-js';
 
-const { ALL } = new JSTracker();
+const { ALL } = new XasuJS();
 
 Object.keys(ALL);
 // ['ACTIVITYTYPES', 'ACTIVITYEXTENSION', 'CATEGORYID', 'CONTEXTEXTENSION', 'RESULTEXTENSION', 'VERBS']

@@ -7,7 +7,7 @@ responsible for what.
 
 ```
 a game
-  └─ SeriousGameTracker / JSScormTracker / LRSTracker / JSTracker   (src/js-tracker.js)
+  └─ SeriousGameTracker / JSScormTracker / LRSTracker / XasuJS   (src/xasu-js.js)
        │  settings, lifecycle, and the high-level API
        ├─ tracker.tracker : xAPITrackerAsset                        (src/xAPITrackerAsset.js)
        │     queue, retry policy, backup endpoint, the LRS client
