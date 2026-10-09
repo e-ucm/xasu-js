@@ -18,7 +18,7 @@
 // locales, which only the bundler can resolve, so it cannot be imported directly by Node.
 // Run npm run build before this test.
 import { expect } from 'chai';
-import { JSScormTracker, XasuJS, SeriousGameTracker } from '../dist/xasu-js.bundle.js';
+import { JSScormTracker, JSTracker, XasuJS, XasuScormTracker, SeriousGameTracker } from '../dist/xasu-js.bundle.js';
 
 const EXT = 'https://simva.example';
 
@@ -584,7 +584,7 @@ describe('the SCORM tracker against the scorm profile', function() {
 	let tracker;
 
 	beforeEach(function() {
-		tracker = new JSScormTracker();
+		tracker = new XasuScormTracker();
 		tracker.trackerSettings.oauth_type = 'OAuth0';
 		tracker.trackerSettings.default_uri = EXT;
 		tracker.trackerSettings.platform = EXT;
@@ -650,5 +650,23 @@ describe('the SCORM tracker against the scorm profile', function() {
 
 		expect(tracker.scorm('sc1')).to.equal(tracker.scorm('sc1'));
 		expect(tracker.scorm('sc1')).to.not.equal(tracker.scorm('sc2'));
+	});
+});
+
+describe('the pre-rename class names', function() {
+	it('still exports JSScormTracker, and it is the SCORM tracker', function() {
+		expect(JSScormTracker).to.equal(XasuScormTracker);
+	});
+
+	it('still exports JSTracker, and it is the base tracker', function() {
+		expect(JSTracker).to.equal(XasuJS);
+	});
+
+	it('gives every subclass the same identity through both names', function() {
+		// instanceof has to hold whichever name a game imported, since the aliases are the
+		// same constructor rather than subclasses of it
+		expect(new JSScormTracker()).to.be.an.instanceof(XasuScormTracker);
+		expect(new JSScormTracker()).to.be.an.instanceof(JSTracker);
+		expect(new JSTracker()).to.be.an.instanceof(XasuJS);
 	});
 });

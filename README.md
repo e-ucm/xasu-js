@@ -27,7 +27,7 @@ The *su* also stands for *super*, since it is:
 
 - Super **Supportive** (multi-platform, multi-protocol, cmi5): Xasu runs wherever a browser does, in
   any engine that exports to JavaScript. It supports OAuth 0, OAuth 1 and OAuth 2 (including the
-  device code flow, for consoles and TVs with no keyboard), and the cmi5 profile through `JSScormTracker`.
+  device code flow, for consoles and TVs with no keyboard), and the cmi5 profile through `XasuScormTracker`.
 
 - Super **Asynchronous** (uses async/await): the tracker owns a queue, so a game never blocks on the
   network. `send()` returns a promise, and `flush()` resolves once the queue has been handed to the
@@ -62,7 +62,7 @@ The tracker is not published to a registry. It is consumed straight from this re
 to a tag or a commit:
 
 ```bash
-npm install github:e-ucm/xasu-js#v2.2.1-beta
+npm install github:e-ucm/xasu-js#v2.3.0-beta
 ```
 
 ```js
@@ -73,7 +73,7 @@ A commit hash works too, which is what you want when reproducing a specific buil
 range resolves against the tags:
 
 ```bash
-npm install github:e-ucm/xasu-js#semver:^2.2.0-beta
+npm install github:e-ucm/xasu-js#semver:^2.3.0-beta
 ```
 
 See [how to install from GitHub](docs/how-to/install-from-github.md) for every form.

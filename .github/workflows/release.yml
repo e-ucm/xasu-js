@@ -84,8 +84,10 @@ jobs:
           set -euo pipefail
           npm pack
           VERSION=$(node -p "require('./package.json').version")
-          cp dist/xasu-js.bundle.js "xasu-js.bundle.js"
-          ls -la ./*.tgz ./xasu-js.bundle.js
+          # the UMD one: dist/xasu-js.bundle.js is the Rollup ESM output, whose bare imports
+          # only a bundler can resolve, so a <script> tag pointed at it would not run
+          cp dist/xasu-js-webpack.bundle.js "xasu-js-webpack.bundle.js"
+          ls -la ./*.tgz ./xasu-js-webpack.bundle.js
           echo "assets for xasu-js@$VERSION collected"
 
       - name: Create the release
@@ -94,7 +96,7 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          ASSETS=(xasu-js.bundle.js xasu-js-*.tgz)
+          ASSETS=(xasu-js-webpack.bundle.js xasu-js-*.tgz)
           echo "assets: ${ASSETS[*]}"
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "${ASSETS[@]}" --clobber
@@ -126,14 +128,14 @@ jobs:
             echo "Or drop the UMD bundle next to your page and use a script tag:"
             echo ""
             echo '```html'
-            echo "<script src=\"xasu-js.bundle.js\"></script>"
+            echo "<script src=\"xasu-js-webpack.bundle.js\"></script>"
             echo '```'
             echo ""
             echo "Or use a script tag with the bundle full URL:"
             echo ""
             echo '```html'
-            echo "<script src=\"https://github.com/e-ucm/xasu-js/releases/download/v$VERSION/xasu-js.bundle.js\"></script>"
+            echo "<script src=\"https://github.com/e-ucm/xasu-js/releases/download/v$VERSION/xasu-js-webpack.bundle.js\"></script>"
             echo '```'
             echo ""
-            echo "([download it](https://github.com/e-ucm/xasu-js/releases/download/v$VERSION/xasu-js.bundle.js))"
+            echo "([download it](https://github.com/e-ucm/xasu-js/releases/download/v$VERSION/xasu-js-webpack.bundle.js))"
           } >> "$GITHUB_STEP_SUMMARY"

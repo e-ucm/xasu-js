@@ -10,8 +10,8 @@ It is not published to a registry. It is consumed straight from this repository,
 tag or a commit:
 
 ```bash
-npm install github:e-ucm/xasu-js#v2.2.1-beta
-npm install github:e-ucm/xasu-js#semver:^2.2.0-beta   # newest tag in the range
+npm install github:e-ucm/xasu-js#v2.3.0-beta
+npm install github:e-ucm/xasu-js#semver:^2.3.0-beta   # newest tag in the range
 npm install github:e-ucm/xasu-js#a2e28ea                # one exact commit
 ```
 
@@ -32,7 +32,7 @@ Do not read them in order. Pick the question you have.
 
 ```
 a game
-  └─ tracker (SeriousGameTracker / JSScormTracker / LRSTracker / XasuJS)
+  └─ tracker (SeriousGameTracker / XasuScormTracker / LRSTracker / XasuJS)
        ├─ settings      : what to send, to whom, as whom       (tracker.trackerSettings)
        └─ tracker.tracker : xAPITrackerAsset
             ├─ actor     : who is playing

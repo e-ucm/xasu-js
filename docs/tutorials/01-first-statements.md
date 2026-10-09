@@ -9,7 +9,7 @@ ones the code actually produces.
 ## 1. Install
 
 ```bash
-npm install github:e-ucm/xasu-js#v2.2.1-beta
+npm install github:e-ucm/xasu-js#v2.3.0-beta
 ```
 
 npm builds the tracker from source during the install, so there is no separate build step for you.
@@ -37,9 +37,13 @@ There are four classes, all exported:
 | Class | Use it for |
 | --- | --- |
 | `SeriousGameTracker` | Games. Adds the serious games category and gives you the four game object kinds. |
-| `JSScormTracker` | SCORM content. Adds a `scorm()` factory and the SCORM activity types. |
+| `XasuScormTracker` | SCORM content. Adds a `scorm()` factory and the SCORM activity types. |
 | `LRSTracker` | Reading data back from the LRS. Everything `XasuJS` does, plus queries. |
 | `XasuJS` | The base tracker. A plain tracker with no category and no game object methods. |
+
+The tracker used to be called `js-tracker`, and `XasuJS` and `XasuScormTracker` used to be called
+`JSTracker` and `JSScormTracker`. The old names are still exported and still work, but they are
+deprecated: a new game should use the names in the table.
 
 Pick `SeriousGameTracker` for the rest of this tutorial.
 

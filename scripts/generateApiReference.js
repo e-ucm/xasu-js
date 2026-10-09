@@ -878,7 +878,7 @@ const PAGES = [
 		file: "scorm.md",
 		title: "SCORM",
 		intro:
-			"Reference for the SCORM tracker. `JSScormTracker` wraps the base tracker with a factory " +
+			"Reference for the SCORM tracker. `XasuScormTracker` wraps the base tracker with a factory " +
 			"that holds one instance per SCORM activity, and the statements of those instances carry " +
 			"the parent activity of the content they came from.",
 		files: ["src/HighLevel/Scorm/SCORM.js"]
@@ -912,7 +912,7 @@ const index = [
 	"",
 	"## Trackers",
 	"",
-	"- [Tracker classes](trackers.md) — `XasuJS`, `SeriousGameTracker`, `JSScormTracker`, " +
+	"- [Tracker classes](trackers.md) — `XasuJS`, `SeriousGameTracker`, `XasuScormTracker`, " +
 	"`LRSTracker`, and every setting they take",
 	"",
 	"## Statements",

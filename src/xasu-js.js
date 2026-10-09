@@ -413,9 +413,23 @@ export class XasuJS {
 }
 
 /**
+ * The name the base tracker shipped under before the rename to xasu-js. It is the same class
+ * object, not a subclass, so `new JSTracker()` and `instanceof JSTracker` keep working.
+ * @deprecated Since 2.3.0-beta. Import `XasuJS` instead; this alias goes away in the next major.
+ * @type {typeof XasuJS}
+ */
+export const JSTracker = XasuJS;
+
+/**
+ * The instance type behind the `JSTracker` alias, so `let t: JSTracker` still typechecks.
+ * @deprecated Since 2.3.0-beta. Use `XasuJS` as the type instead.
+ * @typedef {XasuJS} JSTracker
+ */
+
+/**
  * SCORM-specific tracker extending XasuJS
  */
-export class JSScormTracker extends XasuJS {
+export class XasuScormTracker extends XasuJS {
     SCORMPROFILE = SCORMPROFILE;
     STATEMENT_BUILDER_IDS = STATEMENT;
     ALL = ALL;
@@ -425,7 +439,7 @@ export class JSScormTracker extends XasuJS {
     scormInstances={};
 
     /**
-     * Creates a new JSScormTracker instance
+     * Creates a new XasuScormTracker instance
      */
     constructor() {
         super();
@@ -486,6 +500,21 @@ export class JSScormTracker extends XasuJS {
         return super.fromXAPI(statement);
     }
 }
+
+/**
+ * The name the SCORM tracker shipped under before the rename to xasu-js. It is the same class
+ * object, not a subclass, so `new JSScormTracker()` and `instanceof JSScormTracker` keep working.
+ * @deprecated Since 2.3.0-beta. Import `XasuScormTracker` instead; this alias goes away in the
+ * next major.
+ * @type {typeof XasuScormTracker}
+ */
+export const JSScormTracker = XasuScormTracker;
+
+/**
+ * The instance type behind the `JSScormTracker` alias, so `let t: JSScormTracker` still typechecks.
+ * @deprecated Since 2.3.0-beta. Use `XasuScormTracker` as the type instead.
+ * @typedef {XasuScormTracker} JSScormTracker
+ */
 
 /**
  * SCORM-specific tracker extending XasuJS

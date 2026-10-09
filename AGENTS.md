@@ -6,8 +6,12 @@ This is a JavaScript xAPI tracker for serious games analytics. It helps track pl
 ## Core Classes
 - `XasuJS` - Base tracker class with authentication and core functionality
 - `SeriousGameTracker` - Extends XasuJS with game-specific tracking methods
-- `JSScormTracker` - SCORM-specific tracker
+- `XasuScormTracker` - SCORM-specific tracker
 - `LRSTracker` - LRS-specific tracker with query capabilities
+
+`JSTracker` and `JSScormTracker` are exported as deprecated aliases bound to the same class objects
+(`src/xasu-js.js`), so both names resolve and `instanceof` holds across them. Do not rename or drop
+the aliases without a major version; `test/profiles.js` pins the identities.
 
 ## Key Usage Patterns
 
@@ -62,18 +66,21 @@ tracker.gameObject("healthPotion", tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM
 - Bundler notes: JSON uses `@rollup/plugin-json` (devDependency, wired in `rollup.config.js`); `tsconfig.json` has `resolveJsonModule` + `allowSyntheticDefaultImports` for the type build.
 
 ## Build and Test Commands
-- `npm run build` - Build the project (webpack + types)
+- `npm run build` - Clean `dist/`, then build the project (webpack + types)
 - `npm run verify` - Type check, lint, tests, and build — what CI runs
 - `npm run test` - Run linting and tests
 - `npm run lint` - Run linting only
 - `npm run typecheck` - `tsc --noEmit`
 - `npm run build:types` - Build TypeScript definitions
 - `npm run build:webpack` - Build webpack bundles only
+- `npm run clean` - Remove `dist/`. `build` does this first: a build that only overwrites its
+  outputs cannot remove a file whose name left the config, which is what a rename leaves behind,
+  and `files` in `package.json` ships `dist/` regardless of `.gitignore`.
 - `npm run docs:reference` - Regenerate `docs/reference/**` from the JSDoc
 
 ## Releasing
 - The tracker is **not published to a registry**. It is consumed straight from the repository:
-  `npm install github:e-ucm/xasu-js#v2.2.1-beta`. A tag, a commit hash, a branch, or
+  `npm install github:e-ucm/xasu-js#v2.3.0-beta`. A tag, a commit hash, a branch, or
   `#semver:<range>` all work after the `#`.
 - See `docs/how-to/install-from-github.md` for the procedure.
 - `dist/` is **not committed** — it is gitignored. `package.json` has `"prepare": "npm run build"`,

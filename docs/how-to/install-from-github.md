@@ -6,7 +6,7 @@ pinned to a tag or a commit.
 The tracker is not published to npm. It is consumed straight from the repository:
 
 ```bash
-npm install github:e-ucm/xasu-js#v2.2.1-beta
+npm install github:e-ucm/xasu-js#v2.3.0-beta
 ```
 
 ## Picking what you get
@@ -15,16 +15,16 @@ The part after `#` decides which version is installed:
 
 | Form | Resolves to | Use it when |
 | --- | --- | --- |
-| `#v2.2.1-beta` | the tag exactly | you want one known release |
+| `#v2.3.0-beta` | the tag exactly | you want one known release |
 | `#a2e28ea` | the commit exactly | you want one known build, or a tag does not exist |
-| `#fix-xasu-js` | the branch tip | you are tracking work in progress |
-| `#semver:^2.2.0-beta` | the highest tag matching the range | you want the newest release in a series |
-| `#main` | the default branch | you are living dangerously |
+| `#fix-js-tracker` | the branch tip | you are tracking work in progress |
+| `#semver:^2.3.0-beta` | the highest tag matching the range | you want the newest release in a series |
+| `#master` | the default branch | you are living dangerously |
 
 The equivalent long form, which some tooling prefers, is:
 
 ```bash
-npm install "git+https://github.com/e-ucm/xasu-js.git#v2.2.1-beta"
+npm install "git+https://github.com/e-ucm/xasu-js.git#v2.3.0-beta"
 ```
 
 **Pin a tag or a commit, not a branch.** A branch moves; a tag does not. A `package-lock.json`
@@ -92,7 +92,7 @@ prebuilt bundle:
 **The tarball**, if you want to install something without letting npm build it:
 
 ```bash
-npm install https://github.com/e-ucm/xasu-js/releases/download/v2.2.1-beta/xasu-js-2.2.1-beta.tgz
+npm install https://github.com/e-ucm/xasu-js/releases/download/v2.3.0-beta/xasu-js-2.3.0-beta.tgz
 ```
 
 **The UMD bundle**, if your page loads the tracker with a `<script>` tag and has no build step of
@@ -103,7 +103,7 @@ its own. Download it and drop it next to your page:
 ```
 
 ```bash
-curl -LO https://github.com/e-ucm/xasu-js/releases/download/v2.2.1-beta/xasu-js-webpack.bundle.js
+curl -LO https://github.com/e-ucm/xasu-js/releases/download/v2.3.0-beta/xasu-js-webpack.bundle.js
 ```
 
 ## Tagging a release
@@ -111,12 +111,12 @@ curl -LO https://github.com/e-ucm/xasu-js/releases/download/v2.2.1-beta/xasu-js-
 Cutting a tag builds the release, builds the artifacts, and attaches them to a GitHub Release:
 
 ```bash
-npm version 2.2.1-beta --no-git-tag-version   # updates package.json and package-lock.json
+npm version 2.3.0-beta --no-git-tag-version   # updates package.json and package-lock.json
 npm run verify                                 # what CI runs
-git commit -am "release 2.2.1-beta"
+git commit -am "release 2.3.0-beta"
 git push origin HEAD
-git tag -a v2.2.1-beta -m "2.2.1-beta"
-git push origin v2.2.1-beta                   # triggers .github/workflows/release.yml
+git tag -a v2.3.0-beta -m "2.3.0-beta"
+git push origin v2.3.0-beta                   # triggers .github/workflows/release.yml
 ```
 
 The tag must name the version in `package.json`. The release workflow fails if it does not, because

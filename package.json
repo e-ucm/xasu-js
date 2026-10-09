@@ -30,9 +30,10 @@
   "scripts": {
     "generate:profiles": "git submodule update --init --recursive && node scripts/generateProfiles.js",
     "docs:reference": "node scripts/generateApiReference.js",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "build:types": "npx tsc --project tsconfig.json",
     "build:webpack": "webpack && rollup -c",
-    "build": "npm run build:webpack && npm run build:types",
+    "build": "npm run clean && npm run build:webpack && npm run build:types",
     "prepare": "npm run build",
     "typecheck": "npx tsc --noEmit --project tsconfig.json",
     "verify": "npm run typecheck && npm run test && npm run build",

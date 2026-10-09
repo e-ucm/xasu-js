@@ -11,7 +11,13 @@ if they are stale. To change what they say, change the JSDoc.
 
 | Page | Contents |
 | --- | --- |
-| [Tracker classes](./trackers.md) | `XasuJS`, `SeriousGameTracker`, `JSScormTracker`, `LRSTracker` — every method, plus `trackerSettings`, `oauth1` and `oauth2` with their defaults |
+| [Tracker classes](./trackers.md) | `XasuJS`, `SeriousGameTracker`, `XasuScormTracker`, `LRSTracker` — every method, plus `trackerSettings`, `oauth1` and `oauth2` with their defaults |
+
+`JSScormTracker` and `JSTracker` are still exported, as the names those classes shipped under
+before the rename to xasu-js. Each is the same class object as its new name, not a subclass, so
+existing code keeps working and `instanceof` holds across both. Both carry `@deprecated` since
+2.3.0-beta, so an editor strikes them through and says which name to move to. New code should use
+`XasuScormTracker` and `XasuJS`.
 
 ## Statements
 

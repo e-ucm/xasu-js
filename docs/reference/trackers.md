@@ -66,7 +66,7 @@ Creates a new statement builder from an xAPI statement
 
 Extends `XasuJS`.
 
-## `JSScormTracker`
+## `XasuScormTracker`
 
 SCORM-specific tracker extending XasuJS
 
@@ -76,7 +76,7 @@ list of scorm instances
 
 ### `new Class(...)`
 
-Creates a new JSScormTracker instance
+Creates a new XasuScormTracker instance
 
 ### `scorm(id, type = SCORMPROFILE.ACTIVITYTYPES.LESSON)`
 

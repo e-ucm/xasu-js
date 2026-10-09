@@ -25,7 +25,7 @@ Four classes over one asset.
   context, and the LRS client. It knows nothing about game objects.
 - **`XasuJS`** owns the settings and the lifecycle — `login()`, `start()`, `stop()`,
   `flush()` — and holds the asset as `tracker.tracker`. It is the base for everything else.
-- **`SeriousGameTracker`**, **`JSScormTracker`** and **`LRSTracker`** extend it and add capability:
+- **`SeriousGameTracker`**, **`XasuScormTracker`** and **`LRSTracker`** extend it and add capability:
   the game object factories, a SCORM instance registry, and the LRS queries.
 
 The factory properties became methods:

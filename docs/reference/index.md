@@ -8,7 +8,7 @@ This section describes what the code *is*. For how to use it, see the [tutorials
 
 ## Trackers
 
-- [Tracker classes](trackers.md) — `XasuJS`, `SeriousGameTracker`, `JSScormTracker`, `LRSTracker`, and every setting they take
+- [Tracker classes](trackers.md) — `XasuJS`, `SeriousGameTracker`, `XasuScormTracker`, `LRSTracker`, and every setting they take
 
 ## Statements
 

@@ -1,6 +1,6 @@
 # Architecture decision records
 
-Ten decisions that explain why xasu-js looks the way it does. Each one is written from the
+Eleven decisions that explain why xasu-js looks the way it does. Each one is written from the
 repository's own history: the commits are real, the dates are real, and where a decision was later
 partly reversed, the ADR says so and links the reversal.
 
@@ -29,6 +29,7 @@ Each record has:
 | [0008](./0008-the-batch-timer-is-cancelled.md) | The batch timer is cancelled, not just forgotten | Accepted | 2026-10-08 |
 | [0009](./0009-the-device-flow-owns-the-screen.md) | The device flow owns the screen | Accepted | 2026-09-09 → 2026-09-14 |
 | [0010](./0010-dist-is-built-not-committed.md) | `dist/` is built at install time, and the tests run against it | Accepted; **reverses** the earlier decision to commit `dist/` | 2026-04-21 → 2026-10-09 |
+| [0011](./0011-the-tracker-is-named-xasu-js.md) | The tracker is named xasu-js, and the old class names still resolve | Accepted | 2026-10-09 |
 
 ## The one that was reversed
 
