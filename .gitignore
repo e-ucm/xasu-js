@@ -30,8 +30,15 @@ build/Release
 node_modules
 jspm_packages
 
+# The build output. npm runs the `prepare` script when the repository is installed as a git
+# dependency, so this is rebuilt rather than committed. See docs/how-to/install-from-github.md
+dist
+
 # Optional npm cache directory
 .npm
 
 # Optional REPL history
 .node_repl_history
+
+# npm pack output
+*.tgz

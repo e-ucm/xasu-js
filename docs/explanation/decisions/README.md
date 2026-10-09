@@ -28,7 +28,7 @@ Each record has:
 | [0007](./0007-a-rejected-batch-is-skipped.md) | A rejected batch is skipped, a network failure is not | Accepted | 2026-05-07 → 2026-05-21 |
 | [0008](./0008-the-batch-timer-is-cancelled.md) | The batch timer is cancelled, not just forgotten | Accepted | 2026-10-08 |
 | [0009](./0009-the-device-flow-owns-the-screen.md) | The device flow owns the screen | Accepted | 2026-09-09 → 2026-09-14 |
-| [0010](./0010-the-bundle-is-committed.md) | The bundle is committed, and the tests run against it | Accepted; the cost is mitigated in two places | 2026-04-21 → 2026-10-08 |
+| [0010](./0010-dist-is-built-not-committed.md) | `dist/` is built at install time, and the tests run against it | Accepted; **reverses** the earlier decision to commit `dist/` | 2026-04-21 → 2026-10-09 |
 
 ## The one that was reversed
 

@@ -1,6 +1,6 @@
 {
   "name": "js-tracker",
-  "version": "2.2.0-beta",
+  "version": "2.2.1-beta",
   "description": "Client Side xAPI-SG Tracker Asset written in JavaScript",
   "type": "module",
   "main": "dist/js-tracker.bundle.cjs",
@@ -13,15 +13,27 @@
       "require": "./dist/js-tracker.bundle.cjs"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": "https://github.com/e-ucm/js-tracker",
   "author": "e-UCM Research Group",
   "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "generate:profiles": "git submodule update --init --recursive && node scripts/generateProfiles.js",
     "docs:reference": "node scripts/generateApiReference.js",
     "build:types": "npx tsc --project tsconfig.json",
     "build:webpack": "webpack && rollup -c",
     "build": "npm run build:webpack && npm run build:types",
+    "prepare": "npm run build",
     "typecheck": "npx tsc --noEmit --project tsconfig.json",
     "verify": "npm run typecheck && npm run test && npm run build",
     "eslint-fix": "eslint . --fix",

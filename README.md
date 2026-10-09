@@ -58,20 +58,36 @@ An example page to poke at is in [`test_app.html`](test_app.html).
 
 ## Installation
 
-Copy the bundle into your project, or install from npm:
+The tracker is not published to a registry. It is consumed straight from this repository, pinned
+to a tag or a commit:
 
 ```bash
-npm install js-tracker
+npm install github:e-ucm/js-tracker#v2.2.1-beta
 ```
 
 ```js
 import { SeriousGameTracker } from 'js-tracker';
 ```
 
-For a plain page with no build step, use the UMD bundle:
+A commit hash works too, which is what you want when reproducing a specific build, and a semver
+range resolves against the tags:
+
+```bash
+npm install github:e-ucm/js-tracker#semver:^2.2.0-beta
+```
+
+See [how to install from GitHub](docs/how-to/install-from-github.md) for every form.
+
+npm builds the tracker from source during the install, because the repository carries a `prepare`
+script and does not commit its `dist/`. That costs about 30 seconds and a build toolchain on the
+first install of a given commit. If you would rather not, install the packed tarball attached to
+the [release](https://github.com/e-ucm/js-tracker/releases) instead.
+
+For a plain page with no build step, download the UMD bundle from the
+[same release](https://github.com/e-ucm/js-tracker/releases) and load it locally:
 
 ```html
-<script src="dist/js-tracker-webpack.bundle.js"></script>
+<script src="js-tracker-webpack.bundle.js"></script>
 ```
 
 ## Getting started
@@ -127,13 +143,14 @@ Each takes an activity type as its second argument, drawn from `COMPLETABLETYPE`
 ## Development
 
 ```bash
-npm ci
-npm run build          # bundles in dist/ and the type declarations
-npm run verify         # type check, lint, and tests
-npm run docs:reference # regenerates docs/reference from the JSDoc
+npm ci                  # installs dependencies and builds dist/
+npm run build           # bundles in dist/ and the type declarations
+npm run verify          # type check, lint, and tests
+npm run docs:reference  # regenerates docs/reference from the JSDoc
 ```
 
-The tests import the tracker from `dist/`, so `npm run build` has to run before them.
+`dist/` is gitignored and `npm ci` builds it, so a fresh clone can run the tests straight away. The
+tests import the tracker from `dist/` rather than from `src/`.
 
 ## Credits and acknowledgements
 

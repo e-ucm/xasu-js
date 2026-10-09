@@ -8,22 +8,26 @@ ones the code actually produces.
 
 ## 1. Install
 
-The tracker ships as bundles in `dist/`. Copy them into your project, or take them from a
-release.
-
-For a plain HTML page:
-
-```html
-<script src="dist/js-tracker-webpack.bundle.js"></script>
+```bash
+npm install github:e-ucm/js-tracker#v2.2.1-beta
 ```
 
-For a bundler, install from npm and import the classes:
+npm builds the tracker from source during the install, so there is no separate build step for you.
+
+For a bundler, import the classes:
 
 ```js
 import { SeriousGameTracker } from 'js-tracker';
 ```
 
-The bundle is also available as CommonJS (`js-tracker.bundle.cjs`) and TypeScript definitions
+For a plain HTML page with no build step, download the UMD bundle from
+[the release](https://github.com/e-ucm/js-tracker/releases) and load it locally:
+
+```html
+<script src="js-tracker-webpack.bundle.js"></script>
+```
+
+The bundle is also available as CommonJS (`js-tracker.bundle.cjs`), and TypeScript definitions
 (`dist/types/js-tracker.d.ts`) are generated with it.
 
 ## 2. Create and configure a tracker

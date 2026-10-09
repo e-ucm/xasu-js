@@ -64,4 +64,4 @@ language.
 
 - [Authentication](../authentication.md)
 - [ADR-0001](0001-trackers-are-composed-over-one-asset.md) — the layering this reaches around
-- [ADR-0010](0010-the-bundle-is-committed.md) — why the tests import the bundle at all
+- [ADR-0010](0010-dist-is-built-not-committed.md) — why the tests import the bundle at all

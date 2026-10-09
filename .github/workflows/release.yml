@@ -1,0 +1,133 @@
+name: Release
+
+# A tag is the release. `dist/` is not committed, so the tarball built here is what a consumer
+# downloads when they need a prebuilt artifact; a `github:` install builds it themselves from
+# the `prepare` script. See docs/how-to/install-from-github.md.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # `npm ci` runs the prepare script, which is the build: there is no committed dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+          cache: npm
+
+      - name: Install dependencies and build
+        run: npm ci
+
+      - name: Check types
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npx mocha
+
+      - name: Check the API reference is up to date
+        run: |
+          npm run docs:reference
+          git diff --exit-code -- docs/reference
+
+  release:
+    name: Release
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to create the GitHub Release and upload the tarball
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+          cache: npm
+
+      - name: Install dependencies and build
+        run: npm ci
+
+      # The tag must name the version in package.json. There is a mismatch in the tag history
+      # (v2.1.2-beta sits on a commit saying 2.1.0-beta), so this has to be checked rather than
+      # assumed: a release asset whose name disagrees with its contents is worse than no asset.
+      - name: Check the tag names the version
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="${GITHUB_REF_NAME}"
+          if [ "$TAG" != "v$VERSION" ]; then
+            echo "::error::tag $TAG does not match package.json version $VERSION"
+            exit 1
+          fi
+          echo "releasing js-tracker@$VERSION"
+
+      # Two assets, because there are two kinds of consumer: the tarball for anything that
+      # installs, and the raw UMD bundle for the page that loads the tracker with a <script>
+      # tag and has no build step of its own. dist/ is not committed, so this release is the
+      # only place that second kind of consumer can get a file.
+      - name: Collect the release assets
+        run: |
+          set -euo pipefail
+          npm pack
+          VERSION=$(node -p "require('./package.json').version")
+          cp dist/js-tracker-webpack.bundle.js "js-tracker-webpack.bundle.js"
+          ls -la ./*.tgz ./js-tracker-webpack.bundle.js
+          echo "assets for js-tracker@$VERSION collected"
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          ASSETS=(js-tracker-webpack.bundle.js js-tracker-*.tgz)
+          echo "assets: ${ASSETS[*]}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "${ASSETS[@]}" --clobber
+          else
+            gh release create "$TAG" "${ASSETS[@]}" \
+              --title "$TAG" \
+              --generate-notes
+          fi
+
+      - name: Summary
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./package.json').version")
+          {
+            echo "### Released v$VERSION"
+            echo ""
+            echo "With a build step (npm installs it, and builds it during the install):"
+            echo ""
+            echo '```bash'
+            echo "npm install github:e-ucm/js-tracker#v$VERSION"
+            echo '```'
+            echo ""
+            echo "With no build step at all, the prebuilt tarball:"
+            echo ""
+            echo '```bash'
+            echo "npm install https://github.com/e-ucm/js-tracker/releases/download/v$VERSION/js-tracker-$VERSION.tgz"
+            echo '```'
+            echo ""
+            echo "Or drop the UMD bundle next to your page and use a script tag:"
+            echo ""
+            echo '```html'
+            echo "<script src=\"js-tracker-webpack.bundle.js\"></script>"
+            echo '```'
+            echo ""
+            echo "([download it](https://github.com/e-ucm/js-tracker/releases/download/v$VERSION/js-tracker-webpack.bundle.js))"
+          } >> "$GITHUB_STEP_SUMMARY"

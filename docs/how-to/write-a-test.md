@@ -37,8 +37,8 @@ describe('Thing under test', function() {
 ## Two rules that are not stylistic
 
 **Import from `dist/`, not `src/`.** `src/js-tracker.js` imports the device screen's locale JSON,
-which Node cannot resolve inside a `.js` file. Only the bundle is importable, so
-`npm run build` has to run before the tests.
+which Node cannot resolve inside a `.js` file. Only the bundle is importable, so `dist/` has to be
+built before the tests — `npm ci` does it.
 
 **Call `tracker.stop()` in `afterEach`.** The tracker arms a batch timer when a statement is
 queued. Without `stop()` the handle stays referenced and mocha finishes its run but never exits,

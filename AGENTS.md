@@ -71,9 +71,30 @@ tracker.gameObject("healthPotion", tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM
 - `npm run build:webpack` - Build webpack bundles only
 - `npm run docs:reference` - Regenerate `docs/reference/**` from the JSDoc
 
+## Releasing
+- The tracker is **not published to a registry**. It is consumed straight from the repository:
+  `npm install github:e-ucm/js-tracker#v2.2.1-beta`. A tag, a commit hash, a branch, or
+  `#semver:<range>` all work after the `#`.
+- See `docs/how-to/install-from-github.md` for the procedure.
+- `dist/` is **not committed** — it is gitignored. `package.json` has `"prepare": "npm run build"`,
+  so a git install builds the consumer's copy from source. `npm ci` runs `prepare`, so `npx mocha`
+  works on a fresh clone without a manual build.
+- Pushing a `v*` tag triggers `.github/workflows/release.yml`: it verifies, packs, and attaches
+  `js-tracker-<version>.tgz` plus `js-tracker-webpack.bundle.js` to a GitHub Release. Those assets
+  are the only prebuilt copies now.
+- The tag must name the version in `package.json`; the release workflow fails if it does not.
+  `v2.1.2-beta` sits on a commit that says `2.1.0-beta`, so a tag can resolve to something other
+  than what its name claims.
+- `package.json` has a `files` allowlist (`dist`, `README.md`, `LICENSE`) — it applies to git
+  installs too, and it wins over `.gitignore`, so `npm pack --dry-run` must contain every entry
+  point in `main`/`module`/`types`/`exports` even though `dist` is gitignored.
+- Verified against npm 10: `NODE_ENV=production`, `--omit=dev` and `--ignore-scripts` all still
+  build a git dependency, because npm installs its devDependencies to run `prepare`. A script-policy
+  filter is the one case that can skip it, and it fails silently.
+
 ## Tests
 - `test/*.js` - mocha, ESM, run against `dist/js-tracker.bundle.js` and not `src/` (the locale
-  JSON in `src/Auth/deviceI18n.js` is unresolvable by Node). `npm run build` must run first.
+  JSON in `src/Auth/deviceI18n.js` is unresolvable by Node). `npm ci` builds `dist/` via `prepare`.
 - Any test that queues a statement must call `tracker.stop()` in `afterEach`, or the pending batch
   timer keeps the process alive and mocha hangs after reporting success.
 

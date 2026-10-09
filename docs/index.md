@@ -6,6 +6,15 @@ statements to a Learning Record Store. It is the JavaScript implementation of
 [xAPI serious games profile](https://github.com/e-ucm/xapi-seriousgames), and it carries the
 vocabulary of about 50 other profiles.
 
+It is not published to a registry. It is consumed straight from this repository, pinned to a
+tag or a commit:
+
+```bash
+npm install github:e-ucm/js-tracker#v2.2.1-beta
+npm install github:e-ucm/js-tracker#semver:^2.2.0-beta   # newest tag in the range
+npm install github:e-ucm/js-tracker#a2e28ea                # one exact commit
+```
+
 The documentation is organised with the [Diátaxis](https://diataxis.fr) method. The four
 sections answer four different questions, and each one is written so it can be read on its
 own:
@@ -56,12 +65,13 @@ Vocabulary you will meet everywhere:
 ## Running it locally
 
 ```bash
-npm ci
-npm run build   # bundles into dist/, then the type declarations
+npm ci        # installs dependencies and builds dist/
+npm run build # bundles into dist/, then the type declarations
 npm run verify  # type check, lint, tests
 ```
 
-The tests import the tracker from `dist/`, so `npm run build` has to run before them.
+`dist/` is gitignored rather than committed, and `npm ci` builds it via the `prepare` script that
+also makes git installs work. The tests import the tracker from `dist/`.
 
 ## Generated documentation
 

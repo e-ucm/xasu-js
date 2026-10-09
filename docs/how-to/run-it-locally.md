@@ -6,25 +6,38 @@ A **recipe for one task**: building the tracker from a clone and getting the tes
 
 ```bash
 npm ci
+```
+
+That is enough. `npm ci` installs the dependencies and builds, because `package.json` has a
+`prepare` script — the same one that makes `npm install github:e-ucm/js-tracker#<tag>` build the
+tracker's `dist/` instead of requiring a committed copy.
+
+To rebuild without reinstalling:
+
+```bash
 npm run build
 ```
 
 `npm run build` runs the bundlers (webpack for the UMD bundle, Rollup for ESM and CJS, minified)
-and then the type declarations. The output is `dist/`.
+and then the type declarations. The output is `dist/`, which is gitignored and therefore absent
+from a fresh clone.
 
 ## Why the build has to come first
 
 The tests import the tracker from `dist/js-tracker.bundle.js`, not from `src/`. `src/js-tracker.js`
 imports the device screen's locale JSON, and Node will not resolve a JSON import inside a `.js`
-file — only the bundler can. So a test run against an unbuilt or stale `dist/` is not testing the
-current source.
+file — only the bundler can. So a test run against an unbuilt `dist/` is not testing the current
+source.
 
-CI runs the build before the tests for this reason, and so should you.
+`npm ci` builds, so a fresh clone is fine. There is no way to end up with a stale `dist/` lying
+around, because none is committed. CI still runs the build explicitly, which also checks that a
+plain install produced the artifacts.
 
 ## The commands
 
 | Command | Does |
 | --- | --- |
+| `npm ci` | Installs dependencies and builds `dist/` |
 | `npm run build` | Bundles and type declarations |
 | `npm run typecheck` | `tsc --noEmit`, no output written |
 | `npm run lint` | ESLint, then `eslint --fix` |

@@ -30,5 +30,6 @@ something works this way, read the [explanation section](../explanation/README.m
 | I want to… | Guide |
 | --- | --- |
 | Build and test locally | [run-it-locally.md](./run-it-locally.md) |
+| Install the tracker from GitHub | [install-from-github.md](./install-from-github.md) |
 | Regenerate the API reference | [regenerate-the-reference.md](./regenerate-the-reference.md) |
 | Write a test | [write-a-test.md](./write-a-test.md) |
