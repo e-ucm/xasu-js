@@ -1,6 +1,6 @@
 {
   "name": "xasu-js",
-  "version": "2.3.0-beta",
+  "version": "2.3.0",
   "description": "Client Side xAPI-SG Tracker Asset written in JavaScript",
   "type": "module",
   "main": "dist/xasu-js.bundle.cjs",

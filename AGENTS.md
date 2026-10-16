@@ -79,16 +79,22 @@ tracker.gameObject("healthPotion", tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM
 - `npm run docs:reference` - Regenerate `docs/reference/**` from the JSDoc
 
 ## Releasing
-- The tracker is **not published to a registry**. It is consumed straight from the repository:
-  `npm install github:e-ucm/xasu-js#v2.3.0-beta`. A tag, a commit hash, a branch, or
+- The tracker is **not published to the public npm registry**. It is consumed straight from the
+  repository: `npm install github:e-ucm/xasu-js#v2.3.0-beta`. A tag, a commit hash, a branch, or
   `#semver:<range>` all work after the `#`.
+- It is **also published, prebuilt, to GitHub Packages** at `npm.pkg.github.com` as
+  `@e-ucm/xasu-js`, one version per tag: `npm config set @e-ucm:registry
+  https://npm.pkg.github.com && npm install @e-ucm/xasu-js`. GitHub Packages requires an
+  owner-scoped name, so the publish job runs `npm pkg set name="@e-ucm/xasu-js"` in CI only; the
+  committed name stays the unscoped `xasu-js`.
 - See `docs/how-to/install-from-github.md` for the procedure.
 - `dist/` is **not committed** — it is gitignored. `package.json` has `"prepare": "npm run build"`,
   so a git install builds the consumer's copy from source. `npm ci` runs `prepare`, so `npx mocha`
   works on a fresh clone without a manual build.
 - Pushing a `v*` tag triggers `.github/workflows/release.yml`: it verifies, packs, and attaches
-  `xasu-js-<version>.tgz` plus `xasu-js-webpack.bundle.js` to a GitHub Release. Those assets
-  are the only prebuilt copies now.
+  `xasu-js-<version>.tgz` plus `xasu-js-webpack.bundle.js` to a GitHub Release, then a
+  `publish-github` job (tag-only, `needs: [verify, release]`, `packages: write`) publishes the
+  package to GitHub Packages, skipping a version that already exists.
 - The tag must name the version in `package.json`; the release workflow fails if it does not.
   `v2.1.2-beta` sits on a commit that says `2.1.0-beta`, so a tag can resolve to something other
   than what its name claims.

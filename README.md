@@ -58,8 +58,8 @@ An example page to poke at is in [`test_app.html`](test_app.html).
 
 ## Installation
 
-The tracker is not published to a registry. It is consumed straight from this repository, pinned
-to a tag or a commit:
+The tracker is not published to the public npm registry. It is consumed straight from this
+repository, pinned to a tag or a commit:
 
 ```bash
 npm install github:e-ucm/xasu-js#v2.3.0-beta
@@ -67,6 +67,17 @@ npm install github:e-ucm/xasu-js#v2.3.0-beta
 
 ```js
 import { SeriousGameTracker } from 'xasu-js';
+```
+
+It is also published, prebuilt, to the GitHub Packages registry:
+
+```bash
+npm config set @e-ucm:registry https://npm.pkg.github.com
+npm install @e-ucm/xasu-js
+```
+
+```js
+import { SeriousGameTracker } from '@e-ucm/xasu-js';
 ```
 
 A commit hash works too, which is what you want when reproducing a specific build, and a semver

@@ -1,12 +1,19 @@
 # How to install from GitHub
 
-**A recipe for one task**: installing the tracker from the repository rather than from a registry,
-pinned to a tag or a commit.
+**A recipe for one task**: installing the tracker from GitHub rather than from the public npm
+registry, either straight from the repository (pinned to a tag or a commit) or from the GitHub Packages registry.
 
-The tracker is not published to npm. It is consumed straight from the repository:
+The tracker is not published to the public npm registry. It is consumed straight from the repository:
 
 ```bash
 npm install github:e-ucm/xasu-js#v2.3.0-beta
+```
+
+Each tag is also published, prebuilt, to the GitHub Packages registry:
+
+```bash
+npm config set @e-ucm:registry https://npm.pkg.github.com
+npm install @e-ucm/xasu-js
 ```
 
 ## Picking what you get
@@ -30,6 +37,38 @@ npm install "git+https://github.com/e-ucm/xasu-js.git#v2.3.0-beta"
 **Pin a tag or a commit, not a branch.** A branch moves; a tag does not. A `package-lock.json`
 records the resolved commit, so a lockfile committed alongside your game is what actually makes
 an install reproducible — the spec alone is a request, not a guarantee.
+
+## Installing from GitHub Packages
+
+Every tag publishes the built package to the GitHub Packages npm registry as `@e-ucm/xasu-js`.
+Unlike the git install, that tarball already contains `dist/`, so npm builds nothing on your machine:
+
+```bash
+npm config set @e-ucm:registry https://npm.pkg.github.com
+npm install @e-ucm/xasu-js
+```
+
+Two commands, because the package is scoped: `@e-ucm` has to be pointed at the registry before npm will look there for it. Add `--location=project` to write the setting into a `.npmrc` in your
+project rather than into your user config.
+
+GitHub Packages asks for a token even for a public package. The install reads it from
+`NODE_AUTH_TOKEN` or from a line in `~/.npmrc`:
+
+```bash
+npm config set //npm.pkg.github.com/:_authToken "$GITHUB_TOKEN"
+```
+
+The token needs the `read:packages` scope. In a GitHub Actions workflow it is `secrets.GITHUB_TOKEN`
+together with `packages: read` in the job's `permissions`.
+
+Because the registry name is scoped, the import is scoped here too:
+
+```js
+import { SeriousGameTracker } from '@e-ucm/xasu-js';
+```
+
+Pin a published version the usual way — `npm install @e-ucm/xasu-js@2.3.0-beta` — and the git
+forms above still work unchanged.
 
 ## Why this works at all
 
@@ -126,6 +165,11 @@ the tag history contains one mismatch (`v2.1.2-beta` sits on a commit whose `pac
 You do not run `npm run build` before tagging. `dist/` is gitignored, so it is not part of the
 commit, and CI builds it from a clean checkout. Building locally is still worth it if you want the
 artifacts to look right before you push the tag.
+
+The same tag also publishes the built package to the GitHub Packages registry as `@e-ucm/xasu-js`,
+in a `publish-github` job that runs after the release. It leaves the repository's `package.json`
+name untouched — GitHub Packages asks for an owner-scoped name, so the job scopes it only for the
+publish. A tag whose version already exists there is skipped rather than failing.
 
 ## Choosing a version to install
 

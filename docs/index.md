@@ -6,13 +6,20 @@ statements to a Learning Record Store. It is the JavaScript implementation of
 [xAPI serious games profile](https://github.com/e-ucm/xapi-seriousgames), and it carries the
 vocabulary of about 50 other profiles.
 
-It is not published to a registry. It is consumed straight from this repository, pinned to a
-tag or a commit:
+It is not published to the public npm registry. It is consumed straight from this repository,
+pinned to a tag or a commit:
 
 ```bash
 npm install github:e-ucm/xasu-js#v2.3.0-beta
 npm install github:e-ucm/xasu-js#semver:^2.3.0-beta   # newest tag in the range
 npm install github:e-ucm/xasu-js#a2e28ea                # one exact commit
+```
+
+Each tag is also published, prebuilt, to the GitHub Packages registry:
+
+```bash
+npm config set @e-ucm:registry https://npm.pkg.github.com
+npm install @e-ucm/xasu-js
 ```
 
 The documentation is organised with the [Diátaxis](https://diataxis.fr) method. The four
