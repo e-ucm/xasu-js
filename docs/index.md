@@ -15,10 +15,13 @@ npm install github:e-ucm/xasu-js#semver:^2.3.0-beta   # newest tag in the range
 npm install github:e-ucm/xasu-js#a2e28ea                # one exact commit
 ```
 
-Each tag is also published, prebuilt, to the GitHub Packages registry:
+Each tag is also published, prebuilt, to the GitHub Packages registry. GitHub Packages asks for a
+token even for a public package, so authenticate first:
 
 ```bash
+export GITHUB_TOKEN=<personal access token with the read:packages scope>
 npm config set @e-ucm:registry https://npm.pkg.github.com
+npm config set //npm.pkg.github.com/:_authToken "$GITHUB_TOKEN"
 npm install @e-ucm/xasu-js
 ```
 

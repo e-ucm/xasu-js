@@ -9,10 +9,13 @@ The tracker is not published to the public npm registry. It is consumed straight
 npm install github:e-ucm/xasu-js#v2.3.0-beta
 ```
 
-Each tag is also published, prebuilt, to the GitHub Packages registry:
+Each tag is also published, prebuilt, to the GitHub Packages registry. GitHub Packages asks for a
+token even for a public package, so authenticate before installing:
 
 ```bash
+export GITHUB_TOKEN=<a personal access token with the read:packages scope>
 npm config set @e-ucm:registry https://npm.pkg.github.com
+npm config set //npm.pkg.github.com/:_authToken "$GITHUB_TOKEN"
 npm install @e-ucm/xasu-js
 ```
 
@@ -39,27 +42,40 @@ records the resolved commit, so a lockfile committed alongside your game is what
 an install reproducible — the spec alone is a request, not a guarantee.
 
 ## Installing from GitHub Packages
-
 Every tag publishes the built package to the GitHub Packages npm registry as `@e-ucm/xasu-js`.
-Unlike the git install, that tarball already contains `dist/`, so npm builds nothing on your machine:
+Unlike the git install, that tarball already contains `dist/`, so npm builds nothing on your
+machine.
+
+GitHub Packages asks for a token even for a public package, so `npm install` on its own fails
+with `E401 Unauthorized`. Authenticate first:
+
+1. Create a personal access token. A **classic** token needs the `read:packages` scope; a
+   **fine-grained** token needs "Packages" read access. If `e-ucm/xasu-js` is private, a classic
+   token also needs the `repo` scope.
+2. Point the scope at the registry and register the token.
+3. Install.
 
 ```bash
+export GITHUB_TOKEN=<your personal access token>
 npm config set @e-ucm:registry https://npm.pkg.github.com
+npm config set //npm.pkg.github.com/:_authToken "$GITHUB_TOKEN"
 npm install @e-ucm/xasu-js
 ```
 
-Two commands, because the package is scoped: `@e-ucm` has to be pointed at the registry before npm will look there for it. Add `--location=project` to write the setting into a `.npmrc` in your
-project rather than into your user config.
+The commands are separate because the package is scoped: `@e-ucm` has to be pointed at the
+registry before npm will look there for it. Add `--location=project` to either `npm config` call to
+write the setting into a `.npmrc` in your project rather than into your user config — do **not**
+commit a `.npmrc` that contains the token.
 
-GitHub Packages asks for a token even for a public package. The install reads it from
-`NODE_AUTH_TOKEN` or from a line in `~/.npmrc`:
+npm also reads the token from the `NODE_AUTH_TOKEN` environment variable, which is what CI uses.
+In a GitHub Actions workflow that is `secrets.GITHUB_TOKEN`, together with `packages: read` in the
+job's `permissions`:
 
-```bash
-npm config set //npm.pkg.github.com/:_authToken "$GITHUB_TOKEN"
+```yaml
+permissions:
+  contents: read
+  packages: read
 ```
-
-The token needs the `read:packages` scope. In a GitHub Actions workflow it is `secrets.GITHUB_TOKEN`
-together with `packages: read` in the job's `permissions`.
 
 Because the registry name is scoped, the import is scoped here too:
 
@@ -69,7 +85,6 @@ import { SeriousGameTracker } from '@e-ucm/xasu-js';
 
 Pin a published version the usual way — `npm install @e-ucm/xasu-js@2.3.0-beta` — and the git
 forms above still work unchanged.
-
 ## Why this works at all
 
 `dist/` is **not committed**. The repository holds source, and `package.json` has a `prepare`

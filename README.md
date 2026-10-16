@@ -69,10 +69,14 @@ npm install github:e-ucm/xasu-js#v2.3.0-beta
 import { SeriousGameTracker } from 'xasu-js';
 ```
 
-It is also published, prebuilt, to the GitHub Packages registry:
+It is also published, prebuilt, to the GitHub Packages registry. GitHub Packages asks for a token
+even for a public package, so authenticate first (a personal access token with the `read:packages`
+scope):
 
 ```bash
+export GITHUB_TOKEN=<your personal access token>
 npm config set @e-ucm:registry https://npm.pkg.github.com
+npm config set //npm.pkg.github.com/:_authToken "$GITHUB_TOKEN"
 npm install @e-ucm/xasu-js
 ```
 

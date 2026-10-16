@@ -84,7 +84,9 @@ tracker.gameObject("healthPotion", tracker.SERIOUSGAMEPROFILE.ACTIVITYTYPES.ITEM
   `#semver:<range>` all work after the `#`.
 - It is **also published, prebuilt, to GitHub Packages** at `npm.pkg.github.com` as
   `@e-ucm/xasu-js`, one version per tag: `npm config set @e-ucm:registry
-  https://npm.pkg.github.com && npm install @e-ucm/xasu-js`. GitHub Packages requires an
+  https://npm.pkg.github.com`, then a token with `read:packages` via
+  `npm config set //npm.pkg.github.com/:_authToken <PAT>` (GitHub Packages requires a token even for
+  a public package), then `npm install @e-ucm/xasu-js`. GitHub Packages requires an
   owner-scoped name, so the publish job runs `npm pkg set name="@e-ucm/xasu-js"` in CI only; the
   committed name stays the unscoped `xasu-js`.
 - See `docs/how-to/install-from-github.md` for the procedure.
