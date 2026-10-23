@@ -16,13 +16,17 @@ jobs:
   verify:
     name: Verify
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [24, 26]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # `npm ci` runs the prepare script, which is the build: there is no committed dist
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: '26.x'
+          node-version: ${{ matrix.node-version }}
           cache: npm
 
       - name: Install dependencies and build
@@ -49,11 +53,11 @@ jobs:
     permissions:
       contents: write # to create the GitHub Release and upload the tarball
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '26.x'
           cache: npm
@@ -150,9 +154,9 @@ jobs:
       contents: read
       packages: write # to publish to npm.pkg.github.com
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '26.x'
           cache: npm
