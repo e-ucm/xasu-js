@@ -22,7 +22,7 @@ jobs:
       # `npm ci` runs the prepare script, which is the build: there is no committed dist
       - uses: actions/setup-node@v4
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: npm
 
       - name: Install dependencies and build
@@ -55,7 +55,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: npm
 
       - name: Install dependencies and build
@@ -154,7 +154,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '24.x'
+          node-version: '26.x'
           cache: npm
           registry-url: 'https://npm.pkg.github.com'
           scope: '@e-ucm'
